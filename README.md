@@ -116,10 +116,9 @@ independent educational tool and is intended for personal learning. See
 
 ## Support the project
 
-Developers often add a donation link through GitHub Sponsors, Ko-fi, or PayPal.
-No donation link is enabled yet because a real destination must be supplied by
-the project owner. If you would like to support the project, please star it and
-share the live demo for now.
+If this project helps you, you can support its continued improvement through
+[PayPal](https://www.paypal.com/ncp/payment/HZXA4F94TEA2A). You never need to
+share banking details in an issue or pull request.
 
 ## License and contributions
 
