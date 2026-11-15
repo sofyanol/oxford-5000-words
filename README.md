@@ -1,113 +1,128 @@
-# Oxford 5000 - بطاقات المفردات
+# Oxford 5000 Words
 
-تطبيق تعلّم مفردات إنجليزية كامل يعمل داخل ملف HTML واحد، بدون خادم وبدون إنترنت بعد
-البناء. يحتوي 4954 كلمة من قائمتي Oxford 3000 وOxford 5000، مع جملة مثال لكل كلمة،
-وترجمتها إلى لغة الواجهة، وصيغ الكلمة المشتقة، والنطق الدولي المكتوب IPA، واختبار
-مراجعة بالخيارات، وتكرار متباعد، ومزامنة سريعة برابط أو رمز.
+> A friendly, offline-first vocabulary companion for learners who want to build
+> a strong English foundation one word at a time.
 
-هذا المجلد مستقل بالكامل ومهيّأ لتسليمه إلى أداة برمجة أخرى. **ابدأ من
-`START-HERE.md`** فهو يحتوي التعليمات الكاملة: كيف تفتح المشروع، وكيف تبنيه،
-وكيف تعدّله دون أن تكسر شيئًا. بعده `docs/AGENT-HANDOFF.md` للقرارات،
-و`docs/HOW-TO-EDIT.md` للتعديلات المحددة.
+**Live demo:** https://sofyanol.github.io/oxford-5000-words/
 
-## تشغيل سريع
+## Why this project exists
 
-```bash
-python build/build.py
+Oxford's word lists are built around a practical idea: mastering the most useful
+high-frequency vocabulary can unlock a large part of everyday English. The
+Oxford 3000 and Oxford 5000 lists are commonly used as a clear learning target:
+learners who master these words can understand and express themselves much more
+confidently across real situations.
+
+This project turns that goal into a simple, welcoming study experience. It is
+not a promise of instant fluency, and vocabulary is only one part of language
+learning, but knowing these words well gives learners a powerful foundation for
+reading, listening, speaking, and writing.
+
+## What you get
+
+- 4,954 English words organized by CEFR levels from A1 to C1.
+- A flashcard for every word with IPA pronunciation, meaning, and an example sentence.
+- Derived forms such as plurals, past forms, participles, comparatives, and superlatives.
+- English pronunciation buttons for words and example sentences when the browser provides speech voices.
+- A multiple-choice review quiz: choose the correct meaning from four options.
+- Spaced repetition with five review stages and a dedicated queue for words you do not know yet.
+- Known, unknown, and remaining-word lists grouped by difficulty.
+- Search by English word, translation, or personal note.
+- Progress saved locally in the browser.
+- Export, import, full-link sync, update-link sync, and compact OX6 sync codes.
+- An interface available in 11 languages.
+- A single self-contained HTML build that works offline after it is generated.
+
+## Try it online
+
+Open the live app:
+
+**https://sofyanol.github.io/oxford-5000-words/**
+
+You can also download or host the generated HTML file yourself. No account is
+required to study, and your progress stays in your browser unless you export
+or synchronize it.
+
+## Run locally
+
+Requirements: Python 3.8 or newer. No Node.js or npm is required.
+
+```powershell
+python build\build.py
 ```
 
-الناتج:
+The generated file is:
 
+```text
+dist\oxford5000-flashcards-final.html
 ```
-dist/oxford5000-flashcards-final.html
-```
 
-افتحه مباشرة في المتصفح (نقرة مزدوجة). لا يحتاج خادمًا. للاختبار الآلي أضف
-`#selftest` إلى الرابط وافتح كونسول المتصفح؛ يجب أن يظهر `SELFTEST PASS` بلا أخطاء.
+Open it directly in a browser. For the built-in checks, open the file with
+`#selftest` and check the browser console for `SELFTEST PASS`.
 
-## النشر على GitHub Pages أو أي استضافة ثابتة
+## Publish it
 
-المجلد `dist/` يحتوي على ملف HTML مستقل، لذلك لا يحتاج إلى Node.js أو قاعدة
-بيانات أو خادم خلفي. للنشر:
+The build produces a standalone HTML file, so it works on GitHub Pages,
+Cloudflare Pages, Netlify, Vercel, or any static host.
 
-1. شغّل `python build/build.py`.
-2. ارفع `dist/oxford5000-flashcards-final.html` إلى GitHub Pages أو Netlify أو
-   Cloudflare Pages أو أي استضافة ملفات ثابتة.
-3. إذا أردت رابطًا باسم الموقع، غيّر اسم الملف إلى `index.html` بعد البناء.
+For GitHub Pages:
 
-النطق الصوتي يستخدم أصوات المتصفح الإنجليزية، ويفضّل أصوات Google/Enhanced إذا
-كانت مثبتة في النظام. لا تضع مفتاح Google Cloud داخل المشروع؛ مفاتيح الخدمات
-السرية لا ينبغي نشرها في GitHub أو داخل ملف HTML العام. يظهر IPA المضمّن دائمًا
-كمرجع حتى عند عدم توفر الصوت.
+1. Run `python build\build.py`.
+2. Copy `dist\oxford5000-flashcards-final.html` to a publishing repository as
+   `index.html`.
+3. Enable Pages from the repository's `main` branch and root folder.
 
-## ما يحتويه التطبيق
+For future updates, rebuild and replace `index.html`. The public URL stays the
+same.
 
-- 4954 كلمة مصنّفة A1..C1، مع إحصاءات لكل مستوى.
-- بطاقة لكل كلمة: الكلمة، النطق الدولي IPA، الترجمة، جملة مثال، ترجمة الجملة.
-- شريط صيغ الكلمة: المضارع، الماضي، التام، المستمر، الجمع، المقارنة والتفضيل،
-  مع مثال حقيقي لكل صيغة موجودة في المدونة.
-- تلوين تعليمي: الكلمة الأساسية ذهبية، الإضافة المنتظمة أخضر مزرق، التغيّر الشاذ
-  أحمر طوبي، وترجمة الجملة رمادية. الشرح داخل البطاقة نفسها.
-- تبديل بين 11 لغة واجهة، والترجمة تتبع لغة الواجهة الحالية.
-- اختبار خيارات فقط: كلمة إنجليزية ← اختر معناها من أربعة خيارات، مع تكرار
-  متباعد (5 مراحل) وإعادة الكلمة بعد الخطأ.
-- قوائم الكلمات مجمّعة حسب المستوى A1..C1 مع ملخص وعدد لكل مستوى، وزر اختبار
-  مباشر من قائمة «لا أعرفها».
-- بحث بالكلمة أو بترجمتها أو بملاحظتك.
-- تصدير/استيراد التقدم، ومزامنة سريعة برابط كامل أو رابط تحديثات، ورمز OX6،
-  ومزامنة اختيارية عبر تلقرام.
-- حفظ تلقائي محلي، مع ترقية آمنة لتقدم النسخ القديمة v2/v3.
+## Help this project reach more learners
 
-## بنية المجلد
+If you find it useful:
 
-```
+- Try the live demo and share it with a learner or teacher.
+- Star the repository so other learners can discover it.
+- Open an issue with a translation correction, example-sentence suggestion, or
+  accessibility improvement.
+- Share a short progress update with the live link.
+- Contributions that improve clarity, correctness, and learning value are welcome.
+
+Please do not share private progress exports or bot tokens in issues or pull
+requests.
+
+## Project structure
+
+```text
 oxford5000-app/
-├─ START-HERE.md       اقرأه أولًا: التعليمات الكاملة
-├─ src/
-│  ├─ index.html      الهيكل فقط (بدون بيانات)
-│  ├─ styles.css      كل التنسيقات
-│  └─ app.js          كل المنطق، وفيه عناصر نائبة للبيانات
-├─ data/              البيانات الجاهزة (كلمات، جمل، صيغ، نطق، ترجمات)
-├─ build/build.py     يدمج src + data في ملف واحد
-├─ dist/              الملف النهائي الجاهز للاستخدام
-├─ tools/             سكربتات اختيارية لإعادة توليد البيانات
-└─ docs/              الشرح الكامل
+├─ src/                    HTML structure, styles, and application logic
+├─ data/                   Words, examples, IPA, forms, and translations
+├─ build/build.py          Creates the standalone HTML file
+├─ tools/                  Optional data and translation utilities
+├─ docs/                   Architecture, data, editing, and publishing notes
+└─ dist/                   Generated release file
 ```
 
-## التوثيق
+## Translation and data notes
 
-| الملف | المحتوى |
-|---|---|
-| `docs/AI-LOG.md` | سجل عمل النماذج المتعاقبة: ماذا فعل كل نموذج وكيف تحقق |
-| `docs/AGENT-HANDOFF.md` | ملخص التسليم والقرارات المهمة |
-| `docs/ARCHITECTURE.md` | البنية، الدوال، تدفق البيانات، شكل التخزين |
-| `docs/DATA.md` | مخططات البيانات ومصادرها وإعادة التوليد |
-| `docs/FEATURES.md` | الميزات وأساسها البحثي والأفكار القادمة |
-| `docs/HOW-TO-EDIT.md` | وصفات تعديل جاهزة وخطوات التحقق |
-| `docs/I18N.md` | جدول مفاتيح الترجمة وقواعد i18n |
-| `docs/PUBLISHING.md` | جاهزية النشر والمنصات المجانية وحدودها |
-| `docs/CHANGELOG.md` | تاريخ الإصدارات من v1 إلى v4.2 |
+The interface includes English, Arabic, French, Spanish, Portuguese, Russian,
+Turkish, Urdu, Hindi, Indonesian, and Chinese. Machine-generated translations
+are included for convenience and should be reviewed by fluent speakers before
+formal or commercial use. The project includes an audit tool for finding
+missing or suspicious entries, but automated checks cannot replace a human
+language review.
 
-## قواعد ثابتة يجب الحفاظ عليها
+Oxford word-list content belongs to Oxford University Press. This project is an
+independent educational tool and is intended for personal learning. See
+`docs\DATA.md` for data sources and limitations.
 
-1. لا تكتب نصًا مرئيًا خارج `data/i18n.json`. كل نص يمر عبر `t('key')`، بما في ذلك
-   النصوص المولّدة في JavaScript.
-2. لا تضع رمز بوت تلقرام داخل `state` ولا داخل ملفات التصدير ولا في السجلات. له
-   مفتاح تخزين منفصل `oxford5000_tg` وهو مستبعد من التصدير.
-3. حافظ على توافق البيانات: `state.v === 3`، مع قراءة v2 وترقيتها، وعدم فقدان تقدم
-   المستخدم عند الدمج.
-4. لا تعدّل `dist/` يدويًا؛ عدّل `src/` ثم أعد البناء.
-5. عند تغيير البيانات، أعد بناء `forms.json` و`sent_list.json` معًا حتى تبقى فهارس
-   الأمثلة صحيحة.
+## Support the project
 
-## حالة الترجمات
+Developers often add a donation link through GitHub Sponsors, Ko-fi, or PayPal.
+No donation link is enabled yet because a real destination must be supplied by
+the project owner. If you would like to support the project, please star it and
+share the live demo for now.
 
-الترجمة العربية والفرنسية والإسبانية والبرتغالية والروسية والتركية والأردية والهندية
-والإندونيسية والصينية مولّدة مسبقًا في `data/tr/`، والإنجليزية لا تحتاج ترجمة لأنها
-لغة المصدر. إذا نقصت لغة، يعرض التطبيق الكلمة الإنجليزية وحدها بدل أن يتعطّل.
+## License and contributions
 
-## ترخيص واستخدام
-
-قائمة الكلمات نفسها مملوكة لدار Oxford University Press وتُستخدم هنا لأغراض تعليمية
-شخصية. بيانات النطق من مجموعة CEFR المفتوحة، والترجمات مولّدة آليًا وتحتاج مراجعة
-بشرية قبل أي استخدام رسمي. التفاصيل في `docs/DATA.md`.
+Please read the data and usage notes before redistributing the word-list data.
+For corrections or ideas, open an issue with a clear example and the affected
+language or word.
