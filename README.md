@@ -5,6 +5,8 @@
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/
 
+**Latest release:** [Update 1.0](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.0.0)
+
 ## Why this project exists
 
 Oxford's word lists are built around a practical idea: mastering the most useful
@@ -124,4 +126,5 @@ share banking details in an issue or pull request.
 
 Please read the data and usage notes before redistributing the word-list data.
 For corrections or ideas, open an issue with a clear example and the affected
-language or word.
+language or word. See [CONTRIBUTING.md](CONTRIBUTING.md) for the development
+workflow.
