@@ -1,5 +1,9 @@
 # Oxford 5000 Words
 
+[![Live demo](https://img.shields.io/badge/try-live%20demo-2ea44f)](https://sofyanol.github.io/oxford-5000-words/)
+[![Latest release](https://img.shields.io/github/v/release/sofyanol/oxford-5000-words?label=latest%20release)](https://github.com/sofyanol/oxford-5000-words/releases/latest)
+[![License](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
+
 > A friendly, offline-first vocabulary companion for learners who want to build
 > a strong English foundation one word at a time.
 
@@ -19,6 +23,17 @@ This project turns that goal into a simple, welcoming study experience. It is
 not a promise of instant fluency, and vocabulary is only one part of language
 learning, but knowing these words well gives learners a powerful foundation for
 reading, listening, speaking, and writing.
+
+## Share the project
+
+Use the live demo in a post, classroom resource, or learning group:
+
+> A free offline-first English vocabulary app with 4,954 Oxford 3000/5000
+> words, examples, pronunciation, spaced repetition, and multiple-choice
+> review: https://sofyanol.github.io/oxford-5000-words/
+
+Please describe your own experience and invite useful feedback rather than
+posting the same link repeatedly.
 
 ## What you get
 
@@ -128,3 +143,7 @@ Please read the data and usage notes before redistributing the word-list data.
 For corrections or ideas, open an issue with a clear example and the affected
 language or word. See [CONTRIBUTING.md](CONTRIBUTING.md) for the development
 workflow.
+
+Original project code is available under the [MIT License](LICENSE). See
+[NOTICE.md](NOTICE.md) for the distinction between original code and
+third-party data.
