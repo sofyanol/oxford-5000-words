@@ -9,7 +9,29 @@
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/
 
-**Latest release:** [Update 1.0](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.0.0)
+**Latest release:** [Update 1.1](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.1.0)
+
+## Update 1.1
+
+Update 1.1 focuses on a clearer, more reliable learning experience:
+
+- Added a guided tutorial organized into cards, progress, quiz, language,
+  pronunciation, and tools sections. It explains the site step by step and
+  keeps its panel inside the screen on desktop and mobile.
+- Added a focused explanation for word forms. The new form guide explains when
+  each verified form is used and how it differs from the others.
+- Improved form accuracy by showing only non-base forms backed by a valid
+  example. Words without verified forms no longer show an unnecessary forms
+  section.
+- Improved the language menu and popup layering so it cannot cover tutorial or
+  explanation panels.
+- Improved keyboard focus, touch behavior, button feedback, and small-screen
+  toolbar layout for smoother control.
+- Kept progress, translations, review scheduling, sync, and offline behavior
+  compatible with existing users.
+
+Update 1.1 is still a static, account-free release: progress remains in the
+browser unless the learner exports or synchronizes it.
 
 ## Why this project exists
 

@@ -572,7 +572,7 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
 <meta name="twitter:description" content="A friendly offline-first English vocabulary app with Oxford 3000/5000 words, examples, pronunciation, spaced repetition, and quizzes.">
 <meta name="apple-mobile-web-app-title" content="Oxford 5000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310161f'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='25' font-weight='700' fill='%23d9a441' text-anchor='middle'%3EO5%3C/text%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https://api.telegram.org; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'">
 <title>Oxford 5000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -604,6 +604,8 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     appearance: none;
     line-height: normal;
   }
+  button, a, input, textarea, select{ touch-action: manipulation; }
+  :focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
   input, textarea, select{
     font-family: inherit;
     -webkit-appearance: none;
@@ -618,6 +620,7 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
       var(--ink);
     color: var(--text-on-ink);
     font-family: var(--font-ar);
+    font-size: calc(16px * var(--font-scale, 1));
     overflow-x:hidden;
     scrollbar-width:none;
   }
@@ -632,6 +635,11 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     align-items:center;
     padding: 22px 16px 40px;
   }
+  html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  html.compact-cards .deck{ height:560px; }
+  html.compact-cards .card{ padding-top:20px; padding-bottom:12px; }
+  html.large-controls .ctrl-btn .circle{ width:58px; height:58px; }
+  html.large-controls .ctrl-btn .label{ font-size:12px; }
 
   #mainArea{
     width: 100%;
@@ -731,6 +739,13 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     font:inherit; font-size:12px; cursor:pointer; text-align:start;
   }
   .lang-option:hover,.lang-option.active{ background:rgba(217,164,65,.18); color:#fff; }
+  .lang-option-check{ margin-inline-start:auto; min-width:18px; color:var(--gold); font-weight:800; }
+  .speech-choice{ border-top:1px solid rgba(255,255,255,.12); margin-top:6px; padding:10px 12px 4px; }
+  .language-mode{ border-top:1px solid rgba(255,255,255,.12); margin-top:6px; padding:10px 12px 4px; color:#fff; font-size:11px; }
+  .language-mode label{ display:flex; align-items:center; gap:7px; cursor:pointer; }
+  .language-mode input{ accent-color:var(--gold); }
+  .speech-choice label{ display:block; font-size:11px; font-weight:800; margin-bottom:5px; color:#d8c9a8; }
+  .speech-choice select{ width:100%; border:1px solid rgba(255,255,255,.2); border-radius:8px; padding:6px 8px; background:#18222c; color:#fff; font:inherit; font-size:12px; }
   .lang-option-code{
     min-width:26px; padding:2px 4px; border-radius:5px; background:rgba(217,164,65,.18);
     color:var(--gold); font:800 9px var(--font-mono); text-align:center;
@@ -793,11 +808,12 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
   .ghost-card.g2{ transform: translateY(20px) scale(.93) rotate(2.4deg); opacity:.3; }
 
   .card{
-    position:absolute; inset:0; border-radius: 18px; background: var(--paper);
-    box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 2px 0 rgba(0,0,0,.06) inset;
-    border: 1px solid var(--line);
+    position:absolute; inset:0; border-radius: 22px;
+    background: linear-gradient(145deg, #fffdf7 0%, #f8f0df 100%);
+    box-shadow: 0 24px 48px rgba(0,0,0,.42), 0 0 0 1px rgba(217,164,65,.2) inset;
+    border: 1px solid rgba(217,164,65,.34);
     display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-    text-align:center; padding: 24px 22px 16px;
+    text-align:center; padding: 26px 22px 18px;
     user-select:none;
     overflow-y:auto; overflow-x:hidden;
     scrollbar-width:thin;
@@ -938,11 +954,19 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
   /* word forms */
   .forms-bar{ width:100%; margin-top: 12px; text-align:center; flex-shrink:0; }
   .forms-bar[hidden]{ display:none !important; }
+  .forms-heading{ display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:5px; }
   .forms-label{
     display:block; font-family: var(--font-mono); font-size:9.5px;
     letter-spacing:.08em; text-transform:uppercase; color: var(--muted);
-    margin-bottom: 5px; text-align:center;
+    text-align:center;
   }
+  .forms-guide-button{
+    border:1px solid rgba(31,111,109,.35); border-radius:999px; padding:4px 9px;
+    background:rgba(31,111,109,.08); color:var(--teal-deep); font:700 10px inherit;
+    cursor:pointer; transition:background .15s ease, transform .12s ease;
+  }
+  .forms-guide-button:hover{ background:rgba(31,111,109,.18); transform:translateY(-1px); }
+  .forms-guide-button:active{ transform:translateY(0) scale(.97); }
   .forms-scroll{
     display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
     padding-bottom: 4px;
@@ -967,6 +991,15 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
   }
   .fc-word .hl-suf{ color: var(--teal-deep); font-weight:800; font-style: normal; letter-spacing:0; }
   .fc-word .hl-irr{ color: var(--brick-deep); font-weight:800; font-style: normal; }
+  .forms-guide-panel{ max-width:560px; max-height:calc(100vh - 28px); overflow-y:auto; }
+  .forms-guide-intro{ margin:0; padding:0 24px 14px; color:#5c5238; font-size:13px; line-height:1.8; }
+  .forms-guide-list{ display:grid; gap:9px; padding:0 24px 24px; }
+  .forms-guide-item{ padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(217,164,65,.07); }
+  .forms-guide-word{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; color:#6b6249; font-size:12px; font-weight:700; }
+  .forms-guide-word .fc-word{ color:var(--ink-text); font-size:14px; }
+  .forms-guide-item p{ margin:4px 0 0; color:#5c5238; font-size:12px; line-height:1.7; }
+  .forms-guide-item p b{ color:var(--ink-text); }
+  .forms-guide-difference{ border-top:1px dashed var(--line); padding-top:5px; }
 
   /* colour legend */
   .legend{ width:100%; margin-top: 9px; flex-shrink:0; }
@@ -1044,9 +1077,10 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     color: var(--text-on-ink); padding:9px 16px; border-radius:10px;
     font-family:inherit; font-size:13px; cursor:pointer;
     white-space: normal; text-align: center; min-width: 0;
-    transition: background .15s ease, border-color .15s ease;
+    transition: background .15s ease, border-color .15s ease, transform .12s ease;
   }
   .tool-btn:hover{ background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); }
+  .tool-btn:active{ transform:translateY(1px) scale(.98); }
   .tool-btn.primary{
     background: linear-gradient(180deg, var(--gold), var(--gold-deep)); color: #241b09;
     border-color: transparent; font-weight:700;
@@ -1062,6 +1096,40 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     max-width:760px; text-align:center; color: var(--muted); font-size:11.5px;
     margin-top: 26px; line-height:1.9; opacity:.8;
   }
+  .visitor-counter{ margin-top:10px; color:var(--text-on-ink); opacity:.85; }
+  .visitor-counter strong{ color:var(--gold); font-variant-numeric:tabular-nums; }
+  .side-tools{
+    position:fixed; inset-inline-start:14px; top:50%; transform:translateY(-50%);
+    z-index:40; display:flex; flex-direction:column; gap:8px;
+  }
+  .side-tool{
+    border:1px solid rgba(217,164,65,.4); border-radius:10px; padding:9px 10px;
+    background:rgba(24,31,42,.94); color:var(--text-on-ink); font:700 11px inherit;
+    cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.2); writing-mode:vertical-rl;
+  }
+  .side-tool:hover{ background:rgba(217,164,65,.18); transform:translateX(2px); }
+  .side-tool:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .tour-highlight{ position:relative; box-shadow:0 0 0 4px rgba(217,164,65,.75), 0 0 28px rgba(217,164,65,.4) !important; }
+  .tutorial-panel{ max-width:390px; max-height:calc(100vh - 28px); border:1px solid rgba(217,164,65,.45); box-shadow:0 18px 42px rgba(0,0,0,.3); overflow-y:auto; }
+  .tutorial-intro{ margin:0; padding:0 24px 12px; color:#5c5238; line-height:1.8; font-size:13px; }
+  .tutorial-progress{ margin:0 24px 10px; color:var(--gold-deep); font:800 11px var(--font-mono); letter-spacing:.08em; }
+  .tutorial-categories{ display:flex; gap:6px; overflow-x:auto; padding:0 24px 12px; scrollbar-width:thin; }
+  .tutorial-category{ flex:0 0 auto; border:1px solid var(--line); border-radius:999px; padding:7px 10px; background:rgba(255,255,255,.55); color:#6b6249; font:700 11px inherit; cursor:pointer; }
+  .tutorial-category span{ margin-inline-start:5px; color:var(--gold-deep); font:800 10px var(--font-mono); }
+  .tutorial-category:hover,.tutorial-category.active{ background:rgba(217,164,65,.2); border-color:rgba(217,164,65,.55); color:#3f3826; }
+  .tutorial-steps{ margin:0 24px; padding:18px; min-height:130px; display:flex; gap:14px; align-items:flex-start; border:1px solid rgba(217,164,65,.35); border-radius:16px; background:linear-gradient(135deg,rgba(217,164,65,.16),rgba(255,255,255,.55)); }
+  .tutorial-step{ display:flex; gap:11px; align-items:flex-start; padding:11px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(217,164,65,.07); }
+  .tutorial-step h4{ margin:0 0 3px; font-size:13px; }
+  .tutorial-step p{ margin:0; color:#5c5238; font-size:12px; line-height:1.75; }
+  .tutorial-number{ flex:0 0 23px; height:23px; border-radius:50%; display:grid; place-items:center; background:var(--gold); color:#241b09; font-weight:800; font-size:11px; }
+  .tutorial-actions{ display:flex; justify-content:space-between; gap:10px; padding:18px 24px 24px; position:sticky; bottom:0; background:var(--paper); border-top:1px solid var(--line); }
+  .tutorial-actions .tool-btn{ min-width:110px; justify-content:center; }
+  .feedback-panel{ max-width:540px; border:1px solid rgba(31,111,109,.3); }
+  .feedback-input{ display:block; width:calc(100% - 48px); margin:4px 24px 10px; min-height:150px; resize:vertical; border:1px solid rgba(31,111,109,.35); border-radius:14px; padding:13px; background:#fffdf7; color:var(--ink-text); font:inherit; line-height:1.8; }
+  .feedback-input:focus{ outline:2px solid rgba(31,111,109,.25); border-color:var(--teal); }
+  .feedback-note{ padding:0 24px; color:#5c5238; font-size:12px; line-height:1.8; }
+  .feedback-status{ min-height:20px; padding:0 24px; color:var(--brick-deep); font-size:12px; line-height:1.6; }
+  .feedback-panel .tool-btn{ margin:0 24px 24px; }
   .follow-links{
     display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:7px 10px;
     margin-top:14px; color:var(--text-on-ink); opacity:.95;
@@ -1098,9 +1166,18 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     position:fixed; inset:0; background: rgba(8,12,18,.72);
     backdrop-filter: blur(2px);
     display:none; align-items:flex-start; justify-content:center;
-    padding: 5vh 16px; z-index: 50; overflow-y:auto;
+    padding: 5vh 16px; z-index: 300; overflow-y:auto;
   }
   .overlay.show{ display:flex; }
+  #tutorialOverlay{
+    background: transparent;
+    backdrop-filter: none;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 18px;
+    pointer-events: none;
+  }
+  #tutorialOverlay .tutorial-panel{ pointer-events: auto; position:fixed; margin:0; }
 
   .review-panel{
     width:100%; max-width: 620px; background: var(--paper);
@@ -1626,6 +1703,9 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
   .quiz-feedback.ok b{ color: var(--teal-deep); }
   .quiz-feedback.no b{ color: var(--brick-deep); }
   .quiz-feedback p{ margin: 6px 0; font-size: 12.5px; line-height: 1.8; color: #4c442f; word-break: break-word; }
+  .quiz-sentence-prompt{ display:block; margin-top:12px; font-size:12px; font-weight:800; color:#5c5238; }
+  .quiz-personal-sentence{ width:100%; margin-top:6px; border:1px solid var(--line); border-radius:10px; padding:9px 10px; resize:vertical; font:inherit; font-size:13px; direction:ltr; background:#fffdf7; color:var(--ink-text); }
+  .quiz-personal-sentence:focus{ outline:none; border-color:var(--gold-deep); }
   .quiz-correct{ font-family: 'IBM Plex Mono', 'Courier New', monospace; direction: ltr; font-weight: 700; }
   .quiz-end-score{ font-size: 24px; font-weight: 800; margin: 6px 0; color: var(--ink-text); }
   .quiz-end-time{ font-size: 13px; color: #5c5238; margin-bottom: 14px; }
@@ -1652,12 +1732,28 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     padding: 2px 7px; border-radius: 6px;
     font-weight: 800; font-size: 10.5px; text-transform: uppercase;
   }
+  .onboarding-panel{ max-width:560px; }
+  .onboarding-body{ padding:8px 22px 22px; }
+  .onboarding-body section{ padding:12px 14px; border:1px solid var(--line); border-radius:12px; margin-bottom:10px; background:rgba(217,164,65,.07); }
+  .onboarding-body h4{ margin:0 0 5px; font-size:14px; }
+  .onboarding-body p{ margin:0; color:#5c5238; font-size:13px; line-height:1.8; }
+  .onboarding-body .tool-btn{ margin-top:4px; }
+  .translation-line{ display:block; line-height:1.7; }
+  .translation-line b{ font:700 10px 'IBM Plex Mono', monospace; color:var(--teal-deep); margin-inline-end:5px; }
 
   @media (max-width:480px){
     .deck{ height: 600px; }
     .controls{ gap:16px; }
+    .toolbar{ gap:7px; margin-top:24px; }
+    .tool-btn{ min-height:42px; padding:9px 11px; }
     .card{ padding: 20px 14px 14px; }
     .sent-text{ font-size: 15.5px; }
+    .side-tools{ inset-inline-start:6px; top:auto; bottom:10px; transform:none; flex-direction:row; }
+    .side-tool{ writing-mode:horizontal-tb; font-size:10px; padding:8px; }
+    #tutorialOverlay{ align-items:flex-end; padding:8px; }
+    #tutorialOverlay .tutorial-panel{ max-width:none; width:100%; max-height:48vh; }
+    #tutorialOverlay .tutorial-intro{ display:none; }
+    #tutorialOverlay .tutorial-steps{ min-height:90px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -1692,7 +1788,7 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
         <button type="button" id="langSelectButton" class="lang-select-button" data-i18n-aria="lang.label" aria-haspopup="listbox" aria-expanded="false">
           <span id="langSelectLabel"></span>
         </button>
-        <div id="langMenu" class="lang-menu" role="listbox" hidden></div>
+        <div id="langMenu" class="lang-menu" role="listbox" aria-multiselectable="true" hidden></div>
         <select id="langSelect" class="lang-select-native" data-i18n-aria="lang.label" tabindex="-1" aria-hidden="true"></select>
         <span class="lang-code" id="langCode">AR</span>
         <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
@@ -1723,7 +1819,7 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
       </div>
 
       <div class="word-head">
-        <div class="the-word word-font" id="theWord">
+        <div class="the-word word-font" id="theWord" lang="en">
           word
           <span class="copy-toast" id="copyToast" data-i18n="card.copied"></span>
         </div>
@@ -1793,6 +1889,11 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
   </div>
   </div>
 
+  <aside class="side-tools" aria-label="Helpful tools">
+    <button type="button" class="side-tool" id="openTutorial" data-i18n="tutorial.button"></button>
+    <button type="button" class="side-tool" id="openFeedback" data-i18n="feedback.button"></button>
+  </aside>
+
   <p class="due-line" id="dueLine" hidden></p>
 
   <footer class="note">
@@ -1808,8 +1909,73 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4.2l3.3 4.7L16.5 4H19l-5.3 6.1L19.5 20h-4.2l-3.8-5.3L6.8 20H4.3l5.5-6.4L5 4Zm3.1 2.2 8.3 11.6h1.2L9.3 6.2H8.1Z"></path></svg>
       </a>
     </div>
+    <div class="visitor-counter" aria-live="polite">
+      <span data-i18n="visitor.label"></span>: <strong id="visitorCount" data-i18n="visitor.loading"></strong>
+    </div>
   </footer>
 
+</div>
+
+<div class="overlay" id="tutorialOverlay">
+  <div class="review-panel tutorial-panel" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles"><h3 id="tutorialTitle" data-i18n="tutorial.title"></h3></div>
+      <button class="review-close" id="closeTutorial" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <p class="tutorial-intro" data-i18n="tutorial.intro"></p>
+    <div class="tutorial-progress" id="tutorialProgress"></div>
+    <nav class="tutorial-categories" id="tutorialCategories" aria-label="Tutorial sections"></nav>
+    <div id="tutorialSteps" class="tutorial-steps"></div>
+    <div class="tutorial-actions">
+      <button class="tool-btn" id="tutorialPrevious" type="button" data-i18n="tutorial.previous"></button>
+      <button class="tool-btn primary" id="tutorialNext" type="button" data-i18n="tutorial.next"></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="formsGuideOverlay">
+  <div class="review-panel forms-guide-panel" role="dialog" aria-modal="true" aria-labelledby="formsGuideTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles"><h3 id="formsGuideTitle" data-i18n="forms.guide.title"></h3></div>
+      <button class="review-close" id="closeFormsGuide" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div id="formsGuideContent"></div>
+  </div>
+</div>
+
+<div class="overlay" id="feedbackOverlay">
+  <div class="review-panel feedback-panel" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles"><h3 id="feedbackTitle" data-i18n="feedback.title"></h3></div>
+      <button class="review-close" id="closeFeedback" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <textarea id="feedbackInput" class="feedback-input" rows="6" data-i18n-placeholder="feedback.placeholder"></textarea>
+    <p class="feedback-note" data-i18n="feedback.note"></p>
+    <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
+    <button class="tool-btn primary" id="submitFeedback" type="button" data-i18n="feedback.open"></button>
+  </div>
+</div>
+
+<div class="overlay" id="onboardingOverlay">
+  <div class="review-panel onboarding-panel" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="onboardingTitle" data-i18n="onboarding.title"></h3>
+      </div>
+      <button class="review-close" id="closeOnboarding" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="onboarding-body">
+      <section>
+        <h4 data-i18n="onboarding.level.title"></h4>
+        <p data-i18n="onboarding.level.text"></p>
+      </section>
+      <section>
+        <h4 data-i18n="onboarding.srs.title"></h4>
+        <p data-i18n="onboarding.srs.text"></p>
+      </section>
+      <button class="tool-btn primary" id="startOnboarding" type="button" data-i18n="onboarding.start"></button>
+    </div>
+  </div>
 </div>
 
 <div class="overlay" id="reviewOverlay">
@@ -2181,7 +2347,19 @@ const I18N = {
     "footer.follow": "\u062a\u0627\u0628\u0639\u0646\u064a",
     "footer.linkedin": "\u0644\u0646\u0643\u062f\u064a\u0646",
     "footer.x": "\u0625\u0643\u0633",
-    "card.speak.example.title": "\u0627\u0633\u062a\u0645\u0639 \u0625\u0644\u0649 \u0627\u0644\u0645\u062b\u0627\u0644"
+    "card.speak.example.title": "\u0627\u0633\u062a\u0645\u0639 \u0625\u0644\u0649 \u0627\u0644\u0645\u062b\u0627\u0644",
+    "onboarding.title": "\u0627\u0628\u062f\u0623 \u0628\u062e\u0637\u0629 \u062a\u0639\u0644\u0645 \u0628\u0633\u064a\u0637\u0629",
+    "onboarding.level.title": "\u0627\u062e\u062a\u0631 \u0645\u0633\u062a\u0648\u0627\u0643 \u062d\u0633\u0628 CEFR",
+    "onboarding.level.text": "\u0627\u0644\u0645\u0633\u062a\u0648\u064a\u0627\u0646 A1 \u0648A2 \u0644\u0644\u0645\u0628\u062a\u062f\u0626\u064a\u0646\u060c \u0648B1 \u0648B2 \u0644\u0644\u0645\u062a\u0648\u0633\u0637\u060c \u0648C1 \u0644\u0644\u0645\u062a\u0642\u062f\u0645. \u064a\u0645\u0643\u0646\u0643 \u062a\u063a\u064a\u064a\u0631 \u0627\u0644\u0645\u0633\u062a\u0648\u0649 \u0641\u064a \u0623\u064a \u0648\u0642\u062a.",
+    "onboarding.srs.title": "\u0643\u064a\u0641 \u064a\u0639\u0645\u0644 \u0627\u0644\u062a\u0643\u0631\u0627\u0631 \u0627\u0644\u0645\u062a\u0628\u0627\u0639\u062f",
+    "onboarding.srs.text": "\u0635\u0646\u0651\u0641 \u0627\u0644\u0643\u0644\u0645\u0629 \u0628\u0623\u0646\u0643 \u062a\u0639\u0631\u0641\u0647\u0627 \u0623\u0648 \u0644\u0627 \u062a\u0639\u0631\u0641\u0647\u0627. \u0627\u0644\u0643\u0644\u0645\u0627\u062a \u063a\u064a\u0631 \u0627\u0644\u0645\u0639\u0631\u0648\u0641\u0629 \u062a\u0639\u0648\u062f \u0623\u0633\u0631\u0639\u060c \u0648\u0627\u0644\u0643\u0644\u0645\u0627\u062a \u0627\u0644\u062a\u064a \u062a\u0639\u0631\u0641\u0647\u0627 \u062a\u0639\u0648\u062f \u0644\u0627\u062d\u0642\u064b\u0627 \u0639\u0644\u0649 \u0645\u0631\u0627\u062d\u0644 \u0645\u062a\u0632\u0627\u064a\u062f\u0629.",
+    "onboarding.start": "\u0627\u0628\u062f\u0623 \u0627\u0644\u062a\u0639\u0644\u0645",
+    "speech.accent.label": "\u0646\u0637\u0642 \u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629",
+    "speech.accent.us": "\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629 \u0627\u0644\u0623\u0645\u0631\u064a\u0643\u064a\u0629 (US)",
+    "speech.accent.uk": "\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629 \u0627\u0644\u0628\u0631\u064a\u0637\u0627\u0646\u064a\u0629 (UK)",
+    "quiz.personalSentence.prompt": "\u0627\u0643\u062a\u0628 \u062c\u0645\u0644\u0629 \u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629 \u0645\u0646 \u0625\u0646\u0634\u0627\u0626\u0643 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u00ab{word}\u00bb. \u064a\u0633\u0627\u0639\u062f\u0643 \u0630\u0644\u0643 \u0639\u0644\u0649 \u0627\u0644\u062a\u0623\u0643\u062f \u0645\u0646 \u0642\u062f\u0631\u062a\u0643 \u0639\u0644\u0649 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u0643\u0644\u0645\u0629\u060c \u0648\u0644\u064a\u0633 \u0641\u0642\u0637 \u0645\u0639\u0631\u0641\u0629 \u0645\u0639\u0646\u0627\u0647\u0627.",
+    "quiz.personalSentence.placeholder": "\u0627\u0643\u062a\u0628 \u062c\u0645\u0644\u062a\u0643 \u0647\u0646\u0627...",
+    "quiz.personalSentence.save": "\u062d\u0641\u0638 \u0627\u0644\u062c\u0645\u0644\u0629"
   },
   "en": {
     "a11y.delete": "Delete from list",
@@ -2354,7 +2532,19 @@ const I18N = {
     "footer.follow": "Follow me",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "Listen to example"
+    "card.speak.example.title": "Listen to example",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "fr": {
     "a11y.delete": "Supprimer de la liste",
@@ -2527,7 +2717,19 @@ const I18N = {
     "footer.follow": "Suivez-moi",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "?couter l?exemple"
+    "card.speak.example.title": "?couter l?exemple",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "es": {
     "a11y.delete": "Eliminar de la lista",
@@ -2700,7 +2902,19 @@ const I18N = {
     "footer.follow": "S\u00edgueme",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "Escuchar el ejemplo"
+    "card.speak.example.title": "Escuchar el ejemplo",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "pt": {
     "a11y.delete": "Excluir da lista",
@@ -2873,7 +3087,19 @@ const I18N = {
     "footer.follow": "Siga-me",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "Ouvir o exemplo"
+    "card.speak.example.title": "Ouvir o exemplo",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "ru": {
     "a11y.delete": "\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0438\u0437 \u0441\u043f\u0438\u0441\u043a\u0430",
@@ -3046,7 +3272,19 @@ const I18N = {
     "footer.follow": "\u041f\u043e\u0434\u043f\u0438\u0441\u044b\u0432\u0430\u0439\u0442\u0435\u0441\u044c",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "??????? ??????"
+    "card.speak.example.title": "??????? ??????",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "tr": {
     "a11y.delete": "Listeden sil",
@@ -3219,7 +3457,19 @@ const I18N = {
     "footer.follow": "Beni takip edin",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "?rne?i dinle"
+    "card.speak.example.title": "?rne?i dinle",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "ur": {
     "a11y.delete": "\u0641\u06c1\u0631\u0633\u062a \u0633\u06d2 \u062d\u0630\u0641 \u06a9\u0631\u06cc\u06ba",
@@ -3392,7 +3642,19 @@ const I18N = {
     "footer.follow": "\u0645\u062c\u06be\u06d2 \u0641\u0627\u0644\u0648 \u06a9\u0631\u06cc\u06ba",
     "footer.linkedin": "\u0644\u0646\u06a9\u0688 \u0627\u0653\u0646",
     "footer.x": "X",
-    "card.speak.example.title": "???? ????"
+    "card.speak.example.title": "???? ????",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "hi": {
     "a11y.delete": "\u0938\u0942\u091a\u0940 \u0938\u0947 \u0939\u091f\u093e\u090f\u0901",
@@ -3565,7 +3827,19 @@ const I18N = {
     "footer.follow": "\u092e\u0941\u091d\u0947 \u092b\u093c\u0949\u0932\u094b \u0915\u0930\u0947\u0902",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "?????? ?????"
+    "card.speak.example.title": "?????? ?????",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "id": {
     "a11y.delete": "Hapus dari daftar",
@@ -3738,7 +4012,19 @@ const I18N = {
     "footer.follow": "Ikuti saya",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "Dengarkan contoh"
+    "card.speak.example.title": "Dengarkan contoh",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   },
   "zh": {
     "a11y.delete": "\u4ece\u5217\u8868\u5220\u9664",
@@ -3911,7 +4197,19 @@ const I18N = {
     "footer.follow": "\u5173\u6ce8\u6211",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "card.speak.example.title": "???"
+    "card.speak.example.title": "???",
+    "onboarding.title": "Start with a simple study plan",
+    "onboarding.level.title": "Choose your CEFR level",
+    "onboarding.level.text": "A1 and A2 are beginner levels, B1 and B2 are intermediate, and C1 is advanced. You can change the level at any time.",
+    "onboarding.srs.title": "How spaced repetition works",
+    "onboarding.srs.text": "Mark a word as known or unknown. Unknown words return sooner; words you know return later in growing review stages.",
+    "onboarding.start": "Start learning",
+    "speech.accent.label": "English pronunciation",
+    "speech.accent.us": "American English (US)",
+    "speech.accent.uk": "British English (UK)",
+    "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
+    "quiz.personalSentence.placeholder": "Write your sentence here...",
+    "quiz.personalSentence.save": "Save sentence"
   }
 }
 ;
@@ -8793,8 +9091,210 @@ function LEVEL_NAMES(code){
 // ---------- Step 4: i18n ----------
 
 const EXTRA_AR = {
-  'modal.sort.aria': 'ترتيب القائمة'
+  'modal.sort.aria': 'ترتيب القائمة',
+  'lang.mode.single': 'لغة واحدة',
+  'lang.mode.multi': 'اختيار عدة لغات',
+  'tutorial.button': 'جولة تعليمية',
+  'tutorial.title': 'جولة تعليمية كاملة',
+  'tutorial.intro': 'تعرف على كل أجزاء الموقع خطوة بخطوة. ستتم إضافة الميزات الجديدة إلى هذه الجولة.',
+  'feedback.button': 'إرسال ملاحظة',
+  'feedback.title': 'أرسل ملاحظتك',
+  'feedback.placeholder': 'اكتب اقتراحك أو المشكلة التي واجهتها...',
+  'feedback.open': 'إرسال الملاحظة',
+  'feedback.note': 'ستُرسل الملاحظة عبر نموذج Tally دون الحاجة إلى حساب أو بريد للمستخدم.',
+  'feedback.setup': 'لم يتم ربط نموذج الاستقبال بعد. أضف رابط Tally في إعدادات الموقع.',
+  'visitor.label': 'الزيارات العالمية',
+  'visitor.loading': 'جارٍ التحميل...',
+  'visitor.unavailable': 'غير متاح حاليًا',
+  'tutorial.card.title': 'بطاقة الكلمة',
+  'tutorial.card.text': 'استمع إلى الكلمة والمثال، اقرأ IPA، راجع الترجمة، ثم اختر أعرفها أو لا أعرفها.',
+  'tutorial.levels.title': 'مستويات CEFR',
+  'tutorial.levels.text': 'استخدم A1 إلى C1 للتركيز على مستوى مناسب لك.',
+  'tutorial.lists.title': 'قوائم التقدم',
+  'tutorial.lists.text': 'افتح أعداد أعرفها ولا أعرفها والمتبقية لمراجعة كلماتك في مجموعات مرتبة.',
+  'tutorial.quiz.title': 'اختبار المراجعة',
+  'tutorial.quiz.text': 'اختبر نفسك باختيار المعنى الصحيح، ثم اكتب جملة خاصة بك لتثبت قدرتك على الاستخدام.',
+  'tutorial.language.title': 'اللغات والنطق',
+  'tutorial.language.text': 'اختر لغة واحدة افتراضيًا، أو فعّل اختيار عدة لغات لعرض الترجمات معًا، وحدد UK أو US للنطق.',
+  'tutorial.sync.title': 'الحفظ والنسخ الاحتياطي',
+  'tutorial.sync.text': 'استخدم المزامنة والتحميل للاحتفاظ بتقدمك ونقله بين أجهزتك.',
+  'tutorial.feedback.title': 'الملاحظات',
+  'tutorial.feedback.text': 'أرسل اقتراحًا أو مشكلة عبر نموذج الملاحظات. ستصل الرسالة إلى صاحب الموقع دون الحاجة إلى حساب GitHub.',
+  'tutorial.next': 'التالي',
+  'tutorial.previous': 'السابق',
+  'tutorial.finish': 'إنهاء الجولة',
+  'tutorial.section.cards': 'بطاقات الكلمات',
+  'tutorial.section.progress': 'التقدم والمراجعة',
+  'tutorial.section.quiz': 'الاختبار',
+  'tutorial.section.language': 'اللغة والنطق',
+  'tutorial.section.tools': 'الأدوات',
+  'tutorial.word.title': 'الكلمة والنسخ',
+  'tutorial.word.text': 'اضغط على الكلمة لنسخها. الرقم في الأعلى يوضح موقعك، والشارة توضح مستوى CEFR. استخدم زر الاستماع لسماع نطق الكلمة.',
+  'tutorial.example.title': 'المثال والترجمة',
+  'tutorial.example.text': 'اقرأ المثال في سياقه، واضغط زر التشغيل لسماعه. الكلمة المستهدفة تكون مميزة داخل الجملة، وتظهر ترجمة المثال أسفلها.',
+  'tutorial.ipa.title': 'النطق IPA',
+  'tutorial.ipa.text': 'رمز IPA يوضح النطق بدقة ويساعدك على مقارنة النطق البريطاني والأمريكي. زر السماعة يستخدم صوت الجهاز المتاح.',
+  'tutorial.forms.title': 'صيغ الكلمة',
+  'tutorial.forms.text': 'تظهر هنا الصيغ المرتبطة مثل الجمع أو الماضي. اضغط على الصيغة لرؤية استخدامها وتمييزها داخل المثال إن توفر.',
+  'tutorial.mark.title': 'أعرفها ولا أعرفها',
+  'tutorial.mark.text': 'اختر أعرفها عندما تستطيع فهم الكلمة واستخدامها، ولا أعرفها عندما تحتاج مراجعة. يمكنك التراجع بالسهم أو زر التراجع.',
+  'tutorial.review.title': 'المراجعة المتباعدة',
+  'tutorial.review.text': 'الكلمات التي تحتاج مراجعة تظهر في موعدها. كلما أجبت بصدق تحسّن ترتيب ظهورها وفق تقدمك.',
+  'tutorial.search.title': 'البحث',
+  'tutorial.search.text': 'ابحث عن كلمة إنجليزية أو ترجمتها أو ملاحظتك، ثم افتحها مباشرة من نتائج البحث.',
+  'tutorial.quizSentence.title': 'الجملة الشخصية',
+  'tutorial.quizSentence.text': 'بعد اختيار المعنى تختفي الخيارات. اكتب جملة من إنشائك، لأن معرفة المعنى وحدها لا تكفي لإتقان الاستخدام.',
+  'tutorial.multi.title': 'لغات متعددة',
+  'tutorial.multi.text': 'الوضع الافتراضي يعرض لغة واحدة. فعّل اختيار عدة لغات لعرض أكثر من ترجمة، واضغط لغة لتجعلها لغة الواجهة الحالية.',
+  'tutorial.speech.title': 'اختيار النطق',
+  'tutorial.speech.text': 'من القائمة نفسها اختر النطق الأمريكي US أو البريطاني UK. سيحاول التطبيق اختيار الصوت المطابق ثم الصوت المحلي عند انقطاع الإنترنت.',
+  'tutorial.download.title': 'التحميل والنسخ الاحتياطي',
+  'tutorial.download.text': 'حمّل قوائمك ونتائجك كملفات نصية، واستخدم المزامنة أو رمز النقل لنقل التقدم إلى جهاز آخر.',
+  'tutorial.tutorial.title': 'تحديث الجولة',
+  'tutorial.tutorial.text': 'هذه الجولة منظمة في أقسام. عند إضافة ميزة جديدة يمكن إضافة خطوة وشرحها داخل TOUR_SECTIONS دون إعادة بناء الجولة من الصفر.',
+  'settings.button': 'الإعدادات',
+  'settings.title': 'تخصيص الموقع',
+  'settings.fontScale': 'حجم النص',
+  'settings.compact': 'بطاقات مضغوطة',
+  'settings.ipa': 'إظهار IPA',
+  'settings.forms': 'إظهار صيغ الكلمات',
+  'settings.example': 'إظهار الأمثلة',
+  'settings.translations': 'إظهار الترجمات',
+  'settings.progress': 'إظهار شريط التقدم',
+  'settings.largeControls': 'تكبير أزرار التحكم',
+  'settings.motion': 'تقليل الحركة',
+  'settings.reset': 'إعادة الإعدادات الافتراضية',
+  'tutorial.section.settings': 'التخصيص',
+  'tutorial.settings.title': 'تخصيص التجربة',
+  'tutorial.settings.text': 'افتح الإعدادات لتغيير حجم النص، كثافة البطاقات، ظهور الأمثلة والترجمات وIPA والصيغ، حجم أزرار التحكم، وتقليل الحركة. كل اختيار يُحفظ على جهازك.',
+  'forms.guide.button': 'شرح الصيغ',
+  'forms.guide.title': 'كيف نستخدم صيغ الكلمة؟',
+  'forms.guide.intro': 'كل صيغة تغيّر وظيفة الكلمة أو زمنها. اختر الصيغة المناسبة حسب موقع الكلمة في الجملة.',
+  'forms.guide.base.use': 'الصيغة الأساسية للكلمة، وتُستخدم عندما لا نحتاج إلى تغييرها.',
+  'forms.guide.base.difference': 'هي الأصل الذي نقارن به بقية الصيغ.',
+  'forms.guide.plural.use': 'تُستخدم مع أكثر من شخص أو شيء، مثل books وcars.',
+  'forms.guide.plural.difference': 'تدل على الجمع، بينما الصيغة الأساسية غالبًا تدل على المفرد.',
+  'forms.guide.third.use': 'تُستخدم مع he أو she أو it في المضارع البسيط، وغالبًا تنتهي بـ s.',
+  'forms.guide.third.difference': 'هي مضارع للغائب المفرد، وليست ماضيًا ولا صيغة مستمرة.',
+  'forms.guide.present.use': 'صيغة المضارع عند الحديث عن الحاضر أو العادات.',
+  'forms.guide.present.difference': 'تصف فعلًا حاضرًا، بينما past يصف فعلًا انتهى.',
+  'forms.guide.past.use': 'تُستخدم لحدث وقع وانتهى في الماضي.',
+  'forms.guide.past.difference': 'تحتاجها مع أزمنة الماضي، ولا تعني بالضرورة أن الفعل مستمر الآن.',
+  'forms.guide.pp.use': 'تُستخدم مع have أو has أو had، وأحيانًا في المبني للمجهول.',
+  'forms.guide.pp.difference': 'لا تأتي عادة وحدها؛ تحتاج فعلًا مساعدًا لتكوين الزمن أو المبني للمجهول.',
+  'forms.guide.pastpp.use': 'صيغة تجمع استعمال الماضي وصيغة اسم المفعول عندما تكون الكلمة غير منتظمة.',
+  'forms.guide.pastpp.difference': 'قد تكون مختلفة عن past، لذلك يجب حفظ استعمالها مع have أو be.',
+  'forms.guide.ing.use': 'تُستخدم مع be لوصف فعل مستمر، وقد تعمل كاسم أو صفة.',
+  'forms.guide.ing.difference': 'تركّز على فعل جارٍ أو مستمر، وليست مجرد مضارع بسيط.',
+  'forms.guide.comp.use': 'تُستخدم لمقارنة شيئين، وغالبًا تأتي مع than.',
+  'forms.guide.comp.difference': 'تقارن بين شيئين فقط، بينما sup تقارن واحدًا بمجموعة.',
+  'forms.guide.sup.use': 'تُستخدم لبيان أعلى أو أقل درجة داخل مجموعة، وغالبًا تأتي مع the.',
+  'forms.guide.sup.difference': 'تحدد المركز الأعلى أو الأدنى في مجموعة، وليست مقارنة بين شيئين فقط.'
 };
+
+const EXTRA_EN = {
+  'modal.sort.aria': 'Sort list',
+  'lang.mode.single': 'One language',
+  'lang.mode.multi': 'Choose multiple languages',
+  'tutorial.button': 'Tutorial',
+  'tutorial.title': 'Complete tutorial',
+  'tutorial.intro': 'Learn every part of the site step by step. New features can be added to this tutorial.',
+  'feedback.button': 'Send feedback',
+  'feedback.title': 'Send your feedback',
+  'feedback.placeholder': 'Share a suggestion or describe a problem...',
+  'feedback.open': 'Send feedback',
+  'feedback.note': 'Your feedback will be sent through Tally. No account or email is required for the user.',
+  'feedback.setup': 'The feedback form is not connected yet. Add the Tally form URL in the site configuration.',
+  'visitor.label': 'Global visits',
+  'visitor.loading': 'Loading...',
+  'visitor.unavailable': 'Currently unavailable',
+  'tutorial.card.title': 'Word card',
+  'tutorial.card.text': 'Listen to the word and example, check IPA, read the translation, then choose Know or Unknown.',
+  'tutorial.levels.title': 'CEFR levels',
+  'tutorial.levels.text': 'Use A1 to C1 to focus on a level that fits your learning goal.',
+  'tutorial.lists.title': 'Progress lists',
+  'tutorial.lists.text': 'Open Known, Unknown, and Remaining to review words in organized groups.',
+  'tutorial.quiz.title': 'Review quiz',
+  'tutorial.quiz.text': 'Choose the correct meaning, then write your own sentence to prove you can use the word.',
+  'tutorial.language.title': 'Languages and pronunciation',
+  'tutorial.language.text': 'One language is selected by default. Enable multiple languages to show translations together, and choose UK or US pronunciation.',
+  'tutorial.sync.title': 'Saving and backup',
+  'tutorial.sync.text': 'Use sync and download to keep a backup and move your progress between devices.',
+  'tutorial.feedback.title': 'Feedback',
+  'tutorial.feedback.text': 'Share a suggestion or problem through the feedback form. No GitHub account is required.',
+  'tutorial.next': 'Next',
+  'tutorial.previous': 'Previous',
+  'tutorial.finish': 'Finish tutorial',
+  'tutorial.section.cards': 'Word cards',
+  'tutorial.section.progress': 'Progress and review',
+  'tutorial.section.quiz': 'Quiz',
+  'tutorial.section.language': 'Language and speech',
+  'tutorial.section.tools': 'Tools',
+  'tutorial.word.title': 'Word and copy',
+  'tutorial.word.text': 'Click the word to copy it. The counter shows your position and the badge shows its CEFR level. Use the speaker button to hear it.',
+  'tutorial.example.title': 'Example and translation',
+  'tutorial.example.text': 'Read the example in context and use the play button to hear it. The target word is highlighted and the translation appears below.',
+  'tutorial.ipa.title': 'IPA pronunciation',
+  'tutorial.ipa.text': 'IPA gives a precise pronunciation reference and helps compare British and American pronunciation. The speaker uses an available device voice.',
+  'tutorial.forms.title': 'Word forms',
+  'tutorial.forms.text': 'Related forms such as plurals or past forms appear here. Select a form to review its use when data is available.',
+  'tutorial.mark.title': 'Know and unknown',
+  'tutorial.mark.text': 'Choose Know when you understand and can use the word, or Unknown when it needs review. Undo with the arrow or undo button.',
+  'tutorial.review.title': 'Spaced review',
+  'tutorial.review.text': 'Words become due for review over time. Honest answers improve when each word returns according to your progress.',
+  'tutorial.search.title': 'Search',
+  'tutorial.search.text': 'Search by English word, translation, or your note, then open a word directly from the results.',
+  'tutorial.quizSentence.title': 'Personal sentence',
+  'tutorial.quizSentence.text': 'After choosing a meaning, the options disappear. Write your own sentence because knowing a meaning is not the same as using a word.',
+  'tutorial.multi.title': 'Multiple languages',
+  'tutorial.multi.text': 'The default shows one language. Enable multiple languages to see several translations, then click a language to make it the current interface language.',
+  'tutorial.speech.title': 'Pronunciation choice',
+  'tutorial.speech.text': 'Choose US or UK pronunciation from the same menu. The app prefers a matching voice, then a local voice when offline.',
+  'tutorial.download.title': 'Download and backup',
+  'tutorial.download.text': 'Download your lists and quiz results as text files, or use sync and transfer codes to move progress to another device.',
+  'tutorial.tutorial.title': 'Extending this tutorial',
+  'tutorial.tutorial.text': 'This tutorial is organized into sections. Add a step and explanation to TOUR_SECTIONS when a new feature is introduced.',
+  'settings.button': 'Settings',
+  'settings.title': 'Customize the site',
+  'settings.fontScale': 'Text size',
+  'settings.compact': 'Compact cards',
+  'settings.ipa': 'Show IPA',
+  'settings.forms': 'Show word forms',
+  'settings.example': 'Show examples',
+  'settings.translations': 'Show translations',
+  'settings.progress': 'Show progress bar',
+  'settings.largeControls': 'Larger controls',
+  'settings.motion': 'Reduce motion',
+  'settings.reset': 'Reset preferences',
+  'tutorial.section.settings': 'Customization',
+  'tutorial.settings.title': 'Customize your experience',
+  'tutorial.settings.text': 'Open Settings to change text size, card density, examples, translations, IPA, word forms, control size, and motion. Choices are saved on this device.',
+  'forms.guide.button': 'Explain forms',
+  'forms.guide.title': 'How do word forms work?',
+  'forms.guide.intro': 'Each form changes the word’s function or tense. Choose the form that fits its position in the sentence.',
+  'forms.guide.base.use': 'The base form is the normal dictionary form, used when no change is needed.',
+  'forms.guide.base.difference': 'It is the form used to compare the other forms.',
+  'forms.guide.plural.use': 'Use it for more than one person or thing, such as books or cars.',
+  'forms.guide.plural.difference': 'It marks more than one, while the base form often refers to one.',
+  'forms.guide.third.use': 'Use it with he, she, or it in the present simple; it often ends in s.',
+  'forms.guide.third.difference': 'It is third-person singular present, not past or continuous.',
+  'forms.guide.present.use': 'Use it for the present, habits, or general facts.',
+  'forms.guide.present.difference': 'It describes the present, while past describes a finished event.',
+  'forms.guide.past.use': 'Use it for an event that happened and finished in the past.',
+  'forms.guide.past.difference': 'It belongs to past-time sentences and does not by itself mean an action is continuing.',
+  'forms.guide.pp.use': 'Use it with have, has, or had, and sometimes in the passive voice.',
+  'forms.guide.pp.difference': 'It normally needs an auxiliary verb to form a tense or passive construction.',
+  'forms.guide.pastpp.use': 'This combines past and participle uses when an irregular word has a shared form.',
+  'forms.guide.pastpp.difference': 'It can differ from past, so learn its use with have or be.',
+  'forms.guide.ing.use': 'Use it with be for an ongoing action; it can also work as a noun or adjective.',
+  'forms.guide.ing.difference': 'It focuses on an action in progress, not simply a present habit.',
+  'forms.guide.comp.use': 'Use it to compare two things, often with than.',
+  'forms.guide.comp.difference': 'It compares two things, while sup compares one with a group.',
+  'forms.guide.sup.use': 'Use it for the highest or lowest degree in a group, often with the.',
+  'forms.guide.sup.difference': 'It identifies the top or bottom of a group rather than comparing only two things.'
+};
+
+const TALLY_FORM_URL = '';
 
 const DEFAULT_LANG = 'ar';
 
@@ -8846,8 +9346,10 @@ function tFor(code, key, params){
   const k = String(key);
   let text = lookupKey(code, k);
   if(text === null) text = lookupKey('en', k);
+  if(text === null && code !== 'ar' && Object.prototype.hasOwnProperty.call(EXTRA_EN, k)) text = EXTRA_EN[k];
   if(text === null) text = lookupKey('ar', k);
   if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_AR, k)) text = EXTRA_AR[k];
+  if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_EN, k)) text = EXTRA_EN[k];
   if(text === null) text = k;
   return fillParams(text, params);
 }
@@ -8890,12 +9392,26 @@ function updateLangSelect(){
   const current = langList().find(l => l && l.code === currentLang);
   if(label) label.textContent = current ? (current.name || current.code) : currentLang;
   document.querySelectorAll('#langMenu [data-lang]').forEach(item => {
-    const active = item.getAttribute('data-lang') === currentLang;
+    const active = (state.ui.displayLangs || [currentLang]).indexOf(item.getAttribute('data-lang')) !== -1;
     item.classList.toggle('active', active);
     item.setAttribute('aria-selected', active ? 'true' : 'false');
+    const check = item.querySelector('.lang-option-check');
+    if(check) check.textContent = active ? '✓' : '';
   });
   const code = document.getElementById('langCode');
   if(code) code.textContent = String(currentLang || '').toUpperCase();
+  const multiLabel = document.getElementById('multiLangLabel');
+  if(multiLabel) multiLabel.textContent = t('lang.mode.multi');
+  const accentLabel = document.getElementById('speechAccentLabel');
+  if(accentLabel) accentLabel.textContent = t('speech.accent.label');
+  const accent = document.getElementById('speechAccent');
+  if(accent){
+    accent.setAttribute('aria-label', t('speech.accent.label'));
+    const us = accent.querySelector('option[value="us"]');
+    const uk = accent.querySelector('option[value="uk"]');
+    if(us) us.textContent = t('speech.accent.us');
+    if(uk) uk.textContent = t('speech.accent.uk');
+  }
 }
 
 function buildLangSelect(){
@@ -8919,9 +9435,17 @@ function buildLangSelect(){
     `<button type="button" class="lang-option" role="option" data-lang="${esc(l.code)}"
       aria-selected="${l.code === currentLang ? 'true' : 'false'}">
       <span class="lang-option-code">${esc(String(l.code).toUpperCase())}</span>
-      <span>${esc(l.name || l.code)}</span>
+      <span>${esc(l.name || l.code)}</span><span class="lang-option-check" aria-hidden="true"></span>
     </button>`
-  )).join('');
+  )).join('') + `<div class="language-mode">
+    <label><input type="checkbox" id="multiLangToggle"> <span id="multiLangLabel"></span></label>
+  </div><div class="speech-choice">
+    <label id="speechAccentLabel" for="speechAccent">${esc(t('speech.accent.label'))}</label>
+    <select id="speechAccent" aria-label="${esc(t('speech.accent.label'))}">
+      <option value="us">${esc(t('speech.accent.us'))}</option>
+      <option value="uk">${esc(t('speech.accent.uk'))}</option>
+    </select>
+  </div>`;
   const close = () => {
     menu.hidden = true;
     trigger.setAttribute('aria-expanded', 'false');
@@ -8930,12 +9454,32 @@ function buildLangSelect(){
     menu.hidden = !menu.hidden;
     trigger.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
   });
+  const multiToggle = document.getElementById('multiLangToggle');
+  if(multiToggle){
+    multiToggle.checked = state.ui.multiLang === true;
+    multiToggle.addEventListener('change', () => {
+      state.ui.multiLang = multiToggle.checked;
+      if(!multiToggle.checked) state.ui.displayLangs = [currentLang];
+      scheduleSave();
+      updateLangSelect();
+      render();
+    });
+  }
+  const multiLabel = document.getElementById('multiLangLabel');
+  if(multiLabel) multiLabel.textContent = t(state.ui.multiLang ? 'lang.mode.multi' : 'lang.mode.multi');
   menu.querySelectorAll('[data-lang]').forEach(item => {
     item.addEventListener('click', () => {
-      applyLang(item.getAttribute('data-lang'));
-      close();
+      toggleDisplayLang(item.getAttribute('data-lang'));
     });
   });
+  const accent = document.getElementById('speechAccent');
+  if(accent){
+    accent.value = state.ui.speechAccent || 'us';
+    accent.addEventListener('change', () => {
+      state.ui.speechAccent = accent.value === 'uk' ? 'uk' : 'us';
+      scheduleSave();
+    });
+  }
   document.addEventListener('click', e => {
     if(!e.target.closest('.lang-switch')) close();
   });
@@ -8949,6 +9493,13 @@ function applyLang(code){
   const next = langExists(code) ? code : DEFAULT_LANG;
   currentLang = next;
   if(state && state.ui) state.ui.lang = next;
+  if(state && state.ui){
+    if(state.ui.multiLang === true && state.ui.displayLangs.indexOf(next) === -1){
+      state.ui.displayLangs.unshift(next);
+    }else if(state.ui.multiLang !== true){
+      state.ui.displayLangs = [next];
+    }
+  }
   scheduleSave();
   document.documentElement.lang = next;
   document.documentElement.dir = langDir(next);
@@ -8964,6 +9515,40 @@ function applyLang(code){
   refreshQuizForLang();
   updateBackupBanner();
   updateDueLine();
+}
+
+function toggleDisplayLang(code){
+  if(!langExists(code)) return;
+  if(state.ui.multiLang !== true){
+    currentLang = code;
+    state.ui.lang = code;
+    state.ui.displayLangs = [code];
+    scheduleSave();
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = langDir(currentLang);
+    applyStaticI18n();
+    document.title = t('brand.title') + ' - Oxford 5000';
+    buildLevelBar();
+    render();
+    updateLangSelect();
+    return;
+  }
+  const selected = Array.isArray(state.ui.displayLangs) ? state.ui.displayLangs.slice() : [currentLang];
+  const i = selected.indexOf(code);
+  currentLang = code;
+  if(i < 0){
+    selected.push(code);
+  }
+  state.ui.displayLangs = selected;
+  state.ui.lang = currentLang;
+  scheduleSave();
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = langDir(currentLang);
+  applyStaticI18n();
+  document.title = t('brand.title') + ' - Oxford 5000';
+  buildLevelBar();
+  render();
+  updateLangSelect();
 }
 
 const STORAGE_KEY = 'oxford5000_progress_v3';
@@ -9022,6 +9607,21 @@ function defaultUi(){
     changesSinceBackup: 0,
     snoozeUntil: null,
     lang: DEFAULT_LANG,
+    displayLangs: [DEFAULT_LANG],
+    multiLang: false,
+    onboardingSeen: false,
+    speechAccent: 'us',
+    preferences: {
+      fontScale: 100,
+      compactCards: false,
+      showIpa: true,
+      showForms: true,
+      showExample: true,
+      showTranslations: true,
+      showProgress: true,
+      largeControls: false,
+      reducedMotion: false
+    },
     quizSettings: defaultQuizSettings(),
     quizStreak: { last: null, n: 0 },
     lastQuiz: { date: null, correct: 0, total: 0 }
@@ -9043,6 +9643,27 @@ function cloneUi(ui){
     out.changesSinceBackup = Number.isFinite(ui.changesSinceBackup) ? ui.changesSinceBackup : 0;
     out.snoozeUntil = Number.isFinite(ui.snoozeUntil) ? ui.snoozeUntil : null;
     if(typeof ui.lang === 'string' && langExists(ui.lang)) out.lang = ui.lang;
+    if(Array.isArray(ui.displayLangs)){
+      const selected = ui.displayLangs.filter(code => langExists(code));
+      if(selected.length) out.displayLangs = Array.from(new Set(selected));
+    }
+    if(out.displayLangs.indexOf(out.lang) === -1) out.displayLangs.unshift(out.lang);
+    out.multiLang = ui.multiLang === true;
+    if(!out.multiLang) out.displayLangs = [out.lang];
+    out.onboardingSeen = ui.onboardingSeen === true;
+    if(ui.speechAccent === 'uk' || ui.speechAccent === 'us') out.speechAccent = ui.speechAccent;
+    if(ui.preferences && typeof ui.preferences === 'object'){
+      const p = ui.preferences;
+      if(Number.isFinite(p.fontScale)) out.preferences.fontScale = Math.max(90, Math.min(120, Math.round(p.fontScale)));
+      out.preferences.compactCards = p.compactCards === true;
+      out.preferences.showIpa = p.showIpa !== false;
+      out.preferences.showForms = p.showForms !== false;
+      out.preferences.showExample = p.showExample !== false;
+      out.preferences.showTranslations = p.showTranslations !== false;
+      out.preferences.showProgress = p.showProgress !== false;
+      out.preferences.largeControls = p.largeControls === true;
+      out.preferences.reducedMotion = p.reducedMotion === true;
+    }
 
     const qs = (ui.quizSettings && typeof ui.quizSettings === 'object') ? ui.quizSettings : {};
     if(qs.source === 'due' || qs.source === 'all') out.quizSettings.source = qs.source;
@@ -10057,32 +10678,39 @@ function trPack(){
   return (p && typeof p === 'object') ? p : null;
 }
 
+function selectedDisplayLangs(){
+  const selected = (state.ui && Array.isArray(state.ui.displayLangs))
+    ? state.ui.displayLangs.filter(langExists) : [];
+  return selected.length ? selected : [currentLang];
+}
+
+function translationEntries(word, sentence){
+  return selectedDisplayLangs().map(code => {
+    const pack = TR && TR[code];
+    if(!pack || code === 'en') return null;
+    const source = sentence ? pack.s : pack.w;
+    let value = '';
+    if(Array.isArray(source)){
+      const index = sentence ? sentIndexOf(sentence) : WORD_INDEX.get(word);
+      if(typeof index === 'number' && index >= 0) value = source[index] || '';
+    }else if(source){
+      value = sentence ? source[sentence] : source[word];
+    }
+    return typeof value === 'string' && value.trim()
+      ? { code: code, value: value.trim() } : null;
+  }).filter(Boolean);
+}
+
 function wordTranslation(word){
-  if(!word || currentLang === 'en') return '';
-  const pack = trPack();
-  if(!pack) return '';
-  let v = '';
-  if(Array.isArray(pack.w)){
-    const i = WORD_INDEX.get(word);
-    if(typeof i === 'number') v = pack.w[i];
-  } else if(pack.w){
-    v = pack.w[word];
-  }
-  return (typeof v === 'string') ? v : '';
+  const first = translationEntries(word, '').find(entry => entry.code === currentLang)
+    || translationEntries(word, '')[0];
+  return first ? first.value : '';
 }
 
 function sentenceTranslation(sentence){
-  if(!sentence || currentLang === 'en') return '';
-  const pack = trPack();
-  if(!pack) return '';
-  let v = '';
-  if(Array.isArray(pack.s)){
-    const i = sentIndexOf(sentence);
-    if(i >= 0) v = pack.s[i];
-  } else if(pack.s){
-    v = pack.s[sentence];
-  }
-  return (typeof v === 'string') ? v : '';
+  const first = translationEntries('', sentence).find(entry => entry.code === currentLang)
+    || translationEntries('', sentence)[0];
+  return first ? first.value : '';
 }
 
 // What the quiz treats as the correct meaning: the user's own note first,
@@ -10100,7 +10728,12 @@ function formData(word){
 
 function formsFor(word){
   const d = formData(word);
-  return d ? d.forms : [{ f: word, k: 'base', lbl: 'base' }];
+  if(!d) return [{ f: word, k: 'base', lbl: 'base' }];
+  const forms = d.forms.filter((form, index) => {
+    if(index === 0 || form.lbl === 'base') return true;
+    return Number.isInteger(form.ex) && form.ex >= 0 && form.ex < SENT_LIST.length;
+  });
+  return forms.length ? forms : [{ f: word, k: 'base', lbl: 'base' }];
 }
 
 function ipaFor(word){
@@ -10169,13 +10802,15 @@ function updateCardMeta(word){
   const ipa = ipaFor(word);
   if(ipaEl){
     ipaEl.textContent = ipa;
-    ipaEl.hidden = !ipa;
+    ipaEl.hidden = !ipa || !state.ui.preferences.showIpa;
   }
   const trEl = document.getElementById('cardTranslation');
-  const tr = wordTranslation(word);
   if(trEl){
-    trEl.textContent = tr;
-    trEl.hidden = !tr;
+    const entries = translationEntries(word, '');
+    trEl.innerHTML = entries.map(entry =>
+      `<span class="translation-line" lang="${esc(entry.code)}"><b>${esc(entry.code.toUpperCase())}</b> ${esc(entry.value)}</span>`
+    ).join('');
+    trEl.hidden = entries.length === 0 || !state.ui.preferences.showTranslations;
   }
   const speakEl = document.getElementById('speakMain');
   if(speakEl) speakEl.hidden = !word || typeof window.speechSynthesis !== 'object';
@@ -10190,13 +10825,21 @@ function speakEnglishText(text){
   if(!value || typeof window.speechSynthesis !== 'object' || typeof window.SpeechSynthesisUtterance !== 'function') return;
   try{
     window.speechSynthesis.cancel();
+    const accent = state.ui && state.ui.speechAccent === 'uk' ? 'uk' : 'us';
+    const targetLang = accent === 'uk' ? 'en-GB' : 'en-US';
     const utterance = new SpeechSynthesisUtterance(value);
-    utterance.lang = 'en-US';
+    utterance.lang = targetLang;
     const voices = typeof window.speechSynthesis.getVoices === 'function'
       ? window.speechSynthesis.getVoices() : [];
-    const preferred = voices.find(v => v && /^en(-|_)/i.test(v.lang)
-      && /google|natural|premium|enhanced/i.test(v.name || ''))
-      || voices.find(v => v && /^en(-|_)/i.test(v.lang));
+    const matching = voices.filter(v => v && new RegExp('^' + targetLang.replace('-', '[-_]'), 'i').test(v.lang));
+    const english = voices.filter(v => v && /^en(-|_)/i.test(v.lang));
+    const preferred = matching.find(v => v.localService === true)
+      || (navigator.onLine === false ? english.find(v => v.localService === true) : null)
+      || matching.find(v => /google|natural|premium|enhanced/i.test(v.name || ''))
+      || matching[0]
+      || english.find(v => v.localService === true)
+      || english.find(v => /google|natural|premium|enhanced/i.test(v.name || ''))
+      || english[0];
     if(preferred) utterance.voice = preferred;
     utterance.rate = 0.82;
     utterance.pitch = 1;
@@ -10216,16 +10859,45 @@ function formLabel(f){
   return t(key);
 }
 
+function openFormsGuide(){
+  const overlay = document.getElementById('formsGuideOverlay');
+  const content = document.getElementById('formsGuideContent');
+  const word = cardFormWord || displayedWord;
+  const forms = formsFor(word);
+  if(!overlay || !content || !Array.isArray(forms) || !forms.length) return;
+  content.innerHTML = `<p class="forms-guide-intro">${esc(t('forms.guide.intro'))}</p>
+    <div class="forms-guide-list">${forms.map((form) => {
+      const label = form.lbl || 'base';
+      return `<article class="forms-guide-item">
+        <div class="forms-guide-word"><span class="fc-word">${formChipHtml(form)}</span><span>${esc(formLabel(form))}</span></div>
+        <p><b>${esc(t('forms.guide.' + label + '.use'))}</b></p>
+        <p class="forms-guide-difference">${esc(t('forms.guide.' + label + '.difference'))}</p>
+      </article>`;
+    }).join('')}</div>`;
+  overlay.classList.add('show');
+}
+
+function closeFormsGuide(){
+  const overlay = document.getElementById('formsGuideOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
 function buildFormsBar(word, forms){
   const bar = document.getElementById('formsBar');
   if(!bar) return;
+  if(!state.ui.preferences.showForms){
+    bar.hidden = true;
+    bar.innerHTML = '';
+    return;
+  }
   if(!Array.isArray(forms) || forms.length < 2){
     bar.hidden = true;
     bar.innerHTML = '';
     return;
   }
   bar.hidden = false;
-  bar.innerHTML = `<span class="forms-label">${esc(t('card.forms'))}</span>
+  bar.innerHTML = `<div class="forms-heading"><span class="forms-label">${esc(t('card.forms'))}</span>
+    <button type="button" class="forms-guide-button" id="openFormsGuide">${esc(t('forms.guide.button'))}</button></div>
     <div class="forms-scroll">${forms.map((f, i) => {
       const hasEx = (typeof f.ex === 'number');
       const cls = ['form-chip', f.k || 'base', i === cardFormIndex ? 'active' : '', hasEx ? '' : 'empty'].join(' ');
@@ -10234,6 +10906,8 @@ function buildFormsBar(word, forms){
       </button>`;
     }).join('')}</div>`;
 
+  const guideButton = document.getElementById('openFormsGuide');
+  if(guideButton) guideButton.addEventListener('click', openFormsGuide);
   bar.querySelectorAll('[data-form]').forEach(btn => {
     btn.addEventListener('click', () => {
       const i = Number(btn.getAttribute('data-form'));
@@ -10272,7 +10946,7 @@ function renderCardExample(word){
 
   buildFormsBar(word, forms);
 
-  if(!sentence){
+  if(!sentence || !state.ui.preferences.showExample){
     box.hidden = true;
     textEl.innerHTML = '';
     if(trEl){ trEl.textContent = ''; trEl.hidden = true; }
@@ -10280,12 +10954,15 @@ function renderCardExample(word){
   }
 
   box.hidden = false;
+  textEl.lang = 'en';
   textEl.innerHTML = highlightSentence(sentence, word, forms);
 
-  const tr = sentenceTranslation(sentence);
   if(trEl){
-    trEl.textContent = tr;
-    trEl.hidden = !tr;
+    const entries = translationEntries('', sentence);
+    trEl.innerHTML = entries.map(entry =>
+      `<span class="translation-line" lang="${esc(entry.code)}"><b>${esc(entry.code.toUpperCase())}</b> ${esc(entry.value)}</span>`
+    ).join('');
+    trEl.hidden = entries.length === 0 || !state.ui.preferences.showTranslations;
   }
 }
 
@@ -11998,6 +12675,7 @@ function startQuiz(onlyWords){
     ended: false,
     first: {},
     final: {},
+    personalSentences: {},
     mistakes: new Set()
   };
 
@@ -12136,12 +12814,31 @@ function renderQuizFeedback(passed, info){
     <b>${esc(passed ? t('quiz.correct') : t('quiz.wrong'))}</b>
     <p><span class="quiz-correct">${esc(correctText)}</span></p>
     ${extraLines.join('')}
+    <label class="quiz-sentence-prompt" for="quizSentenceInput">${esc(t('quiz.personalSentence.prompt', { word: item.word }))}</label>
+    <textarea id="quizSentenceInput" class="quiz-personal-sentence" rows="2" dir="ltr" lang="en" placeholder="${esc(t('quiz.personalSentence.placeholder'))}"></textarea>
     <div class="quiz-actions">
-      <button type="button" class="tool-btn primary" id="quizNext">${esc(t('quiz.next'))}</button>
+      <button type="button" class="tool-btn primary" id="quizSaveSentence" disabled>${esc(t('quiz.personalSentence.save'))}</button>
+      <button type="button" class="tool-btn primary" id="quizNext" disabled>${esc(t('quiz.next'))}</button>
     </div>
   </div>`;
 
+  const sentenceInput = document.getElementById('quizSentenceInput');
+  const saveSentence = document.getElementById('quizSaveSentence');
   const next = document.getElementById('quizNext');
+  if(sentenceInput && saveSentence && next){
+    sentenceInput.addEventListener('input', () => {
+      saveSentence.disabled = sentenceInput.value.trim().length < 3;
+    });
+    saveSentence.addEventListener('click', () => {
+      const sentence = sentenceInput.value.trim();
+      if(sentence.length < 3) return;
+      quizSession.personalSentences[item.word] = sentence;
+      sentenceInput.disabled = true;
+      saveSentence.disabled = true;
+      next.disabled = false;
+      next.focus();
+    });
+  }
   if(next){
     next.addEventListener('click', nextQuizQuestion);
     try{ next.focus(); }catch(e){ /* focus is optional */ }
@@ -12270,7 +12967,9 @@ function downloadQuizResults(){
   if(!quizSession) return;
   const lines = quizSession.initialWords.map(w => {
     const ok = !!quizSession.final[w];
-    return `${ok ? '✓' : '✕'} - ${w} - ${(noteText(w).trim() || wordTranslation(w).trim())}`;
+    const own = quizSession.personalSentences && quizSession.personalSentences[w]
+      ? ` - ${quizSession.personalSentences[w]}` : '';
+    return `${ok ? '✓' : '✕'} - ${w} - ${(noteText(w).trim() || wordTranslation(w).trim())}${own}`;
   });
   saveTextFile(lines.join('\n'), safeFileNamePart(t('file.quiz')) + ' ' + localDateStr() + '.txt');
 }
@@ -12287,6 +12986,303 @@ function refreshQuizForLang(){
   item.answered = false;
   item.state = {};
   renderQuizQuestion();
+}
+
+function openOnboarding(){
+  const overlay = document.getElementById('onboardingOverlay');
+  if(overlay) overlay.classList.add('show');
+}
+
+function closeOnboarding(){
+  const overlay = document.getElementById('onboardingOverlay');
+  if(overlay) overlay.classList.remove('show');
+  state.ui.onboardingSeen = true;
+  scheduleSave();
+}
+
+const TOUR_SECTIONS = [
+  {
+    id: 'cards',
+    title: 'tutorial.section.cards',
+    steps: [
+      ['tutorial.card.title', 'tutorial.card.text', '#card'],
+      ['tutorial.word.title', 'tutorial.word.text', '#theWord'],
+      ['tutorial.example.title', 'tutorial.example.text', '#cardSentence'],
+      ['tutorial.ipa.title', 'tutorial.ipa.text', '#cardIpa'],
+      ['tutorial.forms.title', 'tutorial.forms.text', '#formsBar'],
+      ['tutorial.mark.title', 'tutorial.mark.text', '#btnKnow']
+    ]
+  },
+  {
+    id: 'progress',
+    title: 'tutorial.section.progress',
+    steps: [
+      ['tutorial.levels.title', 'tutorial.levels.text', '#levelBar'],
+      ['tutorial.lists.title', 'tutorial.lists.text', '#openUnknown'],
+      ['tutorial.review.title', 'tutorial.review.text', '#dueLine'],
+      ['tutorial.search.title', 'tutorial.search.text', '#btnSearch']
+    ]
+  },
+  {
+    id: 'quiz',
+    title: 'tutorial.section.quiz',
+    steps: [
+      ['tutorial.quiz.title', 'tutorial.quiz.text', '#btnQuiz'],
+      ['tutorial.quizSentence.title', 'tutorial.quizSentence.text', '#btnQuiz']
+    ]
+  },
+  {
+    id: 'language',
+    title: 'tutorial.section.language',
+    steps: [
+      ['tutorial.language.title', 'tutorial.language.text', '#langSelectButton'],
+      ['tutorial.multi.title', 'tutorial.multi.text', '#langSelectButton'],
+      ['tutorial.speech.title', 'tutorial.speech.text', '#langSelectButton']
+    ]
+  },
+  {
+    id: 'tools',
+    title: 'tutorial.section.tools',
+    steps: [
+      ['tutorial.sync.title', 'tutorial.sync.text', '#btnSync'],
+      ['tutorial.download.title', 'tutorial.download.text', '#btnDownload'],
+      ['tutorial.feedback.title', 'tutorial.feedback.text', '#openFeedback'],
+      ['tutorial.tutorial.title', 'tutorial.tutorial.text', '#openTutorial']
+    ]
+  },
+];
+
+let tutorialSectionIndex = 0;
+let tutorialIndex = 0;
+
+function tutorialSteps(){
+  return TOUR_SECTIONS[tutorialSectionIndex].steps;
+}
+
+function positionTutorialPanel(){
+  const overlay = document.getElementById('tutorialOverlay');
+  const panel = overlay && overlay.querySelector('.tutorial-panel');
+  const target = tutorialSteps()[tutorialIndex] && document.querySelector(tutorialSteps()[tutorialIndex][2]);
+  if(!panel || !target) return;
+  const rect = target.getBoundingClientRect();
+  const margin = 14;
+  const viewportHeight = window.innerHeight;
+  const panelWidth = Math.min(390, window.innerWidth - margin * 2);
+  const maxPanelHeight = Math.max(160, viewportHeight - margin * 2);
+  panel.style.maxHeight = maxPanelHeight + 'px';
+  const panelHeight = Math.min(panel.scrollHeight || panel.offsetHeight || 300, maxPanelHeight);
+  let left = Math.max(margin, Math.min(window.innerWidth - panelWidth - margin, rect.left + rect.width / 2 - panelWidth / 2));
+  let top = rect.bottom + margin;
+  if(top + panelHeight > viewportHeight - margin) top = rect.top - panelHeight - margin;
+  top = Math.max(margin, Math.min(viewportHeight - panelHeight - margin, top));
+  panel.style.width = panelWidth + 'px';
+  panel.style.left = left + 'px';
+  panel.style.top = top + 'px';
+  const positioned = panel.getBoundingClientRect();
+  if(positioned.bottom > viewportHeight - margin){
+    panel.style.top = Math.max(margin, top - (positioned.bottom - viewportHeight + margin)) + 'px';
+  }else if(positioned.top < margin){
+    panel.style.top = margin + 'px';
+  }
+}
+
+function renderTutorialStep(){
+  const sectionList = document.getElementById('tutorialCategories');
+  const steps = document.getElementById('tutorialSteps');
+  const progress = document.getElementById('tutorialProgress');
+  const previous = document.getElementById('tutorialPrevious');
+  const next = document.getElementById('tutorialNext');
+  const section = TOUR_SECTIONS[tutorialSectionIndex];
+  const step = tutorialSteps()[tutorialIndex];
+  if(!steps || !step) return;
+  if(sectionList){
+    sectionList.innerHTML = TOUR_SECTIONS.map((item, index) =>
+      `<button type="button" class="tutorial-category${index === tutorialSectionIndex ? ' active' : ''}" data-tour-section="${index}">${esc(t(item.title))}<span>${item.steps.length}</span></button>`
+    ).join('');
+    sectionList.querySelectorAll('[data-tour-section]').forEach(button => {
+      button.addEventListener('click', () => {
+        tutorialSectionIndex = Number(button.getAttribute('data-tour-section')) || 0;
+        tutorialIndex = 0;
+        renderTutorialStep();
+      });
+    });
+  }
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  const target = document.querySelector(step[2]);
+  if(target) target.classList.add('tour-highlight');
+  steps.innerHTML = `<span class="tutorial-number">${tutorialIndex + 1}</span><div><h4>${esc(t(step[0]))}</h4><p>${esc(t(step[1]))}</p></div>`;
+  if(progress) progress.textContent = t(section.title) + ' · ' + (tutorialIndex + 1) + ' / ' + section.steps.length;
+  if(previous) previous.disabled = tutorialIndex === 0;
+  if(next){
+    next.textContent = tutorialIndex === section.steps.length - 1 ? t('tutorial.finish') : t('tutorial.next');
+  }
+  requestAnimationFrame(positionTutorialPanel);
+}
+
+function openTutorial(){
+  const overlay = document.getElementById('tutorialOverlay');
+  if(!overlay) return;
+  tutorialSectionIndex = 0;
+  tutorialIndex = 0;
+  renderTutorialStep();
+  overlay.classList.add('show');
+}
+
+function closeTutorial(){
+  const overlay = document.getElementById('tutorialOverlay');
+  if(overlay) overlay.classList.remove('show');
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+}
+
+window.addEventListener('resize', () => {
+  const overlay = document.getElementById('tutorialOverlay');
+  if(overlay && overlay.classList.contains('show')) requestAnimationFrame(positionTutorialPanel);
+});
+
+function moveTutorial(direction){
+  const steps = tutorialSteps();
+  if(direction > 0 && tutorialIndex === steps.length - 1){
+    if(tutorialSectionIndex < TOUR_SECTIONS.length - 1){
+      tutorialSectionIndex++;
+      tutorialIndex = 0;
+    }else{
+      closeTutorial();
+      return;
+    }
+  }else if(direction < 0 && tutorialIndex === 0){
+    if(tutorialSectionIndex > 0){
+      tutorialSectionIndex--;
+      tutorialIndex = tutorialSteps().length - 1;
+    }
+  }else{
+    tutorialIndex = Math.max(0, Math.min(steps.length - 1, tutorialIndex + direction));
+  }
+  renderTutorialStep();
+}
+
+function openFeedback(){
+  const overlay = document.getElementById('feedbackOverlay');
+  if(overlay) overlay.classList.add('show');
+}
+
+function closeFeedback(){
+  const overlay = document.getElementById('feedbackOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function applyPreferences(){
+  const p = state.ui.preferences || defaultUi().preferences;
+  document.documentElement.style.setProperty('--font-scale', String((p.fontScale || 100) / 100));
+  document.documentElement.classList.toggle('compact-cards', p.compactCards === true);
+  document.documentElement.classList.toggle('large-controls', p.largeControls === true);
+  document.documentElement.classList.toggle('reduce-motion', p.reducedMotion === true);
+  const progress = document.querySelector('.progress-track');
+  if(progress) progress.hidden = p.showProgress === false;
+}
+
+function openSettings(){
+  const overlay = document.getElementById('settingsOverlay');
+  if(!overlay) return;
+  const p = state.ui.preferences;
+  const scale = document.getElementById('settingsFontScale');
+  const scaleValue = document.getElementById('settingsFontScaleValue');
+  const compact = document.getElementById('settingsCompact');
+  const ipa = document.getElementById('settingsIpa');
+  const forms = document.getElementById('settingsForms');
+  const example = document.getElementById('settingsExample');
+  const translations = document.getElementById('settingsTranslations');
+  const progress = document.getElementById('settingsProgress');
+  const largeControls = document.getElementById('settingsLargeControls');
+  const motion = document.getElementById('settingsMotion');
+  if(scale) scale.value = String(p.fontScale);
+  if(scaleValue) scaleValue.textContent = p.fontScale + '%';
+  if(compact) compact.checked = p.compactCards;
+  if(ipa) ipa.checked = p.showIpa;
+  if(forms) forms.checked = p.showForms;
+  if(example) example.checked = p.showExample;
+  if(translations) translations.checked = p.showTranslations;
+  if(progress) progress.checked = p.showProgress;
+  if(largeControls) largeControls.checked = p.largeControls;
+  if(motion) motion.checked = p.reducedMotion;
+  overlay.classList.add('show');
+}
+
+function closeSettings(){
+  const overlay = document.getElementById('settingsOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function savePreferences(){
+  state.ui.preferences = state.ui.preferences || defaultUi().preferences;
+  scheduleSave();
+  applyPreferences();
+  render();
+}
+
+function resetPreferences(){
+  state.ui.preferences = defaultUi().preferences;
+  openSettings();
+  savePreferences();
+}
+
+function wireSettings(){
+  const scale = document.getElementById('settingsFontScale');
+  const compact = document.getElementById('settingsCompact');
+  const ipa = document.getElementById('settingsIpa');
+  const forms = document.getElementById('settingsForms');
+  const example = document.getElementById('settingsExample');
+  const translations = document.getElementById('settingsTranslations');
+  const progress = document.getElementById('settingsProgress');
+  const largeControls = document.getElementById('settingsLargeControls');
+  const motion = document.getElementById('settingsMotion');
+  if(scale) scale.addEventListener('input', () => {
+    state.ui.preferences.fontScale = Math.max(90, Math.min(120, Number(scale.value) || 100));
+    const value = document.getElementById('settingsFontScaleValue');
+    if(value) value.textContent = state.ui.preferences.fontScale + '%';
+    savePreferences();
+  });
+  if(compact) compact.addEventListener('change', () => { state.ui.preferences.compactCards = compact.checked; savePreferences(); });
+  if(ipa) ipa.addEventListener('change', () => { state.ui.preferences.showIpa = ipa.checked; savePreferences(); });
+  if(forms) forms.addEventListener('change', () => { state.ui.preferences.showForms = forms.checked; savePreferences(); });
+  if(example) example.addEventListener('change', () => { state.ui.preferences.showExample = example.checked; savePreferences(); });
+  if(translations) translations.addEventListener('change', () => { state.ui.preferences.showTranslations = translations.checked; savePreferences(); });
+  if(progress) progress.addEventListener('change', () => { state.ui.preferences.showProgress = progress.checked; savePreferences(); });
+  if(largeControls) largeControls.addEventListener('change', () => { state.ui.preferences.largeControls = largeControls.checked; savePreferences(); });
+  if(motion) motion.addEventListener('change', () => { state.ui.preferences.reducedMotion = motion.checked; savePreferences(); });
+}
+
+function submitFeedback(){
+  const input = document.getElementById('feedbackInput');
+  const body = input ? input.value.trim() : '';
+  if(!body){
+    if(input) input.focus();
+    return;
+  }
+  if(!TALLY_FORM_URL){
+    const status = document.getElementById('feedbackStatus');
+    if(status) status.textContent = t('feedback.setup');
+    return;
+  }
+  const url = TALLY_FORM_URL + (TALLY_FORM_URL.indexOf('?') >= 0 ? '&' : '?') + 'feedback=' + encodeURIComponent(body);
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function loadVisitorCount(){
+  const output = document.getElementById('visitorCount');
+  if(!output) return;
+  fetch('https://abacus.jasoncameron.dev/hit/oxford5000/visits', { method: 'GET', cache: 'no-store' })
+    .then(response => {
+      if(!response.ok) throw new Error('visitor counter request failed');
+      return response.json();
+    })
+    .then(data => {
+      const count = data && data.value;
+      if(!Number.isFinite(Number(count))) throw new Error('visitor counter returned invalid data');
+      output.textContent = Number(count).toLocaleString();
+    })
+    .catch(() => {
+      output.textContent = t('visitor.unavailable');
+    });
 }
 
 function wireEvents(){
@@ -12313,7 +13309,26 @@ function wireEvents(){
 
   const btnQuiz = document.getElementById('btnQuiz');
   if(btnQuiz) btnQuiz.addEventListener('click', openQuizModal);
-
+  const closeOnboardingBtn = document.getElementById('closeOnboarding');
+  if(closeOnboardingBtn) closeOnboardingBtn.addEventListener('click', closeOnboarding);
+  const startOnboarding = document.getElementById('startOnboarding');
+  if(startOnboarding) startOnboarding.addEventListener('click', closeOnboarding);
+  const tutorialButton = document.getElementById('openTutorial');
+  if(tutorialButton) tutorialButton.addEventListener('click', openTutorial);
+  const closeTutorialButton = document.getElementById('closeTutorial');
+  if(closeTutorialButton) closeTutorialButton.addEventListener('click', closeTutorial);
+  const tutorialPrevious = document.getElementById('tutorialPrevious');
+  if(tutorialPrevious) tutorialPrevious.addEventListener('click', () => moveTutorial(-1));
+  const tutorialNext = document.getElementById('tutorialNext');
+  if(tutorialNext) tutorialNext.addEventListener('click', () => moveTutorial(1));
+  const feedbackButton = document.getElementById('openFeedback');
+  if(feedbackButton) feedbackButton.addEventListener('click', openFeedback);
+  const closeFormsGuideButton = document.getElementById('closeFormsGuide');
+  if(closeFormsGuideButton) closeFormsGuideButton.addEventListener('click', closeFormsGuide);
+  const closeFeedbackButton = document.getElementById('closeFeedback');
+  if(closeFeedbackButton) closeFeedbackButton.addEventListener('click', closeFeedback);
+  const submitFeedbackButton = document.getElementById('submitFeedback');
+  if(submitFeedbackButton) submitFeedbackButton.addEventListener('click', submitFeedback);
   const wordEl = document.getElementById('theWord');
   if(wordEl){
     wordEl.addEventListener('click', () => {
@@ -12351,6 +13366,24 @@ function wireEvents(){
 }
 
 document.addEventListener('keydown', (e) => {
+  const tutorial = document.getElementById('tutorialOverlay');
+  const feedback = document.getElementById('feedbackOverlay');
+  if(e.key === 'Escape' && tutorial && tutorial.classList.contains('show')){
+    e.preventDefault();
+    closeTutorial();
+    return;
+  }
+  if(e.key === 'Escape' && feedback && feedback.classList.contains('show')){
+    e.preventDefault();
+    closeFeedback();
+    return;
+  }
+  const onboarding = document.getElementById('onboardingOverlay');
+  if(onboarding && onboarding.classList.contains('show') && e.key === 'Escape'){
+    e.preventDefault();
+    closeOnboarding();
+    return;
+  }
   if(isQuizOpen()){
     if(e.key === 'Escape'){
       e.preventDefault();
@@ -13132,6 +14165,8 @@ async function selfTest(){
   console.assert(FORMS && typeof FORMS === 'object', 'forms: data loaded');
   const formProbe = WORDS.find(w => { const d = formData(w); return d && d.forms.length > 1; });
   console.assert(!!formProbe && formsFor(formProbe).length > 1, 'forms: inflected forms built');
+  console.assert(formsFor('address').length === 1, 'forms: unverified address forms are hidden');
+  console.assert(formsFor('study').length === 4, 'forms: verified study forms are preserved');
   const ipaCount = WORDS.filter(w => ipaFor(w) !== '').length;
   console.assert(ipaCount > 4000, 'forms: IPA available for most words');
   console.assert(/^\/.+\/$/.test(ipaFor('abandon')), 'forms: IPA is wrapped in slashes');
@@ -13179,9 +14214,12 @@ async function selfTest(){
 }
 
 loadState();
+applyPreferences();
 wireEvents();
 buildLangSelect();
 applyLang((state.ui && state.ui.lang) ? state.ui.lang : DEFAULT_LANG);
+if(!state.ui.onboardingSeen && location.hash !== '#selftest') openOnboarding();
+loadVisitorCount();
 renderSyncStatus();
 maybeAutoSync();
 if(location.hash !== '#selftest') applyHashSync();
