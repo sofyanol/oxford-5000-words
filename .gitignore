@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+build\app.injected.js
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/

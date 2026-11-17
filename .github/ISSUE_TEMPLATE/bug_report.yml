@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible problem in the app.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve Oxford 5000 Words. Please do not include private progress exports, passwords, API keys, or bot tokens.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the smallest set of steps that shows the problem.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Chrome 130 on Android 14
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Page URL or word
+      description: Include the affected word or public page URL if relevant.
