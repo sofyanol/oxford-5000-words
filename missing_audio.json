@@ -1,0 +1,762 @@
+[
+  {
+    "id": 26,
+    "word": "an",
+    "pos": "indefinite article",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 67,
+    "word": "because of",
+    "pos": "prep.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 593,
+    "word": "pizza",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 749,
+    "word": "sunny",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 1113,
+    "word": "dessert",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 1271,
+    "word": "hike",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 1303,
+    "word": "instead of",
+    "pos": "prep.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 1795,
+    "word": "AI",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 2282,
+    "word": "podcast",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 2368,
+    "word": "renewable",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 2568,
+    "word": "Wi-Fi™",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3275,
+    "word": "vaccine",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3372,
+    "word": "billionaire",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3379,
+    "word": "brake",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3388,
+    "word": "caption",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3413,
+    "word": "comedian",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3431,
+    "word": "console",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3479,
+    "word": "diabetes",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3509,
+    "word": "ecosystem",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3562,
+    "word": "follower",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3565,
+    "word": "footprint",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3621,
+    "word": "hug",
+    "pos": "v., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3722,
+    "word": "navigate",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3734,
+    "word": "nursing",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3759,
+    "word": "pandemic",
+    "pos": "n., adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3775,
+    "word": "pharmacy",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3787,
+    "word": "preview",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3830,
+    "word": "refund",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3867,
+    "word": "sensor",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3928,
+    "word": "tattoo",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3929,
+    "word": "tease",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3952,
+    "word": "timeline",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3985,
+    "word": "vaccinate",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3986,
+    "word": "vaccination",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 3991,
+    "word": "villain",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4024,
+    "word": "accessory",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4060,
+    "word": "algorithm",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4072,
+    "word": "all-time",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4082,
+    "word": "analytics",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4127,
+    "word": "bang",
+    "pos": "v., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4149,
+    "word": "blaze",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4156,
+    "word": "bolster",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4162,
+    "word": "bout",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4178,
+    "word": "buzz",
+    "pos": "v., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4181,
+    "word": "cancellation",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4204,
+    "word": "chill",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4230,
+    "word": "comeback",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4270,
+    "word": "connectivity",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4300,
+    "word": "cooperation",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4335,
+    "word": "cryptocurrency",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4385,
+    "word": "devastating",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4420,
+    "word": "dividend",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4430,
+    "word": "drone",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4439,
+    "word": "e-commerce",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4482,
+    "word": "equity",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4517,
+    "word": "festive",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4534,
+    "word": "follow-up",
+    "pos": "adj., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4577,
+    "word": "hack",
+    "pos": "v., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4581,
+    "word": "hammer",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4603,
+    "word": "hospitality",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4606,
+    "word": "hub",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4610,
+    "word": "hybrid",
+    "pos": "adj., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4618,
+    "word": "immunity",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4627,
+    "word": "inclusive",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4638,
+    "word": "infectious",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4718,
+    "word": "levy",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4780,
+    "word": "migrant",
+    "pos": "n., adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4782,
+    "word": "milestone",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4786,
+    "word": "mindset",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4796,
+    "word": "mitigate",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4826,
+    "word": "notification",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4839,
+    "word": "offset",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4840,
+    "word": "offshore",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4881,
+    "word": "pharmaceutical",
+    "pos": "adj., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4926,
+    "word": "prioritize",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 4930,
+    "word": "proceedings",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5018,
+    "word": "resilience",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5047,
+    "word": "safeguard",
+    "pos": "v., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5051,
+    "word": "scam",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5055,
+    "word": "scrap",
+    "pos": "v., n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5059,
+    "word": "seasonal",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5070,
+    "word": "sequel",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5120,
+    "word": "spray",
+    "pos": "n., v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5129,
+    "word": "start-up",
+    "pos": "n., adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5140,
+    "word": "streaming",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5149,
+    "word": "subscribe",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5178,
+    "word": "surpass",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5186,
+    "word": "sustainability",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5230,
+    "word": "trafficking",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5233,
+    "word": "trans",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5274,
+    "word": "vegan",
+    "pos": "n., adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5276,
+    "word": "vendor",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5292,
+    "word": "viral",
+    "pos": "adj.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5313,
+    "word": "wildfire",
+    "pos": "n.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  },
+  {
+    "id": 5319,
+    "word": "worsen",
+    "pos": "v.",
+    "missing": "both",
+    "has_uk": false,
+    "has_us": false
+  }
+]

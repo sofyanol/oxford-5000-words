@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!--
+  Oxford 5000 - تطبيق بطاقات مفردات إنجليزية بملف HTML واحد.
+  ------------------------------------------------------------------
+  هذا الملف النهائي يعمل بفتحه مباشرة في المتصفح، بلا خادم وبلا إنترنت.
+  لاختبار النسخة: أضف #selftest إلى الرابط وافتح الكونسول (F12)،
+  يجب أن يظهر SELFTEST PASS.
+
+  لا تعدّل هذا الملف يدويًا. المصدر الحقيقي:
+    src/index.html   الهيكل
+    src/styles.css   التنسيقات
+    src/app.js       المنطق (فيه عناصر نائبة للبيانات)
+    data/            الكلمات والجمل والصيغ والترجمات
+  بعد أي تعديل:
+    python build/build.py
+  الناتج: dist/oxford5000-flashcards-final.html
+
+  قبل أي عمل اقرأ: START-HERE.md
+  ثم: docs/ARCHITECTURE.md و docs/HOW-TO-EDIT.md و docs/I18N.md
+  قواعد ثابتة: لا نص مرئي خارج data/i18n.json، لا تعديل على dist/
+  يدويًا، رمز تلقرام في مفتاح منفصل oxford5000_tg فقط،
+  والرموز المسموحة ✓ و ✕ بلا إيموجي.
+-->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Oxford 5000 Words: a friendly offline-first English vocabulary app with CEFR levels, examples, IPA pronunciation, spaced repetition, and multiple-choice review.">
+<meta name="theme-color" content="#10161f">
+<meta name="color-scheme" content="light">
+<meta name="referrer" content="no-referrer">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oxford 5000">
+<meta property="og:description" content="Master a practical English vocabulary foundation with 4,954 Oxford 3000/5000 words, examples, pronunciation, spaced repetition, and quizzes.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Oxford 5000">
+<meta name="twitter:description" content="A friendly offline-first English vocabulary app with Oxford 3000/5000 words, examples, pronunciation, spaced repetition, and quizzes.">
+<meta name="apple-mobile-web-app-title" content="Oxford 5000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310161f'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='25' font-weight='700' fill='%23d9a441' text-anchor='middle'%3EO5%3C/text%3E%3C/svg%3E">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'">
+<title>Oxford 5000</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700;800&family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="storageWarning" role="alert">
+  <span data-i18n="storage.warning"></span>
+  <button type="button" id="warnDownload" data-i18n="toolbar.download"></button>
+</div>
+
+<div id="backupBanner" role="status">
+  <span data-i18n="backup.banner"></span>
+  <button type="button" id="backupNow" data-i18n="backup.now"></button>
+  <button type="button" id="backupLater" data-i18n="backup.later"></button>
+</div>
+
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <span class="eyebrow">Oxford 5000</span>
+      <h1 data-i18n="brand.title"></h1>
+    </div>
+    <div class="stats">
+      <div class="lang-switch" data-i18n-title="lang.label">
+        <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.4 4 5.6 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.6-4-9s1.4-6.6 4-9z"></path></svg>
+        <button type="button" id="langSelectButton" class="lang-select-button" data-i18n-aria="lang.label" aria-haspopup="listbox" aria-expanded="false">
+          <span id="langSelectLabel"></span>
+        </button>
+        <div id="langMenu" class="lang-menu" role="listbox" aria-multiselectable="true" hidden></div>
+        <select id="langSelect" class="lang-select-native" data-i18n-aria="lang.label" tabindex="-1" aria-hidden="true"></select>
+        <span class="lang-code" id="langCode">AR</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </div>
+      <button type="button" class="stat-pill" id="openKnown" data-i18n-title="stat.known.title"><span class="dot know"></span><b id="knowCount">0</b></button>
+      <button type="button" class="stat-pill" id="openUnknown" data-i18n-title="stat.unknown.title"><span class="dot unknow"></span><b id="unknowCount">0</b></button>
+      <button type="button" class="stat-pill" id="openLeft" data-i18n-title="stat.left.title"><span class="dot left"></span><b id="leftCount">0</b></button>
+      <button type="button" class="link-btn" id="openSync" data-i18n="sync.button"></button>
+    </div>
+  </header>
+
+  <div class="level-bar" id="levelBar"></div>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div id="mainArea">
+  <div class="deck" id="deck">
+    <div class="ghost-card g2"></div>
+    <div class="ghost-card g1"></div>
+    <div class="card" id="card">
+      <div class="hole"></div>
+      <div class="swipe-badge know" id="badgeKnow" data-i18n="card.know"></div>
+      <div class="swipe-badge unknow" id="badgeUnknow" data-i18n="card.unknow"></div>
+
+      <div class="card-top">
+        <span id="wordPos">1 / 0</span>
+        <span class="lvl-badge" id="lvlBadge">A1</span>
+      </div>
+
+      <div class="word-head">
+        <div class="the-word word-font" id="theWord" lang="en">
+          word
+          <span class="copy-toast" id="copyToast" data-i18n="card.copied"></span>
+        </div>
+        <div class="word-meta">
+          <span class="ipa" id="cardIpa" dir="ltr" hidden></span>
+          <button type="button" class="speak-btn" id="speakMain" data-i18n-title="card.speak.title" data-i18n-aria="card.speak.title" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></button>
+        </div>
+        <div class="word-tr" id="cardTranslation" dir="auto" hidden></div>
+      </div>
+
+      <div class="example-card" id="cardSentence" hidden>
+        <div class="example-head">
+          <span class="sent-label" data-i18n="card.example"></span>
+          <button type="button" class="example-speak" id="speakSentence" data-i18n-title="card.speak.example.title" data-i18n-aria="card.speak.example.title">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+          </button>
+        </div>
+        <div class="sent-text" id="cardSentenceText" dir="ltr"></div>
+        <div class="sent-tr" id="cardSentenceTr" dir="auto" hidden></div>
+      </div>
+
+      <div class="forms-bar" id="formsBar" hidden></div>
+
+      <details class="legend" id="legendBox">
+        <summary data-i18n="legend.title"></summary>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-swatch base"></span><span data-i18n="legend.base"></span></div>
+          <div class="legend-row"><span class="legend-swatch reg"></span><span data-i18n="legend.regular"></span></div>
+          <div class="legend-row"><span class="legend-swatch irr"></span><span data-i18n="legend.irregular"></span></div>
+          <div class="legend-row"><span class="legend-swatch tr"></span><span data-i18n="legend.translation"></span></div>
+        </div>
+      </details>
+
+      <div class="translation-box">
+        <textarea class="translation-input" id="translationInput" rows="2" dir="auto" data-i18n-placeholder="card.note.placeholder"></textarea>
+      </div>
+
+      <div class="hint-row">
+        <span><span class="arrow">←</span> <span data-i18n="card.know"></span></span>
+        <span><span data-i18n="card.unknow"></span> <span class="arrow">→</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="btnUnknow">
+      <span class="circle unknow">✕</span>
+      <span class="label" data-i18n="card.unknow"></span>
+    </button>
+    <button class="ctrl-btn" id="btnUndo">
+      <span class="circle undo">↺</span>
+      <span class="label" data-i18n="card.undo"></span>
+    </button>
+    <button class="ctrl-btn" id="btnKnow">
+      <span class="circle know">✓</span>
+      <span class="label" data-i18n="card.know"></span>
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <button class="tool-btn primary" id="btnQuiz" data-i18n="quiz.button"></button>
+    <button class="tool-btn" id="btnSearch" data-i18n="search.button"></button>
+    <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
+    <button class="tool-btn" id="btnShuffle"></button>
+    <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
+    <button class="tool-btn primary" id="btnDownload" data-i18n="toolbar.download"></button>
+  </div>
+  </div>
+
+  <aside class="side-tools" aria-label="Helpful tools">
+    <button type="button" class="side-tool" id="openTutorial" data-i18n="tutorial.button"></button>
+    <button type="button" class="side-tool" id="openFeedback" data-i18n="feedback.button"></button>
+  </aside>
+
+  <p class="due-line" id="dueLine" hidden></p>
+
+  <footer class="note">
+    <span data-i18n="footer.note.1"></span><br>
+    <span data-i18n="footer.note.2"></span>
+    <div class="follow-links">
+      <span class="follow-label" data-i18n="footer.follow"></span>
+      <span class="follow-arrow" aria-hidden="true">↓</span>
+      <a class="social-icon linkedin-icon" href="https://www.linkedin.com/in/5ofian/" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.linkedin" data-i18n-aria="footer.linkedin">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 8.1H3.4V20h2.8V8.1ZM4.8 3A1.7 1.7 0 1 0 4.8 6.4 1.7 1.7 0 0 0 4.8 3ZM20.6 13.2c0-3.6-1.9-5.3-4.5-5.3-2.1 0-3 1.2-3.5 2v-1.8H9.8V20h2.8v-6.6c0-1.8.3-3.5 2.5-3.5 2.1 0 2.1 2 2.1 3.6V20h2.8l.6-6.8Z"></path></svg>
+      </a>
+      <a class="social-icon x-icon" href="https://x.com/home" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.x" data-i18n-aria="footer.x">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4.2l3.3 4.7L16.5 4H19l-5.3 6.1L19.5 20h-4.2l-3.8-5.3L6.8 20H4.3l5.5-6.4L5 4Zm3.1 2.2 8.3 11.6h1.2L9.3 6.2H8.1Z"></path></svg>
+      </a>
+    </div>
+    <div class="visitor-counter" aria-live="polite">
+      <span data-i18n="visitor.label"></span>: <strong id="visitorCount" data-i18n="visitor.loading"></strong>
+    </div>
+  </footer>
+
+</div>
+
+<div class="overlay" id="tutorialOverlay">
+  <div class="review-panel tutorial-panel" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles"><h3 id="tutorialTitle" data-i18n="tutorial.title"></h3></div>
+      <button class="review-close" id="closeTutorial" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <p class="tutorial-intro" data-i18n="tutorial.intro"></p>
+    <div class="tutorial-progress" id="tutorialProgress"></div>
+    <nav class="tutorial-categories" id="tutorialCategories" aria-label="Tutorial sections"></nav>
+    <div id="tutorialSteps" class="tutorial-steps"></div>
+    <div class="tutorial-actions">
+      <button class="tool-btn" id="tutorialPrevious" type="button" data-i18n="tutorial.previous"></button>
+      <button class="tool-btn primary" id="tutorialNext" type="button" data-i18n="tutorial.next"></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="formsGuideOverlay">
+  <div class="review-panel forms-guide-panel" role="dialog" aria-modal="true" aria-labelledby="formsGuideTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles"><h3 id="formsGuideTitle" data-i18n="forms.guide.title"></h3></div>
+      <button class="review-close" id="closeFormsGuide" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div id="formsGuideContent"></div>
+  </div>
+</div>
+
+<div class="overlay" id="feedbackOverlay">
+  <div class="review-panel feedback-panel" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles"><h3 id="feedbackTitle" data-i18n="feedback.title"></h3></div>
+      <button class="review-close" id="closeFeedback" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <textarea id="feedbackInput" class="feedback-input" rows="6" data-i18n-placeholder="feedback.placeholder"></textarea>
+    <p class="feedback-note" data-i18n="feedback.note"></p>
+    <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
+    <button class="tool-btn primary" id="submitFeedback" type="button" data-i18n="feedback.open"></button>
+  </div>
+</div>
+
+<div class="overlay" id="onboardingOverlay">
+  <div class="review-panel onboarding-panel" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="onboardingTitle" data-i18n="onboarding.title"></h3>
+      </div>
+      <button class="review-close" id="closeOnboarding" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="onboarding-body">
+      <section>
+        <h4 data-i18n="onboarding.level.title"></h4>
+        <p data-i18n="onboarding.level.text"></p>
+      </section>
+      <section>
+        <h4 data-i18n="onboarding.srs.title"></h4>
+        <p data-i18n="onboarding.srs.text"></p>
+      </section>
+      <button class="tool-btn primary" id="startOnboarding" type="button" data-i18n="onboarding.start"></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="reviewOverlay">
+  <div class="review-panel" role="dialog" aria-modal="true" aria-labelledby="reviewTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="reviewTitle" data-i18n="modal.unknown.title"></h3>
+        <span class="review-count" id="reviewCount">0</span>
+      </div>
+      <button class="review-close" id="closeReview" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="review-controls-wrap">
+      <select class="review-sort" id="reviewSort" data-i18n-aria="modal.sort.aria">
+        <option value="level_asc" data-i18n="modal.sort.level_asc"></option>
+        <option value="level_desc" data-i18n="modal.sort.level_desc"></option>
+        <option value="alpha_asc" data-i18n="modal.sort.alpha_asc"></option>
+        <option value="alpha_desc" data-i18n="modal.sort.alpha_desc"></option>
+      </select>
+      <input class="review-search" id="reviewSearch" type="text" dir="auto" data-i18n-placeholder="modal.search.placeholder" data-i18n-aria="modal.search.placeholder">
+    </div>
+    <div class="review-summary" id="reviewSummary"></div>
+    <div class="review-list" id="reviewList"></div>
+    <div class="review-footer">
+      <button class="review-clear" id="btnClearAll" data-i18n="modal.clear"></button>
+      <button class="tool-btn primary" id="btnQuizFromList" style="display:none;" data-i18n="quiz.button"></button>
+      <button class="tool-btn primary" id="btnDownloadFromReview" data-i18n="modal.download"></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="syncOverlay">
+  <div class="review-panel sync-panel" role="dialog" aria-modal="true" aria-labelledby="syncTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="syncTitle" data-i18n="sync.title"></h3>
+      </div>
+      <button class="review-close" id="closeSync" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="sync-body">
+      <section class="sync-section sync-quick">
+        <h4 data-i18n="sync.quick.heading"></h4>
+        <p class="sync-note" data-i18n="sync.quick.explain"></p>
+        <div class="sync-actions">
+          <button class="tool-btn primary" id="btnMakeLink" type="button" data-i18n="sync.quick.make"></button>
+          <button class="tool-btn" id="btnUpdateLink" type="button" data-i18n="sync.quick.update"></button>
+          <button class="tool-btn" id="btnShareLink" type="button" data-i18n="sync.quick.share"></button>
+          <button class="tool-btn" id="btnPasteMerge" type="button" data-i18n="sync.quick.paste"></button>
+        </div>
+        <textarea id="syncLinkOut" class="sync-link-out" rows="2" readonly dir="ltr" data-i18n-placeholder="sync.quick.placeholder"></textarea>
+        <div class="sync-status" id="linkMsg" role="status"></div>
+      </section>
+
+      <div class="sync-summary" id="mergeSummary" hidden>
+        <p id="mergeSummaryText"></p>
+        <button class="tool-btn" id="btnUndoMerge" type="button" data-i18n="sync.undoMerge"></button>
+      </div>
+
+      <section class="sync-section">
+        <h4 data-i18n="sync.file.heading"></h4>
+        <div class="sync-actions">
+          <button class="tool-btn" id="btnExportProgress" type="button" data-i18n="sync.export"></button>
+          <button class="tool-btn" id="btnImportProgress" type="button" data-i18n="sync.import"></button>
+        </div>
+        <input type="file" id="importFile" class="sync-file-input" accept=".json,application/json">
+        <p class="sync-note" id="lastBackupLine"></p>
+        <div class="sync-status" id="syncMsg" role="status"></div>
+      </section>
+
+      <section class="sync-section">
+        <h4 data-i18n="sync.tg.heading"></h4>
+        <div class="sync-actions">
+          <button class="tool-btn primary" id="btnSendTelegram" type="button" data-i18n="sync.tg.send"></button>
+        </div>
+        <p class="sync-note" data-i18n="sync.tg.receive"></p>
+        <div class="sync-actions">
+          <button class="tool-btn" id="btnCopyCode" type="button" data-i18n="sync.code.copy"></button>
+          <button class="tool-btn" id="btnSendCode" type="button" data-i18n="sync.code.send"></button>
+        </div>
+        <div class="sync-status" id="codeMsg" role="status"></div>
+        <textarea id="syncCodeInput" rows="3" dir="auto" data-i18n-placeholder="sync.code.placeholder"></textarea>
+        <div class="sync-actions" style="margin-top:10px;">
+          <button class="tool-btn" id="btnMergeCode" type="button" data-i18n="sync.code.merge"></button>
+        </div>
+      </section>
+
+      <details class="sync-details">
+        <summary data-i18n="sync.bot.heading"></summary>
+        <p class="sync-note" data-i18n="sync.bot.explain"></p>
+        <ol class="sync-steps">
+          <li data-i18n="sync.bot.step1"></li>
+          <li data-i18n="sync.bot.step2"></li>
+        </ol>
+        <div class="sync-actions">
+          <input type="password" id="tgToken" autocomplete="off" dir="auto" data-i18n-placeholder="sync.bot.token.placeholder">
+        </div>
+        <div class="sync-actions">
+          <input type="text" id="tgChatId" dir="auto" data-i18n-placeholder="sync.bot.chatid">
+          <button class="tool-btn" id="btnDetectChat" type="button" data-i18n="sync.bot.detect"></button>
+          <button class="tool-btn" id="btnSaveBot" type="button" data-i18n="sync.bot.save"></button>
+        </div>
+        <p class="sync-warn" data-i18n="sync.bot.warn"></p>
+        <div class="sync-actions">
+          <button class="tool-btn primary" id="btnSyncNow" type="button" data-i18n="sync.bot.syncNow"></button>
+          <button class="tool-btn" id="btnUnlinkBot" type="button" data-i18n="sync.bot.unlink"></button>
+        </div>
+        <div class="sync-status" id="tgStatus" role="status"></div>
+        <p class="sync-note" id="lastSyncLine"></p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="searchOverlay">
+  <div class="review-panel search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="searchTitle" data-i18n="search.title"></h3>
+        <span class="review-count gold" id="searchCount"></span>
+      </div>
+      <button class="review-close" id="closeSearch" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="review-controls-wrap">
+      <input class="review-search" id="searchInput" type="search" dir="auto" autocomplete="off" data-i18n-placeholder="search.placeholder" data-i18n-aria="search.placeholder">
+    </div>
+    <div class="search-list" id="searchList"></div>
+  </div>
+</div>
+
+<div class="overlay" id="quizOverlay">
+  <div class="review-panel quiz-panel" role="dialog" aria-modal="true" aria-labelledby="quizTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="quizTitle" data-i18n="quiz.title"></h3>
+      </div>
+      <button class="review-close" id="closeQuiz" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
