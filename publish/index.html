@@ -1215,18 +1215,18 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
     inset-inline-end:18px;
     bottom:18px;
     z-index:90;
-    min-height:50px;
+    min-height:38px;
     display:inline-flex;
     align-items:center;
-    gap:9px;
+    gap:7px;
     max-width:min(220px, calc(100vw - 36px));
-    padding:8px 13px 8px 8px;
+    padding:5px 9px 5px 5px;
     border:1px solid rgba(217,164,65,.62);
     border-radius:999px;
     background:rgba(24,31,42,.96);
     color:var(--text-on-ink);
     box-shadow:0 10px 28px rgba(0,0,0,.28);
-    font:800 12px inherit;
+    font:800 10.5px inherit;
     text-decoration:none;
     backdrop-filter:blur(8px);
   }
@@ -1234,16 +1234,16 @@ IPA، البحث، وخلوّ الواجهة من أي زر نطق أو وضع �
   .coffee-support:active{ transform:translateY(0) scale(.98); }
   .coffee-support:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
   .coffee-cup{
-    width:36px;
-    height:36px;
-    flex:0 0 36px;
+    width:28px;
+    height:28px;
+    flex:0 0 28px;
     display:grid;
     place-items:center;
     border-radius:50%;
     background:var(--gold);
     color:#241b09;
   }
-  .coffee-cup svg{ width:21px; height:21px; fill:currentColor; }
+  .coffee-cup svg{ width:18px; height:18px; fill:currentColor; }
   @keyframes follow-bounce{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
   .rw-details{
     display:flex; align-items:center; gap:8px; flex-wrap:wrap;
@@ -2287,6 +2287,11 @@ const I18N = {
       "code": "zh",
       "name": "\u4e2d\u6587",
       "dir": "ltr"
+    },
+    {
+      "code": "nl",
+      "name": "Nederlands",
+      "dir": "ltr"
     }
   ],
   "ar": {
@@ -2460,7 +2465,7 @@ const I18N = {
     "footer.follow": "\u062a\u0627\u0628\u0639\u0646\u064a",
     "footer.linkedin": "\u0644\u0646\u0643\u062f\u064a\u0646",
     "footer.x": "\u0625\u0643\u0633",
-    "footer.coffee": "\u0627\u0634\u062a\u0631\u0650 \u0644\u064a \u0642\u0647\u0648\u0629",
+    "footer.coffee": "\u062f\u0639\u0645\u0643 \u064a\u0633\u0627\u0639\u062f\u0646\u0627 \u0639\u0644\u0649 \u0627\u0644\u0627\u0633\u062a\u0645\u0631\u0627\u0631",
     "card.speak.example.title": "\u0627\u0633\u062a\u0645\u0639 \u0625\u0644\u0649 \u0627\u0644\u0645\u062b\u0627\u0644",
     "onboarding.title": "\u0627\u0628\u062f\u0623 \u0628\u062e\u0637\u0629 \u062a\u0639\u0644\u0645 \u0628\u0633\u064a\u0637\u0629",
     "onboarding.level.title": "\u0627\u062e\u062a\u0631 \u0645\u0633\u062a\u0648\u0627\u0643 \u062d\u0633\u0628 CEFR",
@@ -2646,7 +2651,7 @@ const I18N = {
     "footer.follow": "Follow me",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "Buy me a coffee",
+    "footer.coffee": "Support the project",
     "card.speak.example.title": "Listen to example",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -2832,7 +2837,7 @@ const I18N = {
     "footer.follow": "Suivez-moi",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "Offrez-moi un caf\u00e9",
+    "footer.coffee": "Soutenir le projet",
     "card.speak.example.title": "?couter l?exemple",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -3018,7 +3023,7 @@ const I18N = {
     "footer.follow": "S\u00edgueme",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "Inv\u00edtame a un caf\u00e9",
+    "footer.coffee": "Apoyar el proyecto",
     "card.speak.example.title": "Escuchar el ejemplo",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -3204,7 +3209,7 @@ const I18N = {
     "footer.follow": "Siga-me",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "Pague-me um caf\u00e9",
+    "footer.coffee": "Apoiar o projeto",
     "card.speak.example.title": "Ouvir o exemplo",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -3390,7 +3395,7 @@ const I18N = {
     "footer.follow": "\u041f\u043e\u0434\u043f\u0438\u0441\u044b\u0432\u0430\u0439\u0442\u0435\u0441\u044c",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "\u0423\u0433\u043e\u0441\u0442\u0438\u0442\u0435 \u0431\u0435\u043d\u043a\u0438",
+    "footer.coffee": "\u041f\u043e\u0434\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043f\u0440\u043e\u0435\u043a\u0442",
     "card.speak.example.title": "??????? ??????",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -3576,7 +3581,7 @@ const I18N = {
     "footer.follow": "Beni takip edin",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "Bana bir kahve \u0131smarla",
+    "footer.coffee": "Projeyi destekle",
     "card.speak.example.title": "?rne?i dinle",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -3762,7 +3767,7 @@ const I18N = {
     "footer.follow": "\u0645\u062c\u06be\u06d2 \u0641\u0627\u0644\u0648 \u06a9\u0631\u06cc\u06ba",
     "footer.linkedin": "\u0644\u0646\u06a9\u0688 \u0627\u0653\u0646",
     "footer.x": "X",
-    "footer.coffee": "\u0645\u064a\u0631\u06d2 \u06a9\u0627\u0641\u06cc \u062e\u0631\u06cc\u062f\u06cc\u06ba",
+    "footer.coffee": "\u067e\u0631\u0648\u062c\u06cc\u06a9\u0679 \u06a9\u0648 \u062d\u0645\u0627\u06cc\u062a \u062f\u06cc\u06ba",
     "card.speak.example.title": "???? ????",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -3948,7 +3953,7 @@ const I18N = {
     "footer.follow": "\u092e\u0941\u091d\u0947 \u092b\u093c\u0949\u0932\u094b \u0915\u0930\u0947\u0902",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "\u092e\u0947\u0930\u0947 \u0932\u093f\u090f \u0915\u0949\u092b\u0940 \u0916\u0930\u0940\u0926\u0947\u0902",
+    "footer.coffee": "\u092a\u094d\u0930\u094b\u091c\u0947\u0915\u094d\u091f \u0915\u093e \u0938\u092e\u0930\u094d\u0925\u0928 \u0915\u0930\u0947\u0902",
     "card.speak.example.title": "?????? ?????",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -4134,7 +4139,7 @@ const I18N = {
     "footer.follow": "Ikuti saya",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "Belikan saya kopi",
+    "footer.coffee": "Dukung proyek",
     "card.speak.example.title": "Dengarkan contoh",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -4320,7 +4325,7 @@ const I18N = {
     "footer.follow": "\u5173\u6ce8\u6211",
     "footer.linkedin": "LinkedIn",
     "footer.x": "X",
-    "footer.coffee": "\u8bf7\u6211\u559d\u676f\u5496\u5561",
+    "footer.coffee": "\u652f\u6301\u672c\u9879\u76ee",
     "card.speak.example.title": "???",
     "onboarding.title": "Start with a simple study plan",
     "onboarding.level.title": "Choose your CEFR level",
@@ -4334,6 +4339,31 @@ const I18N = {
     "quiz.personalSentence.prompt": "Write your own English sentence using ?{word}?. This helps you check whether you can use the word, not just recognize its meaning.",
     "quiz.personalSentence.placeholder": "Write your sentence here...",
     "quiz.personalSentence.save": "Save sentence"
+  },
+  "nl": {
+    "brand.title": "Woordenkaarten",
+    "footer.follow": "Volg mij",
+    "footer.linkedin": "LinkedIn",
+    "footer.x": "X",
+    "footer.coffee": "Steun het project",
+    "card.speak.title": "Luister naar de Engelse uitspraak",
+    "card.speak.example.title": "Luister naar het voorbeeld",
+    "toolbar.download": "Onbekende woorden downloaden",
+    "toolbar.reset": "Opnieuw beginnen",
+    "toolbar.shuffle": "Willekeurige volgorde binnen het niveau",
+    "toolbar.shuffle.off": "Originele volgorde",
+    "speech.accent.label": "Engelse uitspraak",
+    "speech.accent.us": "Amerikaans Engels (US)",
+    "speech.accent.uk": "Brits Engels (UK)",
+    "onboarding.title": "Begin met een eenvoudig studieplan",
+    "onboarding.level.title": "Kies je CEFR-niveau",
+    "onboarding.level.text": "A1 en A2 zijn beginnersniveaus, B1 en B2 zijn gemiddeld en C1 is gevorderd. Je kunt het niveau op elk moment wijzigen.",
+    "onboarding.srs.title": "Hoe gespreide herhaling werkt",
+    "onboarding.srs.text": "Markeer een woord als bekend of onbekend. Onbekende woorden keren sneller terug; bekende woorden keren later terug in oplopende herhalingsfasen.",
+    "onboarding.start": "Begin met leren",
+    "quiz.personalSentence.prompt": "Schrijf je eigen Engelse zin met {word}. Zo controleer je of je het woord kunt gebruiken, niet alleen het betekenis kunt herkennen.",
+    "quiz.personalSentence.placeholder": "Schrijf hier je zin...",
+    "quiz.personalSentence.save": "Zin opslaan"
   }
 }
 ;
