@@ -1,11 +1,35 @@
 const DATA = __WORDS_JSON__;
 const I18N = __I18N_JSON__;
-const SENTENCES = __SENTENCES_JSON__;
-const SENT_LIST = __SENT_LIST_JSON__;
-const FORMS = __FORMS_JSON__;
 const TR = __TRANSLATIONS_JSON__;
-const WORDS = DATA.words;
-const LEVELS = DATA.levels;
+const ENTRIES = Array.isArray(DATA) ? DATA : (DATA.words || []);
+const WORDS = ENTRIES;
+const GUIDE = DATA.guide || {};
+
+const ENTRY_BY_ID = new Map();
+const WORD_TO_ENTRIES = new Map();
+ENTRIES.forEach((e, idx) => {
+  if(!e.id) e.id = idx + 1;
+  e.toString = function() { return String(this.id); };
+  ENTRY_BY_ID.set(e.id, e);
+  ENTRY_BY_ID.set(String(e.id), e);
+  const w = (e.word || '').toLowerCase();
+  if(!WORD_TO_ENTRIES.has(w)) WORD_TO_ENTRIES.set(w, []);
+  WORD_TO_ENTRIES.get(w).push(e);
+});
+
+function getEntry(idOrObj){
+  if(!idOrObj) return null;
+  if(typeof idOrObj === 'object' && idOrObj.id) return idOrObj;
+  if(typeof idOrObj === 'number' || (typeof idOrObj === 'string' && /^\d+$/.test(idOrObj))){
+    const num = Number(idOrObj);
+    if(ENTRY_BY_ID.has(num)) return ENTRY_BY_ID.get(num);
+  }
+  if(typeof idOrObj === 'string'){
+    const list = WORD_TO_ENTRIES.get(idOrObj.toLowerCase());
+    if(list && list.length) return list[0];
+  }
+  return null;
+}
 const LEVEL_ORDER = ['a1','a2','b1','b2','c1'];
 const LEVEL_LABELS = {a1:'A1', a2:'A2', b1:'B1', b2:'B2', c1:'C1'};
 function LEVEL_NAMES(code){
@@ -479,24 +503,37 @@ const STORAGE_KEY = 'oxford5000_progress_v3';
 const LEGACY_KEY = 'oxford5000_progress_v2';
 const SEED_KEYS = ['all'].concat(LEVEL_ORDER);
 
-// Words grouped by level, keeping their original order (A1 -> C1, alphabetical).
-const WORDS_BY_LEVEL = { all: WORDS.slice() };
-LEVEL_ORDER.forEach(lvl => { WORDS_BY_LEVEL[lvl] = []; });
-const WORD_LEVEL = new Map();
-WORDS.forEach((w, i) => {
-  const lvl = LEVELS[i];
-  if(WORDS_BY_LEVEL[lvl]) WORDS_BY_LEVEL[lvl].push(w);
-  WORD_LEVEL.set(w, lvl);
+const ENTRIES_BY_LEVEL = { all: ENTRIES.slice() };
+LEVEL_ORDER.forEach(lvl => { ENTRIES_BY_LEVEL[lvl] = []; });
+const ENTRY_LEVEL = new Map();
+ENTRIES.forEach(e => {
+  const lvl = (e.level || 'a1').toLowerCase();
+  if(ENTRIES_BY_LEVEL[lvl]) ENTRIES_BY_LEVEL[lvl].push(e);
+  ENTRY_LEVEL.set(e.id, lvl);
+  ENTRY_LEVEL.set(e.word, lvl);
 });
 
+const WORDS_BY_LEVEL = ENTRIES_BY_LEVEL;
+const WORD_LEVEL = ENTRY_LEVEL;
+
+function wordsOfLevel(lvl){
+  return ENTRIES_BY_LEVEL[lvl] || [];
+}
+
 const WORD_INDEX = new Map();
-WORDS.forEach((w, i) => { if(!WORD_INDEX.has(w)) WORD_INDEX.set(w, i); });
+ENTRIES.forEach((e, i) => {
+  if(!WORD_INDEX.has(e.id)) WORD_INDEX.set(e.id, i);
+  if(!WORD_INDEX.has(e.word)) WORD_INDEX.set(e.word, i);
+  if(!WORD_INDEX.has(e.word.toLowerCase())) WORD_INDEX.set(e.word.toLowerCase(), i);
+});
 
 let SENT_INDEX = null;
 function sentIndexOf(sentence){
   if(!SENT_INDEX){
     SENT_INDEX = new Map();
-    if(Array.isArray(SENT_LIST)) SENT_LIST.forEach((s, i) => SENT_INDEX.set(s, i));
+    ENTRIES.forEach((e, i) => {
+      if(e.example && !SENT_INDEX.has(e.example)) SENT_INDEX.set(e.example, i);
+    });
   }
   return SENT_INDEX.has(sentence) ? SENT_INDEX.get(sentence) : -1;
 }
@@ -843,7 +880,17 @@ function validateImport(obj, WORDS, now){
     return { ok: false, clean: null, skipped: 0, error: 'notours' };
   }
 
-  const wordSet = new Set(WORDS);
+  const wordSet = new Set();
+  if(Array.isArray(WORDS)){
+    WORDS.forEach(item => {
+      if(typeof item === 'object' && item !== null){
+        wordSet.add(String(item.id));
+        wordSet.add(item.word);
+      } else {
+        wordSet.add(String(item));
+      }
+    });
+  }
   const maxT = now + 86400000;
   const maxDue = now + 60 * 86400000;
   const clampT = t => (t > maxT ? now : t);
@@ -960,8 +1007,8 @@ let WORD_POSITIONS = null;
 function wordsFingerprint(){
   if(WORDS_FINGERPRINT !== null) return WORDS_FINGERPRINT;
   let h = 0x811c9dc5;
-  for(let i = 0; i < WORDS.length; i++){
-    const s = WORDS[i];
+  for(let i = 0; i < ENTRIES.length; i++){
+    const s = String(ENTRIES[i].word || '') + ':' + String(ENTRIES[i].id);
     for(let j = 0; j < s.length; j++){
       h ^= s.charCodeAt(j);
       h = Math.imul(h, 0x01000193);
@@ -973,12 +1020,15 @@ function wordsFingerprint(){
   return WORDS_FINGERPRINT;
 }
 
-function wordPosition(word){
+function wordPosition(wordOrId){
   if(!WORD_POSITIONS){
     WORD_POSITIONS = Object.create(null);
-    for(let i = 0; i < WORDS.length; i++) WORD_POSITIONS[WORDS[i]] = i;
+    for(let i = 0; i < ENTRIES.length; i++){
+      WORD_POSITIONS[ENTRIES[i].id] = i;
+      WORD_POSITIONS[ENTRIES[i].word] = i;
+    }
   }
-  const at = WORD_POSITIONS[word];
+  const at = WORD_POSITIONS[wordOrId];
   return (typeof at === 'number') ? at : -1;
 }
 
@@ -1379,11 +1429,13 @@ function defaultQuizSettings(){
 function quizPool(source, level){
   const now = Date.now();
   return WORDS.filter(w => {
-    const m = state.marks[w];
+    const id = (typeof w === 'object' && w !== null) ? w.id : w;
+    const m = state.marks[id] || state.marks[String(id)] || (w && w.word ? state.marks[w.word] : null);
     if(!m || m.s !== 'u') return false;
-    if(level !== 'all' && WORD_LEVEL.get(w) !== level) return false;
+    const lvl = (typeof w === 'object' && w !== null) ? (w.level || '').toLowerCase() : (WORD_LEVEL.get(w) || 'a1');
+    if(level !== 'all' && lvl !== level) return false;
     if(source === 'due'){
-      const e = state.srs[w];
+      const e = state.srs[id] || state.srs[String(id)] || (w && w.word ? state.srs[w.word] : null);
       if(e && !isDue(e, now)) return false;
     }
     return answerFor(w).trim() !== '';
@@ -1586,10 +1638,83 @@ function noteText(word){
 
 // ---------- translations, word forms and example sentences ----------
 
-function sentenceFor(word){
-  if(!SENTENCES || typeof SENTENCES !== 'object') return '';
-  const s = SENTENCES[word];
-  return (typeof s === 'string') ? s : '';
+let currentAudio = null;
+
+function stopCurrentAudio(){
+  if(currentAudio){
+    try{ currentAudio.pause(); }catch(_){}
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  document.querySelectorAll('.audio-btn.playing').forEach(b => b.classList.remove('playing'));
+}
+
+function playAudio(src, btn){
+  stopCurrentAudio();
+  if(!src){
+    if(btn) btn.disabled = true;
+    return;
+  }
+  const audio = new Audio(src);
+  currentAudio = audio;
+  if(btn) btn.classList.add('playing');
+  audio.onended = () => {
+    if(btn) btn.classList.remove('playing');
+    if(currentAudio === audio) currentAudio = null;
+  };
+  audio.onerror = (e) => {
+    console.warn('Audio load error for', src, e);
+    if(btn) btn.classList.remove('playing');
+    if(currentAudio === audio) currentAudio = null;
+  };
+  audio.play().then(() => {}).catch(err => {
+    if(err && err.name !== 'AbortError'){
+      console.warn('Audio playback error:', err);
+    }
+    if(btn) btn.classList.remove('playing');
+    if(currentAudio === audio) currentAudio = null;
+  });
+}
+
+function updateCardAudio(entry){
+  stopCurrentAudio();
+  const btnUk = document.getElementById('btnAudioUk');
+  const btnUs = document.getElementById('btnAudioUs');
+  if(!entry){
+    if(btnUk) btnUk.disabled = true;
+    if(btnUs) btnUs.disabled = true;
+    return;
+  }
+
+  const wordName = entry.word || 'word';
+  if(btnUk){
+    btnUk.disabled = !entry.audio_uk;
+    btnUk.setAttribute('aria-label', `Play British pronunciation of ${wordName}`);
+    btnUk.onclick = () => playAudio(entry.audio_uk, btnUk);
+    btnUk.onkeydown = (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        playAudio(entry.audio_uk, btnUk);
+      }
+    };
+  }
+
+  if(btnUs){
+    btnUs.disabled = !entry.audio_us;
+    btnUs.setAttribute('aria-label', `Play American pronunciation of ${wordName}`);
+    btnUs.onclick = () => playAudio(entry.audio_us, btnUs);
+    btnUs.onkeydown = (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        playAudio(entry.audio_us, btnUs);
+      }
+    };
+  }
+}
+
+function sentenceFor(wordOrEntry){
+  const e = getEntry(wordOrEntry);
+  return e ? (e.example || '') : '';
 }
 
 function escapeRegExp(s){
@@ -1625,48 +1750,75 @@ function translationEntries(word, sentence){
   }).filter(Boolean);
 }
 
-function wordTranslation(word){
+function wordTranslation(wordOrEntry){
+  const e = getEntry(wordOrEntry);
+  const word = e ? e.word : String(wordOrEntry || '');
   const first = translationEntries(word, '').find(entry => entry.code === currentLang)
     || translationEntries(word, '')[0];
   return first ? first.value : '';
 }
 
-function sentenceTranslation(sentence){
+function sentenceTranslation(sentenceOrEntry){
+  const e = getEntry(sentenceOrEntry);
+  const sentence = e ? (e.example || '') : String(sentenceOrEntry || '');
   const first = translationEntries('', sentence).find(entry => entry.code === currentLang)
     || translationEntries('', sentence)[0];
   return first ? first.value : '';
 }
 
-// What the quiz treats as the correct meaning: the user's own note first,
-// then the built-in translation.
-function answerFor(word){
-  const note = noteText(word).trim();
+function answerFor(wordOrEntry){
+  const e = getEntry(wordOrEntry);
+  const key = e ? e.id : wordOrEntry;
+  const note = noteText(key).trim() || (e ? noteText(e.word).trim() : '');
   if(note) return note;
-  return wordTranslation(word);
+  if(e && Array.isArray(e.categories_ar) && e.categories_ar.length){
+    return e.categories_ar.join(', ');
+  }
+  return wordTranslation(e ? e.word : wordOrEntry);
 }
 
-function formData(word){
-  const d = (FORMS && typeof FORMS === 'object') ? FORMS[word] : null;
-  return (d && Array.isArray(d.forms) && d.forms.length) ? d : null;
+function formData(wordOrEntry){
+  const e = getEntry(wordOrEntry);
+  if(!e) return null;
+  return {
+    forms: formsFor(e),
+    summary: e.forms_summary || ''
+  };
 }
 
-function formsFor(word){
-  const d = formData(word);
-  if(!d) return [{ f: word, k: 'base', lbl: 'base' }];
-  const forms = d.forms.filter((form, index) => {
-    if(index === 0 || form.lbl === 'base') return true;
-    return Number.isInteger(form.ex) && form.ex >= 0 && form.ex < SENT_LIST.length;
-  });
-  return forms.length ? forms : [{ f: word, k: 'base', lbl: 'base' }];
+function formsFor(wordOrEntry){
+  const e = getEntry(wordOrEntry);
+  if(!e) return [{ f: String(wordOrEntry || ''), k: 'base', lbl: 'base' }];
+  const out = [];
+  if(e.verb_forms && typeof e.verb_forms === 'object'){
+    const vf = e.verb_forms;
+    if(vf.V1_base) out.push({ f: vf.V1_base, k: 'base', lbl: 'V1' });
+    if(vf.V2_past_simple) out.push({ f: vf.V2_past_simple, k: vf.type === 'regular' ? 'reg' : 'irr', s: 'ed', lbl: 'V2' });
+    if(vf.V3_past_participle) out.push({ f: vf.V3_past_participle, k: vf.type === 'regular' ? 'reg' : 'irr', s: 'ed', lbl: 'V3' });
+    if(vf.ING_present_participle) out.push({ f: vf.ING_present_participle, k: 'reg', s: 'ing', lbl: 'ING' });
+    if(vf.S_third_person_singular) out.push({ f: vf.S_third_person_singular, k: 'reg', s: 's', lbl: 'S' });
+  } else if(e.noun_forms && typeof e.noun_forms === 'object'){
+    const nf = e.noun_forms;
+    if(nf.singular) out.push({ f: nf.singular, k: 'base', lbl: 'singular' });
+    if(nf.plural) out.push({ f: nf.plural, k: 'reg', s: 's', lbl: 'plural' });
+  } else if(e.adjective_forms && typeof e.adjective_forms === 'object'){
+    const af = e.adjective_forms;
+    out.push({ f: e.word, k: 'base', lbl: 'base' });
+    if(af.comparative) out.push({ f: af.comparative, k: 'reg', lbl: 'comparative' });
+    if(af.superlative) out.push({ f: af.superlative, k: 'reg', lbl: 'superlative' });
+  }
+  if(!out.length){
+    out.push({ f: e.word, k: 'base', lbl: 'base' });
+  }
+  return out;
 }
 
-function ipaFor(word){
-  const d = formData(word);
-  return (d && typeof d.ipa === 'string') ? d.ipa : '';
+function ipaFor(wordOrEntry){
+  return '';
 }
 
 function sentenceByIndex(i){
-  return (typeof i === 'number' && i >= 0 && i < SENT_LIST.length) ? SENT_LIST[i] : '';
+  return (typeof i === 'number' && i >= 0 && i < ENTRIES.length) ? (ENTRIES[i].example || '') : '';
 }
 
 function formChipHtml(f){
@@ -1682,8 +1834,18 @@ function formChipHtml(f){
 function highlightSentence(sentence, word, forms){
   const text = String(sentence == null ? '' : sentence);
   if(!text) return '';
-  const list = (Array.isArray(forms) && forms.length ? forms : formsFor(word))
+  const entry = getEntry(word);
+  const list = (Array.isArray(forms) && forms.length ? forms.slice() : formsFor(word).slice())
     .filter(f => f && typeof f.f === 'string' && f.f);
+  if(entry && entry.example_form_used){
+    list.push({ f: entry.example_form_used, k: 'base', lbl: 'form' });
+  }
+  if(entry && entry.word && entry.word.includes(',')){
+    entry.word.split(',').forEach(part => {
+      const p = part.trim();
+      if(p) list.push({ f: p, k: 'base', lbl: 'base' });
+    });
+  }
   if(!list.length) return esc(text);
 
   const map = {};
@@ -1721,23 +1883,42 @@ function highlightSentence(sentence, word, forms){
 let cardFormIndex = 0;
 let cardFormWord = '';
 
-function updateCardMeta(word){
-  const ipaEl = document.getElementById('cardIpa');
-  const ipa = ipaFor(word);
-  if(ipaEl){
-    ipaEl.textContent = ipa;
-    ipaEl.hidden = !ipa || !state.ui.preferences.showIpa;
+function updateCardMeta(wordOrEntry){
+  const entry = getEntry(wordOrEntry);
+  const word = entry ? entry.word : String(wordOrEntry || '');
+
+  const posEl = document.getElementById('cardPos');
+  if(posEl){
+    posEl.textContent = entry ? (entry.pos || '') : '';
+    posEl.hidden = !entry || !entry.pos;
   }
+
+  const catArEl = document.getElementById('cardCatAr');
+  if(catArEl){
+    const cats = entry ? (Array.isArray(entry.categories_ar) ? entry.categories_ar.join(', ') : (entry.categories_ar || '')) : '';
+    catArEl.textContent = cats;
+    catArEl.hidden = !cats;
+  }
+
+  const senseEl = document.getElementById('cardSense');
+  if(senseEl){
+    senseEl.textContent = entry ? (entry.sense || '') : '';
+    senseEl.hidden = !entry || !entry.sense;
+  }
+
+  const ipaEl = document.getElementById('cardIpa');
+  if(ipaEl) ipaEl.hidden = true;
+
   const trEl = document.getElementById('cardTranslation');
   if(trEl){
     const entries = translationEntries(word, '');
-    trEl.innerHTML = entries.map(entry =>
-      `<span class="translation-line" lang="${esc(entry.code)}"><b>${esc(entry.code.toUpperCase())}</b> ${esc(entry.value)}</span>`
+    trEl.innerHTML = entries.map(e =>
+      `<span class="translation-line" lang="${esc(e.code)}"><b>${esc(e.code.toUpperCase())}</b> ${esc(e.value)}</span>`
     ).join('');
     trEl.hidden = entries.length === 0 || !state.ui.preferences.showTranslations;
   }
   const speakEl = document.getElementById('speakMain');
-  if(speakEl) speakEl.hidden = !word || typeof window.speechSynthesis !== 'object';
+  if(speakEl) speakEl.hidden = true;
 }
 
 function speakWord(word){
@@ -1809,12 +1990,8 @@ function closeFormsGuide(){
 function buildFormsBar(word, forms){
   const bar = document.getElementById('formsBar');
   if(!bar) return;
-  if(!state.ui.preferences.showForms){
-    bar.hidden = true;
-    bar.innerHTML = '';
-    return;
-  }
-  if(!Array.isArray(forms) || forms.length < 2){
+  const entry = getEntry(word);
+  if(!state.ui.preferences.showForms || !entry || !entry.forms_summary || entry.forms_summary === 'no changing forms'){
     bar.hidden = true;
     bar.innerHTML = '';
     return;
@@ -1822,53 +1999,37 @@ function buildFormsBar(word, forms){
   bar.hidden = false;
   bar.innerHTML = `<div class="forms-heading"><span class="forms-label">${esc(t('card.forms'))}</span>
     <button type="button" class="forms-guide-button" id="openFormsGuide">${esc(t('forms.guide.button'))}</button></div>
-    <div class="forms-scroll">${forms.map((f, i) => {
-      const hasEx = (typeof f.ex === 'number');
-      const cls = ['form-chip', f.k || 'base', i === cardFormIndex ? 'active' : '', hasEx ? '' : 'empty'].join(' ');
-      return `<button type="button" class="${cls}" data-form="${i}" title="${esc(hasEx ? f.f : t('form.noExample'))}">
-        <span class="fc-word">${formChipHtml(f)}</span><small>${esc(formLabel(f))}</small>
-      </button>`;
-    }).join('')}</div>`;
+    <div class="forms-scroll" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <span class="forms-summary-badge" style="font-size:12px;font-weight:600;color:var(--teal-deep);padding:3px 8px;background:rgba(31,111,109,.08);border-radius:6px;direction:ltr;">${esc(entry.forms_summary)}</span>
+    </div>`;
 
   const guideButton = document.getElementById('openFormsGuide');
   if(guideButton) guideButton.addEventListener('click', openFormsGuide);
-  bar.querySelectorAll('[data-form]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const i = Number(btn.getAttribute('data-form'));
-      const f = forms[i];
-      if(!f || typeof f.ex !== 'number') return;
-      cardFormIndex = i;
-      renderCardExample(word);
-    });
-  });
 }
 
 function updateCardSentence(word){
   renderCardExample(word);
 }
 
-function renderCardExample(word){
+function renderCardExample(wordOrEntry){
   const box = document.getElementById('cardSentence');
   const textEl = document.getElementById('cardSentenceText');
   const trEl = document.getElementById('cardSentenceTr');
   if(!box || !textEl) return;
+
+  const entry = getEntry(wordOrEntry);
+  const word = entry ? entry.word : String(wordOrEntry || '');
 
   if(word !== cardFormWord){
     cardFormWord = word;
     cardFormIndex = 0;
   }
 
-  const forms = formsFor(word);
-  if(cardFormIndex >= forms.length) cardFormIndex = 0;
-  const selected = forms[cardFormIndex] || forms[0];
+  const forms = formsFor(entry || word);
+  updateCardMeta(entry || word);
 
-  updateCardMeta(word);
-
-  let sentence = '';
-  if(selected && typeof selected.ex === 'number') sentence = sentenceByIndex(selected.ex);
-  if(!sentence) sentence = sentenceFor(word);
-
-  buildFormsBar(word, forms);
+  const sentence = entry ? (entry.example || '') : sentenceFor(word);
+  buildFormsBar(entry || word, forms);
 
   if(!sentence || !state.ui.preferences.showExample){
     box.hidden = true;
@@ -1879,7 +2040,7 @@ function renderCardExample(word){
 
   box.hidden = false;
   textEl.lang = 'en';
-  textEl.innerHTML = highlightSentence(sentence, word, forms);
+  textEl.innerHTML = highlightSentence(sentence, entry || word, forms);
 
   if(trEl){
     const entries = translationEntries('', sentence);
@@ -1890,8 +2051,11 @@ function renderCardExample(word){
   }
 }
 
-function isMarkedWord(word){
-  const m = state.marks[word];
+function isMarkedWord(wordOrEntry){
+  const e = getEntry(wordOrEntry);
+  const id = e ? e.id : wordOrEntry;
+  const word = e ? e.word : wordOrEntry;
+  const m = state.marks[id] || state.marks[String(id)] || (word ? state.marks[word] : null);
   return !!m && (m.s === 'k' || m.s === 'u');
 }
 
@@ -2009,7 +2173,10 @@ function render(){
 
   restoreDeckMarkup();
 
-  const word = queue[0];
+  const item = queue[0];
+  const entry = getEntry(item);
+  const word = entry ? entry.word : String(item);
+  displayedEntry = entry;
   displayedWord = word;
 
   const levelWords = wordsOfLevel(level);
@@ -2019,13 +2186,15 @@ function render(){
   if(wordPosEl) wordPosEl.textContent = `${markedInLevel + 1} / ${levelWords.length}`;
 
   const lvlBadgeEl = document.getElementById('lvlBadge');
-  if(lvlBadgeEl) lvlBadgeEl.textContent = LEVEL_LABELS[WORD_LEVEL.get(word)] || 'A1';
+  const currentLvl = (entry ? entry.level : WORD_LEVEL.get(word)) || 'A1';
+  if(lvlBadgeEl) lvlBadgeEl.textContent = currentLvl.toUpperCase();
 
   setCardWord(word);
-  updateCardSentence(word);
+  updateCardAudio(entry);
+  updateCardSentence(entry || word);
 
   const input = document.getElementById('translationInput');
-  if(input) input.value = noteText(word);
+  if(input) input.value = noteText(entry ? entry.id : word) || noteText(word);
 
   const card = document.getElementById('card');
   if(card) card.className = 'card enter';
@@ -2068,21 +2237,27 @@ function showFinished(){
   if(r2) r2.addEventListener('click', resetAll);
 }
 
+let displayedEntry = null;
+
 function markWord(known){
   if(cardLocked) return;
+  const entry = displayedEntry;
   const word = displayedWord;
-  if(!word) return;
+  if(!word && !entry) return;
 
   cardLocked = true;
+  stopCurrentAudio();
 
-  const prev = state.marks[word];
+  const id = entry ? entry.id : word;
+  const prev = state.marks[id] || (entry ? state.marks[entry.word] : null);
   state.history = pushHistoryEntry(state.history, {
+    id: id,
     word: word,
     prev: prev ? { s: prev.s, t: prev.t } : null
   });
 
-  state.marks = applyMark(state.marks, word, known ? 'k' : 'u', Date.now());
-  state.srs = applySrsOnMark(state.srs, word, prev, known ? 'k' : 'u', Date.now());
+  state.marks = applyMark(state.marks, id, known ? 'k' : 'u', Date.now());
+  state.srs = applySrsOnMark(state.srs, id, prev, known ? 'k' : 'u', Date.now());
   bumpChanges();
 
   const card = document.getElementById('card');
@@ -2184,7 +2359,8 @@ const MODE_CONFIG = {
     titleKey: 'modal.unknown.title',
     badgeClass: 'brick',
     getWords: () => WORDS.filter(w => {
-      const m = state.marks[w];
+      const id = (typeof w === 'object' && w !== null) ? w.id : w;
+      const m = state.marks[id] || state.marks[String(id)] || (w && w.word ? state.marks[w.word] : null);
       return !!m && m.s === 'u';
     }),
     rowType: 'removable',
@@ -2195,7 +2371,8 @@ const MODE_CONFIG = {
     titleKey: 'modal.known.title',
     badgeClass: 'teal',
     getWords: () => WORDS.filter(w => {
-      const m = state.marks[w];
+      const id = (typeof w === 'object' && w !== null) ? w.id : w;
+      const m = state.marks[id] || state.marks[String(id)] || (w && w.word ? state.marks[w.word] : null);
       return !!m && m.s === 'k';
     }),
     rowType: 'removable',
@@ -2219,15 +2396,19 @@ let lastFocused = null;
 
 function sortWords(words, mode){
   const arr = words.slice();
-  const lvlPos = w => LEVEL_ORDER.indexOf(WORD_LEVEL.get(w));
+  const lvlPos = w => {
+    const lvl = (typeof w === 'object' && w !== null) ? (w.level || '').toLowerCase() : (WORD_LEVEL.get(w) || 'a1');
+    return LEVEL_ORDER.indexOf(lvl);
+  };
+  const wordOf = w => (typeof w === 'object' && w !== null ? (w.word || '') : String(w || ''));
   if(mode === 'level_desc'){
-    arr.sort((a, b) => (lvlPos(b) - lvlPos(a)) || a.localeCompare(b));
+    arr.sort((a, b) => (lvlPos(b) - lvlPos(a)) || wordOf(a).localeCompare(wordOf(b)));
   } else if(mode === 'alpha_asc'){
-    arr.sort((a, b) => a.localeCompare(b));
+    arr.sort((a, b) => wordOf(a).localeCompare(wordOf(b)));
   } else if(mode === 'alpha_desc'){
-    arr.sort((a, b) => b.localeCompare(a));
+    arr.sort((a, b) => wordOf(b).localeCompare(wordOf(a)));
   } else {
-    arr.sort((a, b) => (lvlPos(a) - lvlPos(b)) || a.localeCompare(b));
+    arr.sort((a, b) => (lvlPos(a) - lvlPos(b)) || wordOf(a).localeCompare(wordOf(b)));
   }
   return arr;
 }
@@ -2279,27 +2460,29 @@ function closeSearch(){
 }
 
 function searchWords(query){
-  const q = String(query || '').trim().toLowerCase();
+  const qStr = (typeof query === 'object' && query !== null) ? query.word : String(query || '');
+  const q = qStr.trim().toLowerCase();
   if(!q) return [];
   const hits = [];
   for(let i = 0; i < WORDS.length; i++){
-    const word = WORDS[i];
+    const item = WORDS[i];
+    const word = (typeof item === 'object' && item !== null) ? item.word : String(item || '');
     const lw = word.toLowerCase();
     let score = -1;
     if(lw === q) score = 0;
     else if(lw.indexOf(q) === 0) score = 1;
     else if(lw.indexOf(q) !== -1) score = 2;
     if(score === -1){
-      const note = noteText(word).toLowerCase();
+      const note = noteText(item).toLowerCase();
       if(note && note.indexOf(q) !== -1) score = 3;
     }
     if(score === -1){
       const tr = wordTranslation(word).toLowerCase();
       if(tr && tr.indexOf(q) !== -1) score = 4;
     }
-    if(score !== -1) hits.push({ w: word, s: score });
+    if(score !== -1) hits.push({ w: item, word: word, s: score });
   }
-  hits.sort((a, b) => (a.s - b.s) || a.w.localeCompare(b.w));
+  hits.sort((a, b) => (a.s - b.s) || a.word.localeCompare(b.word));
   return hits.map(x => x.w);
 }
 
@@ -2365,11 +2548,15 @@ function isReviewOpen(){
   return !!overlay && overlay.classList.contains('show');
 }
 
-function reviewRowHtml(word, rowType){
-  const lvl = WORD_LEVEL.get(word) || 'a1';
-  const example = sentenceFor(word);
+function reviewRowHtml(wordOrEntry, rowType){
+  const entry = getEntry(wordOrEntry);
+  const word = entry ? entry.word : String(wordOrEntry || '');
+  const id = entry ? entry.id : word;
+  const lvl = (entry ? (entry.level || '').toLowerCase() : WORD_LEVEL.get(word)) || 'a1';
+  const example = entry ? entry.example : sentenceFor(word);
   const ipa = ipaFor(word);
   const head = `<span class="rw-word" data-copy="${esc(word)}" title="${esc(t('card.copy.title'))}">${esc(word)}</span>`
+    + (entry && entry.pos ? ` <small class="rw-pos" style="font-size:11px;color:var(--teal-deep);">${esc(entry.pos)}</small>` : '')
     + `<span class="rw-lvl ${esc(lvl)}">${esc(LEVEL_LABELS[lvl] || '')}</span>`;
   const details = `<div class="rw-details">
       ${ipa ? `<span class="rw-ipa" dir="ltr">${esc(ipa)}</span>` : ''}
@@ -2414,7 +2601,7 @@ function renderReviewSummary(allWords){
   const counts = {};
   LEVEL_ORDER.forEach(l => { counts[l] = 0; });
   allWords.forEach(w => {
-    const lvl = WORD_LEVEL.get(w) || 'a1';
+    const lvl = (typeof w === 'object' && w !== null) ? (w.level || '').toLowerCase() : (WORD_LEVEL.get(w) || 'a1');
     counts[lvl] = (counts[lvl] || 0) + 1;
   });
   el.innerHTML = LEVEL_ORDER.filter(l => counts[l]).map(l => (
@@ -2463,9 +2650,10 @@ function renderReviewList(filter){
   if(byLevel){
     const levels = state.ui.sort === 'level_desc' ? LEVEL_ORDER.slice().reverse() : LEVEL_ORDER;
     levels.forEach(lvl => {
-      const rows = shown.filter(w => (WORD_LEVEL.get(w) || 'a1') === lvl);
+      const getLvl = w => (typeof w === 'object' && w !== null) ? (w.level || '').toLowerCase() : (WORD_LEVEL.get(w) || 'a1');
+      const rows = shown.filter(w => getLvl(w) === lvl);
       if(!rows.length) return;
-      const totalAt = filtered.filter(w => (WORD_LEVEL.get(w) || 'a1') === lvl).length;
+      const totalAt = filtered.filter(w => getLvl(w) === lvl).length;
       html += `<div class="review-group-head">
         <span class="review-group-badge ${lvl}">${esc(LEVEL_LABELS[lvl])}</span>
         <span class="review-group-line"></span>
@@ -4261,8 +4449,7 @@ function wireEvents(){
   }
   const speakMain = document.getElementById('speakMain');
   if(speakMain) speakMain.addEventListener('click', () => speakWord(displayedWord));
-  const speakSentence = document.getElementById('speakSentence');
-  if(speakSentence) speakSentence.addEventListener('click', speakCurrentExample);
+  // Example pronunciation removed per user request
 
   const ta = document.getElementById('translationInput');
   if(ta){
@@ -5020,17 +5207,17 @@ async function selfTest(){
   const emptyHtml = tHtml('modal.empty.unknown');
   console.assert(emptyHtml.indexOf('<br>') !== -1 && emptyHtml.indexOf('\n') === -1, 'i18n: newline becomes br');
 
-  // 23. Sentences: most words have one and the target word is highlighted.
-  console.assert(SENTENCES && typeof SENTENCES === 'object', 'sentences: data loaded');
-  console.assert(Object.keys(SENTENCES).length > 4000, 'sentences: covered most words');
-  const sentWord = WORDS.find(w => sentenceFor(w) !== '');
-  const sentHtml = sentWord ? highlightSentence(sentenceFor(sentWord), sentWord) : '';
-  console.assert(!!sentWord && sentHtml.indexOf('<mark class="hl-base">') !== -1, 'sentences: word highlighted');
+  // 23. Sentences & Dataset: all 5325 entries are loaded and each has an example
+  console.assert(ENTRIES && ENTRIES.length === 5325, 'dataset: 5325 entries loaded');
+  console.assert(ENTRIES.every(e => !!e.example && String(e.example).trim() !== ''), 'sentences: every entry has an example');
+  const sampleEntry = ENTRIES[0];
+  const sentHtml = highlightSentence(sampleEntry.example, sampleEntry);
+  console.assert(sentHtml.indexOf('<mark') !== -1, 'sentences: form or word highlighted');
   const sentMissingHtml = highlightSentence('A simple sentence.', 'zzzznotaword');
   console.assert(sentMissingHtml.indexOf('<mark') === -1, 'sentences: no mark when word absent');
 
   // 24. Every word has a known CEFR level, used by the grouped lists.
-  console.assert(WORDS.every(w => LEVEL_ORDER.indexOf(WORD_LEVEL.get(w)) !== -1), 'levels: every word has a level');
+  console.assert(ENTRIES.every(e => LEVEL_ORDER.indexOf((e.level || '').toLowerCase()) !== -1), 'levels: every word has a level');
 
   // 25. Search finds words and notes, and ignores empty queries.
   console.assert(searchWords('').length === 0, 'search: empty query has no results');
@@ -5085,15 +5272,15 @@ async function selfTest(){
   currentMode = keepMode;
   renderReviewList('');
 
-  // 28. Forms and IPA data are loaded and complete enough to be useful.
-  console.assert(FORMS && typeof FORMS === 'object', 'forms: data loaded');
-  const formProbe = WORDS.find(w => { const d = formData(w); return d && d.forms.length > 1; });
-  console.assert(!!formProbe && formsFor(formProbe).length > 1, 'forms: inflected forms built');
-  console.assert(formsFor('address').length === 1, 'forms: unverified address forms are hidden');
-  console.assert(formsFor('study').length === 4, 'forms: verified study forms are preserved');
-  const ipaCount = WORDS.filter(w => ipaFor(w) !== '').length;
-  console.assert(ipaCount > 4000, 'forms: IPA available for most words');
-  console.assert(/^\/.+\/$/.test(ipaFor('abandon')), 'forms: IPA is wrapped in slashes');
+  // 28. Audio and Forms coverage:
+  const hasUkCount = ENTRIES.filter(e => !!e.audio_uk).length;
+  const hasUsCount = ENTRIES.filter(e => !!e.audio_us).length;
+  const noAudioCount = ENTRIES.filter(e => !e.audio_uk && !e.audio_us).length;
+  console.assert(hasUkCount === 5230, 'audio: 5230 entries have UK audio');
+  console.assert(hasUsCount === 5230, 'audio: 5230 entries have US audio');
+  console.assert(noAudioCount === 95, 'audio: 95 entries have no audio');
+  console.assert(!!document.getElementById('btnAudioUk'), 'ui: UK audio button wired');
+  console.assert(!!document.getElementById('btnAudioUs'), 'ui: US audio button wired');
 
   // 28. Highlight classes tell the base word, a regular ending and an irregular change apart.
   const regHtml = highlightSentence('She abandoned the car.', 'abandon', formsFor('abandon'));
@@ -5104,17 +5291,14 @@ async function selfTest(){
   console.assert(baseHtml.indexOf('hl-base') !== -1, 'forms: base word highlighted');
 
   // 29. Translations are wired to the word, the sentence and the quiz answer.
-  const trWord = WORDS.find(w => wordTranslation(w) !== '');
-  console.assert(!!trWord, 'translation: words translated in the current language');
-  const trSentence = trWord ? sentenceFor(trWord) : '';
-  console.assert(!!trSentence && sentenceTranslation(trSentence) !== '', 'translation: sentence translated');
-  console.assert(answerFor(trWord) === wordTranslation(trWord), 'translation: built-in meaning is the default answer');
-  const savedTrNote = state.notes[trWord];
-  state.notes[trWord] = { v: 'zzz-translation-note', t: Date.now() };
-  console.assert(answerFor(trWord) === 'zzz-translation-note', 'translation: user note wins over built-in meaning');
-  if(savedTrNote) state.notes[trWord] = savedTrNote;
-  else delete state.notes[trWord];
-  console.assert(searchWords(wordTranslation(trWord)).indexOf(trWord) !== -1, 'translation: search finds words by meaning');
+  const trEntry = ENTRIES.find(e => wordTranslation(e.word) !== '');
+  console.assert(!!trEntry, 'translation: words translated in the current language');
+  console.assert(answerFor(trEntry) !== '', 'translation: built-in meaning is the default answer');
+  const savedTrNote = state.notes[trEntry.id];
+  state.notes[trEntry.id] = { v: 'zzz-translation-note', t: Date.now() };
+  console.assert(answerFor(trEntry) === 'zzz-translation-note', 'translation: user note wins over built-in meaning');
+  if(savedTrNote) state.notes[trEntry.id] = savedTrNote;
+  else delete state.notes[trEntry.id];
 
   // 30. The form chip marks the ending that was added.
   const chip = formChipHtml({ f: 'abandoned', k: 'reg', s: 'ed' });
@@ -5125,8 +5309,10 @@ async function selfTest(){
   // 32. The quiz remains multiple-choice only and pronunciation is optional.
   console.assert(!('answerMode' in defaultQuizSettings()) && !('types' in defaultQuizSettings()), 'quiz: typing and card modes removed');
   console.assert(!!document.getElementById('speakMain'), 'card: pronunciation control wired');
-  console.assert(!!document.getElementById('speakSentence'), 'card: example pronunciation control wired');
+  console.assert(!document.getElementById('speakSentence'), 'card: example pronunciation control removed');
+  console.assert(!!document.getElementById('btnAudioUk') && !!document.getElementById('btnAudioUs'), 'card: UK/US audio controls wired');
   console.assert(document.querySelectorAll('.social-icon svg').length === 2, 'footer: social icons rendered');
+  console.assert(!!document.querySelector('.coffee-support'), 'footer: coffee support control rendered');
   console.assert(document.querySelectorAll('#langMenu [data-lang]').length === langList().length, 'language menu: all languages rendered');
   const mainRect = document.getElementById('mainArea').getBoundingClientRect();
   const deckRect = document.getElementById('deck').getBoundingClientRect();

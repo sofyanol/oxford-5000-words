@@ -1,5 +1,18 @@
 # Decisions
 
+## 2026-11-19 — Floating coffee support button
+
+- **Decision:** Show a fixed, accessible coffee-support control in the corner,
+  translate it through `data/i18n.json`, and link it to the existing PayPal
+  support URL.
+- **Reason:** Keep the support action visible across screens and languages
+  without changing the main learning flow or requiring account-based payments.
+
+## 2026-11-19 — Replace vocabulary dataset with Oxford 5000 Full (5,325 entries) and audio binding
+
+- **Decision:** Replace previous word, sentence, and form data files with `data/words.json` containing 5,325 entries from `oxford_5000_full.json`, with primary key `id`, dedicated 1:1 example sentences per entry, and bindings to UK and US offline audio files (`audio_uk`, `audio_us`).
+- **Reason:** Upgrades vocabulary coverage to full Oxford 3000/5000 with rich POS, sense, and form classifications, while providing authentic native pronunciations with dedicated touch buttons.
+
 ## 2026-11-17 — Canonical agent handoff files
 
 - **Decision:** `AGENTS.md` is the single source of repository instructions.

@@ -9,7 +9,31 @@
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/
 
-**Latest release:** [Update 1.1](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.1.0)
+**Latest release:** Update 1.2
+
+## Update 1.2 (Upcoming Release Notes)
+
+Update 1.2 is a major dataset and multimedia upgrade that takes the Oxford 5000 Flashcards app to the next level:
+
+- **Complete 5,325 Oxford 3000 / 5000 Dataset**:
+  - Fully replaced previous vocabulary data with the comprehensive `oxford_5000_full` dataset (5,325 distinct entries).
+  - Primary key upgraded to unique `id` to properly represent words with multiple parts of speech or senses (e.g., `like` as verb vs. preposition).
+  - 100% sentence example coverage: every single entry includes a dedicated, authentic contextual sentence.
+  - Rich morphological data: full inflectional tables (`verb_forms` V1-V3/ING/S, `noun_forms`, `adjective_forms`), Arabic category classifications (`categories_ar`), and summary notes.
+- **Native Dual Audio Pronunciation (UK & US)**:
+  - 5,230 entries mapped to real British (UK) and American (US) native MP3 audio files.
+  - Zero broken audio paths.
+  - Documented missing audio (95 modern/tech entries such as Wi-Fi™ and AI) in `missing_audio.json`.
+- **Integrated Audio Playback Buttons**:
+  - Dedicated UK and US speaker buttons directly beside each word card.
+  - Instant audio playback with single-audio playback concurrency (stops current audio before starting new).
+  - Accessible, touch-friendly UI designed for mobile and desktop, with dynamic aria-labels and keyboard activation (`Enter` / `Space`).
+  - Disabled and dimmed state for words without audio, ensuring a non-breaking offline experience.
+- **Interactive Guided Tour & Word Form Guide (from Update 1.1)**:
+  - Multi-section tutorial explaining cards, progress tracking, quiz, language options, and controls.
+  - Dedicated word-form explanation modal explaining nuances of grammatical inflections.
+  - Responsive, viewport-safe positioning for all popups and modals.
+  - Seamless offline progress storage with full compatibility.
 
 ## Update 1.1
 

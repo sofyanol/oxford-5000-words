@@ -37,7 +37,7 @@
 <meta name="twitter:description" content="A friendly offline-first English vocabulary app with Oxford 3000/5000 words, examples, pronunciation, spaced repetition, and quizzes.">
 <meta name="apple-mobile-web-app-title" content="Oxford 5000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310161f'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='25' font-weight='700' fill='%23d9a441' text-anchor='middle'%3EO5%3C/text%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'">
 <title>Oxford 5000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,19 +105,29 @@
           word
           <span class="copy-toast" id="copyToast" data-i18n="card.copied"></span>
         </div>
+        <div class="word-audio-group" id="wordAudioGroup">
+          <button type="button" class="audio-btn audio-uk" id="btnAudioUk" aria-label="Play British pronunciation" title="UK Pronunciation">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            <span>UK</span>
+          </button>
+          <button type="button" class="audio-btn audio-us" id="btnAudioUs" aria-label="Play American pronunciation" title="US Pronunciation">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            <span>US</span>
+          </button>
+        </div>
         <div class="word-meta">
+          <span class="pos-badge" id="cardPos"></span>
+          <span class="cat-ar" id="cardCatAr"></span>
           <span class="ipa" id="cardIpa" dir="ltr" hidden></span>
           <button type="button" class="speak-btn" id="speakMain" data-i18n-title="card.speak.title" data-i18n-aria="card.speak.title" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></button>
         </div>
+        <div class="word-sense" id="cardSense" hidden></div>
         <div class="word-tr" id="cardTranslation" dir="auto" hidden></div>
       </div>
 
       <div class="example-card" id="cardSentence" hidden>
         <div class="example-head">
           <span class="sent-label" data-i18n="card.example"></span>
-          <button type="button" class="example-speak" id="speakSentence" data-i18n-title="card.speak.example.title" data-i18n-aria="card.speak.example.title">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
-          </button>
         </div>
         <div class="sent-text" id="cardSentenceText" dir="ltr"></div>
         <div class="sent-tr" id="cardSentenceTr" dir="auto" hidden></div>
@@ -191,6 +201,12 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4.2l3.3 4.7L16.5 4H19l-5.3 6.1L19.5 20h-4.2l-3.8-5.3L6.8 20H4.3l5.5-6.4L5 4Zm3.1 2.2 8.3 11.6h1.2L9.3 6.2H8.1Z"></path></svg>
       </a>
     </div>
+    <a class="coffee-support" href="https://www.paypal.com/ncp/payment/HZXA4F94TEA2A" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.coffee" data-i18n-aria="footer.coffee">
+      <span class="coffee-cup" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 8h13v5.5A5.5 5.5 0 0 1 11.5 19h-2A5.5 5.5 0 0 1 4 13.5V8Zm13 2h1.5a3.5 3.5 0 0 1 0 7H17v-2h1.5a1.5 1.5 0 0 0 0-3H17v-2ZM2 20h17v2H2v-2ZM7 2h2v4H7V2Zm4 0h2v4h-2V2Z"/></svg>
+      </span>
+      <span data-i18n="footer.coffee"></span>
+    </a>
     <div class="visitor-counter" aria-live="polite">
       <span data-i18n="visitor.label"></span>: <strong id="visitorCount" data-i18n="visitor.loading"></strong>
     </div>
