@@ -6,7 +6,7 @@ import re
 sys.stdout.reconfigure(encoding='utf-8')
 
 ROOT = r"e:\File Home\07-Ai Files\Coding folder\oxford 5000\oxford5000-app"
-AUDIO_DIR = r"e:\File Home\07-Ai Files\Coding folder\oxford 5000\audio"
+AUDIO_DIR = os.path.join(ROOT, "audio")
 FULL_JSON = r"e:\File Home\05-Downloads\ABDM\oxford_5000_full.json"
 
 with open(FULL_JSON, "r", encoding="utf-8") as f:

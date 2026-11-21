@@ -39,6 +39,6 @@ Antigravity (Advanced Agentic Assistant).
 
 ## Status for the Next Agent
 
-- **State**: The project is in a completely working, tested, and polished state.
-- **Next steps**: Ready for release / deployment as Update 1.2 or addressing any new user feature requests.
+- **State**: The project is completely self-contained with all 9,906 native audio files stored directly inside `oxford5000-app/audio`.
+- **Audio Self-Containment**: `0- update` was kept strictly read-only and untouched. Audio was copied to `oxford5000-app/audio`, and internal links `dist/audio`, `publish/audio`, and `src/audio` point to the local `audio/` directory. `build/build.py` points to `ROOT / "audio"`. All tests and builds pass cleanly with 0 broken audio paths.
 - **Rule reminder**: Always edit inside `src/` and run `python build/build.py`. Never edit `dist/` directly.

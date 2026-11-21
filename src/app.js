@@ -118,26 +118,42 @@ const EXTRA_AR = {
   'forms.guide.button': 'شرح الصيغ',
   'forms.guide.title': 'كيف نستخدم صيغ الكلمة؟',
   'forms.guide.intro': 'كل صيغة تغيّر وظيفة الكلمة أو زمنها. اختر الصيغة المناسبة حسب موقع الكلمة في الجملة.',
-  'forms.guide.base.use': 'الصيغة الأساسية للكلمة، وتُستخدم عندما لا نحتاج إلى تغييرها.',
-  'forms.guide.base.difference': 'هي الأصل الذي نقارن به بقية الصيغ.',
+  'forms.guide.base.use': 'الصيغة الأساسية للكلمة كما في المعجم، وتُستخدم عندما لا نحتاج لتصريفها.',
+  'forms.guide.base.difference': 'هي الأصل الذي تُبنى عليه وتقارن به بقية الصيغ والتصريفات.',
+  'forms.guide.singular.use': 'تُستخدم مع الاسم المفرد المعدود (شخص أو شيء واحد)، وغالبًا تسبقها أداة المفرد a أو an.',
+  'forms.guide.singular.difference': 'تدل على شيء واحد فقط، بينما صيغة الجمع تدل على اثنين فأكثر.',
   'forms.guide.plural.use': 'تُستخدم مع أكثر من شخص أو شيء، مثل books وcars.',
-  'forms.guide.plural.difference': 'تدل على الجمع، بينما الصيغة الأساسية غالبًا تدل على المفرد.',
+  'forms.guide.plural.difference': 'تدل على الجمع وغالبًا تنتهي بـ s أو es، بينما الصيغة الأساسية تدل على المفرد.',
   'forms.guide.third.use': 'تُستخدم مع he أو she أو it في المضارع البسيط، وغالبًا تنتهي بـ s.',
   'forms.guide.third.difference': 'هي مضارع للغائب المفرد، وليست ماضيًا ولا صيغة مستمرة.',
-  'forms.guide.present.use': 'صيغة المضارع عند الحديث عن الحاضر أو العادات.',
+  'forms.guide.S.use': 'مضارع الغائب المفرد، تُستخدم مع (he / she / it) في زمن المضارع البسيط بإضافة s أو es.',
+  'forms.guide.S.difference': 'خاصة بالفاعل المفرد الغائب في المضارع فقط، وليست جمعاً ولا ماضياً.',
+  'forms.guide.present.use': 'صيغة المضارع عند الحديث عن الحاضر أو العادات والحقائق.',
   'forms.guide.present.difference': 'تصف فعلًا حاضرًا، بينما past يصف فعلًا انتهى.',
   'forms.guide.past.use': 'تُستخدم لحدث وقع وانتهى في الماضي.',
-  'forms.guide.past.difference': 'تحتاجها مع أزمنة الماضي، ولا تعني بالضرورة أن الفعل مستمر الآن.',
+  'forms.guide.past.difference': 'تحتاجها مع أزمنة الماضي، وتدل على اكتمال الحدث.',
+  'forms.guide.V1.use': 'المصدر والتصريف الأول للفعل، تُستخدم في المضارع البسيط وبعد الأفعال المساعدة (to / will / can).',
+  'forms.guide.V1.difference': 'هي الصيغة الأساسية المجردة للفعل قبل أي زيادة أو تصريف زمني.',
+  'forms.guide.V2.use': 'التصريف الثاني (الماضي البسيط)، تُستخدم للتعبير عن حدث وقع وانتهى بالكامل في الماضي.',
+  'forms.guide.V2.difference': 'تُستخدم وحدها كفعل رئيسي للماضي بدون الحاجة لأفعال مساعدة.',
+  'forms.guide.V3.use': 'التصريف الثالث (اسم المفعول)، تُستخدم في الأزمنة التامة مع (have / has / had) والمبني للمجهول.',
+  'forms.guide.V3.difference': 'تحتاج فعلاً مساعداً (مثل have أو be) ولا تُستخدم وحدها كفعل ماضٍ مستقل.',
   'forms.guide.pp.use': 'تُستخدم مع have أو has أو had، وأحيانًا في المبني للمجهول.',
   'forms.guide.pp.difference': 'لا تأتي عادة وحدها؛ تحتاج فعلًا مساعدًا لتكوين الزمن أو المبني للمجهول.',
   'forms.guide.pastpp.use': 'صيغة تجمع استعمال الماضي وصيغة اسم المفعول عندما تكون الكلمة غير منتظمة.',
   'forms.guide.pastpp.difference': 'قد تكون مختلفة عن past، لذلك يجب حفظ استعمالها مع have أو be.',
   'forms.guide.ing.use': 'تُستخدم مع be لوصف فعل مستمر، وقد تعمل كاسم أو صفة.',
   'forms.guide.ing.difference': 'تركّز على فعل جارٍ أو مستمر، وليست مجرد مضارع بسيط.',
-  'forms.guide.comp.use': 'تُستخدم لمقارنة شيئين، وغالبًا تأتي مع than.',
-  'forms.guide.comp.difference': 'تقارن بين شيئين فقط، بينما sup تقارن واحدًا بمجموعة.',
-  'forms.guide.sup.use': 'تُستخدم لبيان أعلى أو أقل درجة داخل مجموعة، وغالبًا تأتي مع the.',
-  'forms.guide.sup.difference': 'تحدد المركز الأعلى أو الأدنى في مجموعة، وليست مقارنة بين شيئين فقط.'
+  'forms.guide.ING.use': 'صيغة الـ -ing، تُستخدم مع أفعال (be) في الأزمنة المستمرة، أو كاسم فاعل/مصدر (Gerund).',
+  'forms.guide.ING.difference': 'تُركّز على استمرارية الحدث في زمن معين أو تُحوّل الفعل إلى اسم.',
+  'forms.guide.comp.use': 'تُستخدم لمقارنة صفة بين شيئين أو طرفين، وغالبًا تأتي متبوعة بـ than (مثل: more afraid than أو taller than).',
+  'forms.guide.comp.difference': 'تقارن بين طرفين محددين فقط، بينما صيغة التفضيل تقارن طرفاً واحداً بجميع أفراد المجموعة.',
+  'forms.guide.comparative.use': 'تُستخدم لمقارنة صفة بين شيئين أو طرفين، وغالبًا تأتي متبوعة بـ than (مثل: more afraid than أو taller than).',
+  'forms.guide.comparative.difference': 'تقارن بين طرفين محددين فقط، بينما صيغة التفضيل تقارن طرفاً واحداً بجميع أفراد المجموعة.',
+  'forms.guide.sup.use': 'تُستخدم لبيان أعلى أو أقل درجة لصفة داخل مجموعة كاملة، وغالبًا تسبقها the (مثل: the most afraid أو the tallest).',
+  'forms.guide.sup.difference': 'تحدد الأفضل أو الأكثر/الأقل في المجموعة كلها، وليست مجرد مقارنة بين طرفين.',
+  'forms.guide.superlative.use': 'تُستخدم لبيان أعلى أو أقل درجة لصفة داخل مجموعة كاملة، وغالبًا تسبقها the (مثل: the most afraid أو the tallest).',
+  'forms.guide.superlative.difference': 'تحدد الأفضل أو الأكثر/الأقل في المجموعة كلها، وليست مجرد مقارنة بين طرفين.'
 };
 
 const EXTRA_EN = {
@@ -221,25 +237,41 @@ const EXTRA_EN = {
   'forms.guide.title': 'How do word forms work?',
   'forms.guide.intro': 'Each form changes the word’s function or tense. Choose the form that fits its position in the sentence.',
   'forms.guide.base.use': 'The base form is the normal dictionary form, used when no change is needed.',
-  'forms.guide.base.difference': 'It is the form used to compare the other forms.',
+  'forms.guide.base.difference': 'It is the root form used to compare the other forms.',
+  'forms.guide.singular.use': 'Used for a single countable person or thing, often with "a" or "an".',
+  'forms.guide.singular.difference': 'Refers to one item, while the plural refers to two or more.',
   'forms.guide.plural.use': 'Use it for more than one person or thing, such as books or cars.',
   'forms.guide.plural.difference': 'It marks more than one, while the base form often refers to one.',
   'forms.guide.third.use': 'Use it with he, she, or it in the present simple; it often ends in s.',
   'forms.guide.third.difference': 'It is third-person singular present, not past or continuous.',
+  'forms.guide.S.use': 'Third-person singular present form, used with he, she, or it in the present simple.',
+  'forms.guide.S.difference': 'Applies strictly to third-person singular in the present simple tense.',
   'forms.guide.present.use': 'Use it for the present, habits, or general facts.',
   'forms.guide.present.difference': 'It describes the present, while past describes a finished event.',
   'forms.guide.past.use': 'Use it for an event that happened and finished in the past.',
   'forms.guide.past.difference': 'It belongs to past-time sentences and does not by itself mean an action is continuing.',
+  'forms.guide.V1.use': 'The base form / bare infinitive, used with plural pronouns & I/you, and after modals (to/will/can).',
+  'forms.guide.V1.difference': 'The dictionary form of the verb before any inflection or tense change.',
+  'forms.guide.V2.use': 'Past simple form, used to describe an event that happened and concluded in the past.',
+  'forms.guide.V2.difference': 'Used on its own as the main past tense verb without auxiliary verbs.',
+  'forms.guide.V3.use': 'Past participle form, used in perfect tenses (have/has/had) and passive voice (be).',
+  'forms.guide.V3.difference': 'Requires an auxiliary verb like have or be and is not usually used alone as a main past verb.',
   'forms.guide.pp.use': 'Use it with have, has, or had, and sometimes in the passive voice.',
   'forms.guide.pp.difference': 'It normally needs an auxiliary verb to form a tense or passive construction.',
   'forms.guide.pastpp.use': 'This combines past and participle uses when an irregular word has a shared form.',
   'forms.guide.pastpp.difference': 'It can differ from past, so learn its use with have or be.',
   'forms.guide.ing.use': 'Use it with be for an ongoing action; it can also work as a noun or adjective.',
   'forms.guide.ing.difference': 'It focuses on an action in progress, not simply a present habit.',
-  'forms.guide.comp.use': 'Use it to compare two things, often with than.',
-  'forms.guide.comp.difference': 'It compares two things, while sup compares one with a group.',
-  'forms.guide.sup.use': 'Use it for the highest or lowest degree in a group, often with the.',
-  'forms.guide.sup.difference': 'It identifies the top or bottom of a group rather than comparing only two things.'
+  'forms.guide.ING.use': 'Continuous / gerund form (-ing), used with "be" for ongoing actions or as a verbal noun.',
+  'forms.guide.ING.difference': 'Focuses on an action in progress or functions as a noun.',
+  'forms.guide.comp.use': 'Use it to compare two things, often with than (e.g. more afraid than / faster than).',
+  'forms.guide.comp.difference': 'It compares two specific things, while superlative compares one with a whole group.',
+  'forms.guide.comparative.use': 'Use it to compare two things, often with than (e.g. more afraid than / faster than).',
+  'forms.guide.comparative.difference': 'It compares two specific things, while superlative compares one with a whole group.',
+  'forms.guide.sup.use': 'Use it for the highest or lowest degree in a group, often with the (e.g. the most afraid / the fastest).',
+  'forms.guide.sup.difference': 'It identifies the top or bottom of a whole group rather than comparing only two things.',
+  'forms.guide.superlative.use': 'Use it for the highest or lowest degree in a group, often with the (e.g. the most afraid / the fastest).',
+  'forms.guide.superlative.difference': 'It identifies the top or bottom of a whole group rather than comparing only two things.'
 };
 
 const TALLY_FORM_URL = '';
@@ -293,11 +325,14 @@ function lookupKey(code, key){
 function tFor(code, key, params){
   const k = String(key);
   let text = lookupKey(code, k);
-  if(text === null) text = lookupKey('en', k);
-  if(text === null && code !== 'ar' && Object.prototype.hasOwnProperty.call(EXTRA_EN, k)) text = EXTRA_EN[k];
-  if(text === null) text = lookupKey('ar', k);
-  if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_AR, k)) text = EXTRA_AR[k];
-  if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_EN, k)) text = EXTRA_EN[k];
+  if(code === 'ar'){
+    if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_AR, k)) text = EXTRA_AR[k];
+    if(text === null) text = lookupKey('en', k);
+    if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_EN, k)) text = EXTRA_EN[k];
+  } else {
+    if(text === null) text = lookupKey('en', k);
+    if(text === null && Object.prototype.hasOwnProperty.call(EXTRA_EN, k)) text = EXTRA_EN[k];
+  }
   if(text === null) text = k;
   return fillParams(text, params);
 }
@@ -650,6 +685,7 @@ function freshState(){
     deviceId: makeDeviceId(),
     marks: {},
     notes: {},
+    customEdits: {},
     srs: {},
     ui: defaultUi(),
     history: []
@@ -674,6 +710,20 @@ function normalizeState(s){
       const n = s.notes[w];
       if(n && typeof n.v === 'string'){
         out.notes[w] = { v: n.v, t: Number(n.t) || 0 };
+      }
+    });
+  }
+  if(s.customEdits && typeof s.customEdits === 'object'){
+    Object.keys(s.customEdits).forEach(k => {
+      const ed = s.customEdits[k];
+      if(ed && typeof ed === 'object'){
+        out.customEdits[k] = {
+          tr: typeof ed.tr === 'string' ? ed.tr.slice(0, 300) : '',
+          ex: typeof ed.ex === 'string' ? ed.ex.slice(0, 500) : '',
+          ex_tr: typeof ed.ex_tr === 'string' ? ed.ex_tr.slice(0, 500) : '',
+          forms: typeof ed.forms === 'string' ? ed.forms.slice(0, 300) : '',
+          t: Number(ed.t) || 0
+        };
       }
     });
   }
@@ -743,6 +793,7 @@ function mergeStates(a, b){
     deviceId: A.deviceId || B.deviceId || null,
     marks: {},
     notes: {},
+    customEdits: {},
     srs: {},
     ui: cloneUi(A.ui || B.ui),
     history: Array.isArray(A.history) ? A.history.slice() : []
@@ -809,6 +860,35 @@ function mergeStates(a, b){
     if(win) out.srs[w] = { box: Number(win.box) || 1, due: Number(win.due) || 0, t: Number(win.t) || 0 };
   }
 
+  const AE = (A.customEdits && typeof A.customEdits === 'object') ? A.customEdits : {};
+  const BE = (B.customEdits && typeof B.customEdits === 'object') ? B.customEdits : {};
+  const ekeys = Object.keys(AE).concat(Object.keys(BE));
+  for(let i = 0; i < ekeys.length; i++){
+    const k = ekeys[i];
+    if(out.customEdits[k] !== undefined) continue;
+    const x = AE[k];
+    const y = BE[k];
+    let win;
+    if(!x) win = y;
+    else if(!y) win = x;
+    else {
+      const xt = Number(x.t) || 0;
+      const yt = Number(y.t) || 0;
+      if(yt > xt) win = y;
+      else if(xt > yt) win = x;
+      else win = x;
+    }
+    if(win){
+      out.customEdits[k] = {
+        tr: typeof win.tr === 'string' ? win.tr : '',
+        ex: typeof win.ex === 'string' ? win.ex : '',
+        ex_tr: typeof win.ex_tr === 'string' ? win.ex_tr : '',
+        forms: typeof win.forms === 'string' ? win.forms : '',
+        t: Number(win.t) || 0
+      };
+    }
+  }
+
   return out;
 }
 
@@ -866,6 +946,20 @@ function buildProgress(s){
     Object.keys(src.srs).forEach(w => {
       const e = src.srs[w];
       if(e) out.srs[w] = { box: e.box, due: e.due, t: e.t };
+    });
+  }
+
+  if(src.customEdits && typeof src.customEdits === 'object'){
+    out.customEdits = {};
+    Object.keys(src.customEdits).forEach(k => {
+      const ed = src.customEdits[k];
+      if(ed) out.customEdits[k] = {
+        tr: String(ed.tr || '').slice(0, 300),
+        ex: String(ed.ex || '').slice(0, 500),
+        ex_tr: String(ed.ex_tr || '').slice(0, 500),
+        forms: String(ed.forms || '').slice(0, 300),
+        t: Number(ed.t) || 0
+      };
     });
   }
 
@@ -942,6 +1036,24 @@ function validateImport(obj, WORDS, now){
     });
   }
 
+  if(obj.customEdits && typeof obj.customEdits === 'object'){
+    clean.customEdits = {};
+    Object.keys(obj.customEdits).forEach(k => {
+      const ed = obj.customEdits[k];
+      if(wordSet.has(k) && ed && typeof ed === 'object' && Number.isFinite(ed.t)){
+        clean.customEdits[k] = {
+          tr: typeof ed.tr === 'string' ? ed.tr.slice(0, 300) : '',
+          ex: typeof ed.ex === 'string' ? ed.ex.slice(0, 500) : '',
+          ex_tr: typeof ed.ex_tr === 'string' ? ed.ex_tr.slice(0, 500) : '',
+          forms: typeof ed.forms === 'string' ? ed.forms.slice(0, 300) : '',
+          t: clampT(ed.t)
+        };
+      } else {
+        skipped++;
+      }
+    });
+  }
+
   clean.skipped = skipped;
   return { ok: true, clean: clean, skipped: skipped, error: null };
 }
@@ -968,7 +1080,8 @@ function sameProgress(a, b){
   if(!a || !b || typeof a !== 'object' || typeof b !== 'object') return false;
   return sameFieldMap(a.marks, b.marks, ['s', 't'])
     && sameFieldMap(a.notes, b.notes, ['v', 't'])
-    && sameFieldMap(a.srs || {}, b.srs || {}, ['box', 'due', 't']);
+    && sameFieldMap(a.srs || {}, b.srs || {}, ['box', 'due', 't'])
+    && sameFieldMap(a.customEdits || {}, b.customEdits || {}, ['tr', 'ex', 'ex_tr', 'forms', 't']);
 }
 
 function b64urlEncode(bytes){
@@ -1179,6 +1292,30 @@ function encodeSyncPayload(progress, fingerprint, isDelta){
     w.sint(row[3] - baseSec);
   }
 
+  const customEdits = (p.customEdits && typeof p.customEdits === 'object') ? p.customEdits : {};
+  const editRows = [];
+  Object.keys(customEdits).forEach(word => {
+    const at = wordPosition(word);
+    const ed = customEdits[word];
+    if(at < 0 || !ed) return;
+    editRows.push([at, String(ed.tr || ''), String(ed.ex || ''), String(ed.ex_tr || ''), String(ed.forms || ''), Math.floor((Number(ed.t) || 0) / 1000)]);
+  });
+  if(editRows.length > 0){
+    editRows.sort((a, b) => a[0] - b[0]);
+    w.varint(editRows.length);
+    let prev = -1;
+    for(let i = 0; i < editRows.length; i++){
+      const row = editRows[i];
+      w.varint(row[0] - prev - 1);
+      prev = row[0];
+      w.text(row[1]);
+      w.text(row[2]);
+      w.text(row[3]);
+      w.text(row[4]);
+      w.sint(row[5] - baseSec);
+    }
+  }
+
   return w.bytes();
 }
 
@@ -1205,7 +1342,8 @@ function decodeSyncPayload(bytes, fingerprint){
     syncDelta: (flags & 1) === 1,
     marks: {},
     notes: {},
-    srs: {}
+    srs: {},
+    customEdits: {}
   };
 
   let count = r.varint();
@@ -1245,6 +1383,23 @@ function decodeSyncPayload(bytes, fingerprint){
     const t = (baseSec + r.sint()) * 1000;
     out.srs[WORDS[at]] = { box: box, due: due, t: Math.max(0, t) };
     prev = at;
+  }
+
+  if(!r.done()){
+    let eCount = r.varint();
+    if(eCount > WORDS.length) throw new Error('too many custom edits');
+    let ePrev = -1;
+    for(let i = 0; i < eCount; i++){
+      const at = ePrev + r.varint() + 1;
+      if(at < 0 || at >= WORDS.length) throw new Error('custom edit index');
+      const tr = r.text(SYNC_MAX_TEXT_BYTES);
+      const ex = r.text(SYNC_MAX_TEXT_BYTES);
+      const ex_tr = r.text(SYNC_MAX_TEXT_BYTES);
+      const forms = r.text(SYNC_MAX_TEXT_BYTES);
+      const t = (baseSec + r.sint()) * 1000;
+      out.customEdits[WORDS[at]] = { tr: tr, ex: ex, ex_tr: ex_tr, forms: forms, t: Math.max(0, t) };
+      ePrev = at;
+    }
   }
 
   if(!r.done()) throw new Error('trailing payload');
@@ -1337,9 +1492,10 @@ function changesSince(progress, sinceMs){
     deviceId: p.deviceId,
     marks: {},
     notes: {},
-    srs: {}
+    srs: {},
+    customEdits: {}
   };
-  ['marks', 'notes', 'srs'].forEach(kind => {
+  ['marks', 'notes', 'srs', 'customEdits'].forEach(kind => {
     const bag = (p[kind] && typeof p[kind] === 'object') ? p[kind] : {};
     Object.keys(bag).forEach(word => {
       const entry = bag[word];
@@ -1352,7 +1508,7 @@ function changesSince(progress, sinceMs){
 function progressItemCount(progress){
   const p = (progress && typeof progress === 'object') ? progress : {};
   const size = k => (p[k] && typeof p[k] === 'object') ? Object.keys(p[k]).length : 0;
-  return size('marks') + size('notes') + size('srs');
+  return size('marks') + size('notes') + size('srs') + size('customEdits');
 }
 
 function buildShareUrl(code){
@@ -1449,19 +1605,24 @@ function buildQuizQueue(words, marks, srs, now){
   const rest = [];
   const list = words || [];
   for(let i = 0; i < list.length; i++){
-    const w = list[i];
-    const m = marks && marks[w];
+    const raw = list[i];
+    const entry = getEntry(raw);
+    const key = entry ? entry.id : raw;
+    const wordStr = entry ? entry.word : String(raw);
+    const m = marks && (marks[key] || marks[String(key)] || marks[wordStr]);
     if(!m || m.s !== 'u') continue;
-    const e = srs && srs[w];
-    if(!e || isDue(e, now)) due.push({ w: w, due: (e && Number(e.due)) || now });
-    else rest.push(w);
+    const e = srs && (srs[key] || srs[String(key)] || srs[wordStr]);
+    if(!e || isDue(e, now)) due.push({ w: raw, due: (e && Number(e.due)) || now, wordStr: wordStr });
+    else rest.push({ w: raw, wordStr: wordStr });
   }
-  due.sort((a, b) => (a.due - b.due) || a.w.localeCompare(b.w));
+  due.sort((a, b) => (a.due - b.due) || a.wordStr.localeCompare(b.wordStr));
   rest.sort((a, b) => {
-    const d = LEVEL_ORDER.indexOf(WORD_LEVEL.get(a)) - LEVEL_ORDER.indexOf(WORD_LEVEL.get(b));
-    return d || a.localeCompare(b);
+    const la = (getEntry(a.w) ? getEntry(a.w).level : WORD_LEVEL.get(a.wordStr)) || 'a1';
+    const lb = (getEntry(b.w) ? getEntry(b.w).level : WORD_LEVEL.get(b.wordStr)) || 'a1';
+    const d = LEVEL_ORDER.indexOf(String(la).toLowerCase()) - LEVEL_ORDER.indexOf(String(lb).toLowerCase());
+    return d || a.wordStr.localeCompare(b.wordStr);
   });
-  return due.map(x => x.w).concat(rest);
+  return due.map(x => x.w).concat(rest.map(x => x.w));
 }
 
 function shuffleArray(arr){
@@ -1753,28 +1914,64 @@ function translationEntries(word, sentence){
 function wordTranslation(wordOrEntry){
   const e = getEntry(wordOrEntry);
   const word = e ? e.word : String(wordOrEntry || '');
-  const first = translationEntries(word, '').find(entry => entry.code === currentLang)
-    || translationEntries(word, '')[0];
-  return first ? first.value : '';
+  if(e && state.customEdits){
+    const ed = state.customEdits[e.id] || state.customEdits[e.word];
+    if(ed && ed.tr) return ed.tr;
+  }
+  if(currentLang === 'en') return e ? (e.sense || e.word) : word;
+  const entries = translationEntries(word, '');
+  const match = entries.find(entry => entry.code === currentLang);
+  if(match) return match.value;
+  if(currentLang === 'ar' && entries.length) return entries[0].value;
+  return e ? (e.sense || e.word) : word;
 }
 
 function sentenceTranslation(sentenceOrEntry){
   const e = getEntry(sentenceOrEntry);
+  if(e && state.customEdits){
+    const ed = state.customEdits[e.id] || state.customEdits[e.word];
+    if(ed && ed.ex_tr) return ed.ex_tr;
+  }
+  if(currentLang === 'en') return '';
   const sentence = e ? (e.example || '') : String(sentenceOrEntry || '');
-  const first = translationEntries('', sentence).find(entry => entry.code === currentLang)
-    || translationEntries('', sentence)[0];
-  return first ? first.value : '';
+  const entries = translationEntries('', sentence);
+  const match = entries.find(entry => entry.code === currentLang);
+  if(match) return match.value;
+  if(currentLang === 'ar' && entries.length) return entries[0].value;
+  return '';
 }
 
 function answerFor(wordOrEntry){
   const e = getEntry(wordOrEntry);
   const key = e ? e.id : wordOrEntry;
+  if(e && state.customEdits){
+    const ed = state.customEdits[e.id] || state.customEdits[e.word];
+    if(ed && ed.tr) return ed.tr;
+  }
   const note = noteText(key).trim() || (e ? noteText(e.word).trim() : '');
   if(note) return note;
-  if(e && Array.isArray(e.categories_ar) && e.categories_ar.length){
-    return e.categories_ar.join(', ');
+  if(currentLang === 'ar'){
+    const tr = wordTranslation(e ? e.word : wordOrEntry);
+    if(tr) return tr;
+    if(e && Array.isArray(e.categories_ar) && e.categories_ar.length){
+      return e.categories_ar.join('، ');
+    }
+    return e ? (e.sense || e.word) : String(wordOrEntry || '');
   }
-  return wordTranslation(e ? e.word : wordOrEntry);
+  if(currentLang === 'en'){
+    if(e && e.sense) return e.sense;
+    if(e && Array.isArray(e.categories) && e.categories.length){
+      return e.categories.join(', ');
+    }
+    return e ? e.word : String(wordOrEntry || '');
+  }
+  const tr = wordTranslation(e ? e.word : wordOrEntry);
+  if(tr) return tr;
+  if(e && e.sense) return e.sense;
+  if(e && Array.isArray(e.categories) && e.categories.length){
+    return e.categories.map(c => t('cat.' + c) || c).join(', ');
+  }
+  return e ? e.word : String(wordOrEntry || '');
 }
 
 function formData(wordOrEntry){
@@ -1804,8 +2001,8 @@ function formsFor(wordOrEntry){
   } else if(e.adjective_forms && typeof e.adjective_forms === 'object'){
     const af = e.adjective_forms;
     out.push({ f: e.word, k: 'base', lbl: 'base' });
-    if(af.comparative) out.push({ f: af.comparative, k: 'reg', lbl: 'comparative' });
-    if(af.superlative) out.push({ f: af.superlative, k: 'reg', lbl: 'superlative' });
+    if(af.comparative) out.push({ f: af.comparative, k: 'reg', lbl: 'comp' });
+    if(af.superlative) out.push({ f: af.superlative, k: 'reg', lbl: 'sup' });
   }
   if(!out.length){
     out.push({ f: e.word, k: 'base', lbl: 'base' });
@@ -1895,9 +2092,22 @@ function updateCardMeta(wordOrEntry){
 
   const catArEl = document.getElementById('cardCatAr');
   if(catArEl){
-    const cats = entry ? (Array.isArray(entry.categories_ar) ? entry.categories_ar.join(', ') : (entry.categories_ar || '')) : '';
+    let cats = '';
+    if(entry){
+      if(currentLang === 'ar'){
+        cats = Array.isArray(entry.categories_ar) ? entry.categories_ar.join(', ') : (entry.categories_ar || '');
+      } else {
+        cats = Array.isArray(entry.categories) ? entry.categories.map(c => t('cat.' + c) || c).join(', ') : (entry.categories || '');
+      }
+    }
     catArEl.textContent = cats;
     catArEl.hidden = !cats;
+  }
+
+  const badgeCustom = document.getElementById('cardCustomBadge');
+  if(badgeCustom){
+    const hasCustom = entry && state.customEdits && (state.customEdits[entry.id] || state.customEdits[entry.word]);
+    badgeCustom.hidden = !hasCustom;
   }
 
   const senseEl = document.getElementById('cardSense');
@@ -1911,11 +2121,18 @@ function updateCardMeta(wordOrEntry){
 
   const trEl = document.getElementById('cardTranslation');
   if(trEl){
-    const entries = translationEntries(word, '');
-    trEl.innerHTML = entries.map(e =>
-      `<span class="translation-line" lang="${esc(e.code)}"><b>${esc(e.code.toUpperCase())}</b> ${esc(e.value)}</span>`
-    ).join('');
-    trEl.hidden = entries.length === 0 || !state.ui.preferences.showTranslations;
+    const custom = entry && state.customEdits && (state.customEdits[entry.id] || state.customEdits[entry.word]);
+    let html = '';
+    if(custom && custom.tr){
+      html = `<span class="translation-line"><b>${esc(t('edit.customBadge'))}</b> ${esc(custom.tr)}</span>`;
+    } else {
+      const entries = translationEntries(word, '');
+      html = entries.map(e =>
+        `<span class="translation-line" lang="${esc(e.code)}"><b>${esc(e.code.toUpperCase())}</b> ${esc(e.value)}</span>`
+      ).join('');
+    }
+    trEl.innerHTML = html;
+    trEl.hidden = !html || !state.ui.preferences.showTranslations;
   }
   const speakEl = document.getElementById('speakMain');
   if(speakEl) speakEl.hidden = true;
@@ -1959,9 +2176,29 @@ function speakCurrentExample(){
   if(el) speakEnglishText(el.textContent);
 }
 
+function normalizeFormKey(lbl){
+  const l = String(lbl || '').trim();
+  const lower = l.toLowerCase();
+  if(lower === 'comparative' || lower === 'comp') return 'comp';
+  if(lower === 'superlative' || lower === 'sup') return 'sup';
+  if(lower === 'singular' || lower === 'base' || lower === 'v1' || lower === 'present') return 'base';
+  if(lower === 'plural') return 'plural';
+  if(lower === 'v2' || lower === 'past') return 'past';
+  if(lower === 'v3' || lower === 'pp' || lower === 'pastpp') return 'pp';
+  if(lower === 'ing') return 'ing';
+  if(lower === 's' || lower === 'third') return 'third';
+  return l;
+}
+
 function formLabel(f){
-  const key = 'form.' + ((f && f.lbl) ? f.lbl : 'base');
-  return t(key);
+  const raw = (f && f.lbl) ? f.lbl : 'base';
+  const norm = normalizeFormKey(raw);
+  const key = 'form.' + norm;
+  const val = t(key);
+  if(val !== key) return val;
+  const rawVal = t('form.' + raw);
+  if(rawVal !== ('form.' + raw)) return rawVal;
+  return raw;
 }
 
 function openFormsGuide(){
@@ -1972,11 +2209,22 @@ function openFormsGuide(){
   if(!overlay || !content || !Array.isArray(forms) || !forms.length) return;
   content.innerHTML = `<p class="forms-guide-intro">${esc(t('forms.guide.intro'))}</p>
     <div class="forms-guide-list">${forms.map((form) => {
-      const label = form.lbl || 'base';
+      const raw = form.lbl || 'base';
+      const norm = normalizeFormKey(raw);
+      let useText = t('forms.guide.' + norm + '.use');
+      if(useText === ('forms.guide.' + norm + '.use')){
+        const alt = t('forms.guide.' + raw + '.use');
+        if(alt !== ('forms.guide.' + raw + '.use')) useText = alt;
+      }
+      let diffText = t('forms.guide.' + norm + '.difference');
+      if(diffText === ('forms.guide.' + norm + '.difference')){
+        const alt = t('forms.guide.' + raw + '.difference');
+        if(alt !== ('forms.guide.' + raw + '.difference')) diffText = alt;
+      }
       return `<article class="forms-guide-item">
         <div class="forms-guide-word"><span class="fc-word">${formChipHtml(form)}</span><span>${esc(formLabel(form))}</span></div>
-        <p><b>${esc(t('forms.guide.' + label + '.use'))}</b></p>
-        <p class="forms-guide-difference">${esc(t('forms.guide.' + label + '.difference'))}</p>
+        <p><b>${esc(useText)}</b></p>
+        <p class="forms-guide-difference">${esc(diffText)}</p>
       </article>`;
     }).join('')}</div>`;
   overlay.classList.add('show');
@@ -1991,7 +2239,9 @@ function buildFormsBar(word, forms){
   const bar = document.getElementById('formsBar');
   if(!bar) return;
   const entry = getEntry(word);
-  if(!state.ui.preferences.showForms || !entry || !entry.forms_summary || entry.forms_summary === 'no changing forms'){
+  const custom = entry && state.customEdits && (state.customEdits[entry.id] || state.customEdits[entry.word]);
+  const summary = (custom && custom.forms) ? custom.forms : (entry ? entry.forms_summary : '');
+  if(!state.ui.preferences.showForms || !summary || summary === 'no changing forms'){
     bar.hidden = true;
     bar.innerHTML = '';
     return;
@@ -2000,7 +2250,7 @@ function buildFormsBar(word, forms){
   bar.innerHTML = `<div class="forms-heading"><span class="forms-label">${esc(t('card.forms'))}</span>
     <button type="button" class="forms-guide-button" id="openFormsGuide">${esc(t('forms.guide.button'))}</button></div>
     <div class="forms-scroll" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-      <span class="forms-summary-badge" style="font-size:12px;font-weight:600;color:var(--teal-deep);padding:3px 8px;background:rgba(31,111,109,.08);border-radius:6px;direction:ltr;">${esc(entry.forms_summary)}</span>
+      <span class="forms-summary-badge" style="font-size:12px;font-weight:600;color:var(--teal-deep);padding:3px 8px;background:rgba(31,111,109,.08);border-radius:6px;direction:ltr;">${esc(summary)}</span>
     </div>`;
 
   const guideButton = document.getElementById('openFormsGuide');
@@ -2028,7 +2278,8 @@ function renderCardExample(wordOrEntry){
   const forms = formsFor(entry || word);
   updateCardMeta(entry || word);
 
-  const sentence = entry ? (entry.example || '') : sentenceFor(word);
+  const custom = entry && state.customEdits && (state.customEdits[entry.id] || state.customEdits[entry.word]);
+  const sentence = (custom && custom.ex) ? custom.ex : (entry ? (entry.example || '') : sentenceFor(word));
   buildFormsBar(entry || word, forms);
 
   if(!sentence || !state.ui.preferences.showExample){
@@ -2043,11 +2294,17 @@ function renderCardExample(wordOrEntry){
   textEl.innerHTML = highlightSentence(sentence, entry || word, forms);
 
   if(trEl){
-    const entries = translationEntries('', sentence);
-    trEl.innerHTML = entries.map(entry =>
-      `<span class="translation-line" lang="${esc(entry.code)}"><b>${esc(entry.code.toUpperCase())}</b> ${esc(entry.value)}</span>`
-    ).join('');
-    trEl.hidden = entries.length === 0 || !state.ui.preferences.showTranslations;
+    let html = '';
+    if(custom && custom.ex_tr){
+      html = `<span class="translation-line"><b>${esc(t('edit.customBadge'))}</b> ${esc(custom.ex_tr)}</span>`;
+    } else {
+      const entries = translationEntries('', sentence);
+      html = entries.map(entry =>
+        `<span class="translation-line" lang="${esc(entry.code)}"><b>${esc(entry.code.toUpperCase())}</b> ${esc(entry.value)}</span>`
+      ).join('');
+    }
+    trEl.innerHTML = html;
+    trEl.hidden = !html || !state.ui.preferences.showTranslations;
   }
 }
 
@@ -2427,7 +2684,15 @@ function currentSearch(){
   return el ? el.value : '';
 }
 
-// ---------- word search ----------
+// ---------- Word Explorer & Smart Search Overhaul ----------
+
+let explorerState = {
+  query: '',
+  level: 'all',
+  status: 'all',
+  pos: 'all',
+  sort: 'alpha_asc'
+};
 
 function isSearchOpen(){
   const overlay = document.getElementById('searchOverlay');
@@ -2438,11 +2703,10 @@ function openSearchModal(){
   const overlay = document.getElementById('searchOverlay');
   if(!overlay) return;
   lastFocused = document.activeElement;
-  const input = document.getElementById('searchInput');
-  if(input) input.value = '';
   overlay.classList.add('show');
-  renderSearchResults();
+  renderExplorer();
   requestAnimationFrame(() => {
+    const input = document.getElementById('searchInput');
     if(input){
       try{ input.focus(); }catch(e){ /* focus is optional */ }
     }
@@ -2459,88 +2723,302 @@ function closeSearch(){
   lastFocused = null;
 }
 
-function searchWords(query){
-  const qStr = (typeof query === 'object' && query !== null) ? query.word : String(query || '');
-  const q = qStr.trim().toLowerCase();
-  if(!q) return [];
-  const hits = [];
-  for(let i = 0; i < WORDS.length; i++){
-    const item = WORDS[i];
-    const word = (typeof item === 'object' && item !== null) ? item.word : String(item || '');
-    const lw = word.toLowerCase();
-    let score = -1;
-    if(lw === q) score = 0;
-    else if(lw.indexOf(q) === 0) score = 1;
-    else if(lw.indexOf(q) !== -1) score = 2;
-    if(score === -1){
-      const note = noteText(item).toLowerCase();
-      if(note && note.indexOf(q) !== -1) score = 3;
-    }
-    if(score === -1){
-      const tr = wordTranslation(word).toLowerCase();
-      if(tr && tr.indexOf(q) !== -1) score = 4;
-    }
-    if(score !== -1) hits.push({ w: item, word: word, s: score });
+function highlightWordInText(text, word){
+  if(!text || !word) return esc(text || '');
+  const w = word.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  try{
+    const reg = new RegExp(`(^|[^a-zA-Z0-9])(${w})([^a-zA-Z0-9]|$)`, 'gi');
+    return esc(text).replace(reg, '$1<b class="hl-word">$2</b>$3');
+  }catch(_){
+    return esc(text);
   }
-  hits.sort((a, b) => (a.s - b.s) || a.word.localeCompare(b.word));
-  return hits.map(x => x.w);
 }
 
-function searchRowHtml(word){
-  const lvl = WORD_LEVEL.get(word) || 'a1';
-  const m = state.marks[word];
-  const st = (m && m.s === 'k') ? 'k' : ((m && m.s === 'u') ? 'u' : 'r');
-  const note = noteText(word).trim();
-  const tr = wordTranslation(word).trim();
-  const lvlText = LEVEL_LABELS[lvl] || '';
-  const trLine = tr
-    ? `<div class="sr-note sr-tr">${esc(tr)}</div>`
-    : '';
-  return `<div class="search-row">
-    <div class="sr-main">
-      <span class="sr-word">${esc(word)}</span>
-      <span class="sr-lvl" title="${esc(t('search.level', { level: lvlText }))}">${esc(lvlText)}</span>
-      <span class="sr-status ${st}">${esc(t('search.status.' + st))}</span>
+function filterExplorerWords(){
+  const now = Date.now();
+  const q = (explorerState.query || '').trim().toLowerCase();
+  const lvl = explorerState.level;
+  const stFilter = explorerState.status;
+  const posFilter = explorerState.pos;
+
+  const filtered = [];
+  for(let i = 0; i < WORDS.length; i++){
+    const e = WORDS[i];
+    const word = (e && e.word) ? e.word : String(e || '');
+    const lw = word.toLowerCase();
+
+    // Level filter
+    const eLvl = (e && e.level ? e.level : (WORD_LEVEL.get(word) || 'a1')).toLowerCase();
+    if(lvl !== 'all' && eLvl !== lvl) continue;
+
+    // Status filter
+    const id = (e && typeof e.id !== 'undefined') ? e.id : word;
+    const m = state.marks[id] || state.marks[String(id)] || state.marks[word];
+    const st = (m && m.s === 'k') ? 'k' : ((m && m.s === 'u') ? 'u' : 'r');
+    const srsEntry = state.srs[id] || state.srs[String(id)] || state.srs[word];
+    const isDueWord = (st === 'u') && isDue(srsEntry, now);
+
+    if(stFilter === 'k' && st !== 'k') continue;
+    if(stFilter === 'u' && st !== 'u') continue;
+    if(stFilter === 'due' && !isDueWord) continue;
+    if(stFilter === 'r' && st !== 'r') continue;
+
+    // Part of Speech filter
+    if(posFilter !== 'all'){
+      const pos = (e && e.pos ? e.pos : '').toLowerCase();
+      const isVerb = pos.includes('verb') || !!(e && e.verb_forms);
+      const isNoun = pos.includes('noun') || !!(e && e.noun_forms);
+      const isAdj = pos.includes('adj') || !!(e && e.adjective_forms);
+      if(posFilter === 'verb' && !isVerb) continue;
+      if(posFilter === 'noun' && !isNoun) continue;
+      if(posFilter === 'adj' && !isAdj) continue;
+      if(posFilter === 'other' && (isVerb || isNoun || isAdj)) continue;
+    }
+
+    // Search Query filter
+    let matchScore = 0;
+    if(q){
+      if(lw === q) matchScore = 100;
+      else if(lw.startsWith(q)) matchScore = 80;
+      else if(lw.includes(q)) matchScore = 60;
+      else {
+        const custom = state.customEdits && (state.customEdits[id] || state.customEdits[word]);
+        const tr = (custom && custom.tr) ? custom.tr : wordTranslation(word);
+        const ltr = tr.toLowerCase();
+        if(ltr.includes(q)) matchScore = 50;
+        else {
+          const sense = (e && e.sense ? e.sense : '').toLowerCase();
+          if(sense.includes(q)) matchScore = 40;
+          else {
+            const ex = (custom && custom.ex) ? custom.ex : (e && e.example ? e.example : '');
+            if(ex.toLowerCase().includes(q)) matchScore = 30;
+            else continue;
+          }
+        }
+      }
+    }
+
+    filtered.push({ e: e, word: word, id: id, score: matchScore, st: st, isDue: isDueWord, lvl: eLvl });
+  }
+
+  // Sorting
+  const sort = explorerState.sort;
+  filtered.sort((a, b) => {
+    if(q && a.score !== b.score) return b.score - a.score;
+    if(sort === 'alpha_asc') return a.word.localeCompare(b.word);
+    if(sort === 'alpha_desc') return b.word.localeCompare(a.word);
+    if(sort === 'level_asc'){
+      const d = LEVEL_ORDER.indexOf(a.lvl) - LEVEL_ORDER.indexOf(b.lvl);
+      return d || a.word.localeCompare(b.word);
+    }
+    if(sort === 'level_desc'){
+      const d = LEVEL_ORDER.indexOf(b.lvl) - LEVEL_ORDER.indexOf(a.lvl);
+      return d || a.word.localeCompare(b.word);
+    }
+    if(sort === 'status_unknown'){
+      const sa = a.st === 'u' ? 0 : (a.st === 'r' ? 1 : 2);
+      const sb = b.st === 'u' ? 0 : (b.st === 'r' ? 1 : 2);
+      return (sa - sb) || a.word.localeCompare(b.word);
+    }
+    if(sort === 'status_due'){
+      const da = a.isDue ? 0 : 1;
+      const db = b.isDue ? 0 : 1;
+      return (da - db) || a.word.localeCompare(b.word);
+    }
+    if(sort === 'status_known'){
+      const ka = a.st === 'k' ? 0 : 1;
+      const kb = b.st === 'k' ? 0 : 1;
+      return (ka - kb) || a.word.localeCompare(b.word);
+    }
+    if(sort === 'importance'){
+      const ia = (a.e && a.e.list && a.e.list.includes('3000')) ? 0 : 1;
+      const ib = (b.e && b.e.list && b.e.list.includes('3000')) ? 0 : 1;
+      return (ia - ib) || a.word.localeCompare(b.word);
+    }
+    if(sort === 'random'){
+      return (Number(a.id) * 17 + a.word.length) % 11 - (Number(b.id) * 17 + b.word.length) % 11;
+    }
+    return a.word.localeCompare(b.word);
+  });
+
+  return filtered;
+}
+
+function explorerCardHtml(item){
+  const e = item.e;
+  const word = item.word;
+  const id = item.id;
+  const custom = state.customEdits && (state.customEdits[id] || state.customEdits[word]);
+  const tr = (custom && custom.tr) ? custom.tr : wordTranslation(word);
+  const sense = (e && e.sense) ? e.sense : '';
+  const pos = (e && e.pos) ? e.pos : '';
+  const lvl = item.lvl || 'a1';
+  const st = item.st;
+  const isDue = item.isDue;
+
+  let stClass = st;
+  let stLabel = t('search.status.' + st);
+  if(isDue){
+    stClass = 'due';
+    stLabel = t('quiz.source.due');
+  }
+
+  // Forms breakdown
+  let formsHtml = '';
+  if(custom && custom.forms){
+    formsHtml = `<span class="exp-form-chip"><b>${esc(t('edit.forms'))}:</b> ${esc(custom.forms)}</span>`;
+  } else {
+    const forms = formsFor(e || word);
+    if(Array.isArray(forms) && forms.length){
+      formsHtml = forms.map(f => `<span class="exp-form-chip"><b>${esc(formLabel(f))}:</b> ${esc(f.f)}</span>`).join(' ');
+    } else if(e && e.forms_summary && e.forms_summary !== 'no changing forms'){
+      formsHtml = `<span class="exp-form-chip">${esc(e.forms_summary)}</span>`;
+    }
+  }
+
+  // Example sentence
+  const exText = (custom && custom.ex) ? custom.ex : (e && e.example ? e.example : '');
+  const exTr = (custom && custom.ex_tr) ? custom.ex_tr : sentenceTranslation(exText);
+  const hlExample = highlightWordInText(exText, word);
+
+  return `<article class="explorer-card" data-word-id="${esc(id)}">
+    <div class="exp-card-header">
+      <div class="exp-word-cluster">
+        <span class="exp-word">${esc(word)}</span>
+        <button type="button" class="exp-audio-btn" data-audio-id="${esc(id)}" title="${esc(t('card.speak.title'))}" aria-label="${esc(t('card.speak.title'))}">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <span class="exp-lvl-badge lvl-${esc(lvl)}">${esc(lvl.toUpperCase())}</span>
+        ${pos ? `<span class="exp-pos-badge">${esc(pos)}</span>` : ''}
+      </div>
+      <div class="exp-card-actions">
+        <span class="exp-status-pill ${stClass}">${esc(stLabel)}</span>
+        <button type="button" class="exp-jump-btn" data-jump-id="${esc(id)}" title="${esc(t('search.studyWord'))}">${esc(t('search.studyWord'))}</button>
+      </div>
     </div>
-    ${trLine}
-    ${note ? `<div class="sr-note">${esc(note)}</div>` : ''}
-  </div>`;
+    <div class="exp-card-meaning">
+      <div class="exp-tr-row">
+        <span class="exp-tr-text">${esc(tr)}</span>
+        ${custom && custom.tr ? `<span class="custom-badge" style="display:inline-block;margin-inline-start:6px;">${esc(t('edit.customBadge'))}</span>` : ''}
+      </div>
+      ${sense ? `<div class="exp-sense-text">${esc(sense)}</div>` : ''}
+    </div>
+    ${formsHtml ? `<div class="exp-forms-row">${formsHtml}</div>` : ''}
+    ${exText ? `
+    <div class="exp-example-box">
+      <div class="exp-example-en">“${hlExample}”</div>
+      ${exTr ? `<div class="exp-example-tr">${esc(exTr)}</div>` : ''}
+    </div>` : ''}
+  </article>`;
 }
 
-function renderSearchResults(){
+function jumpToWord(entryOrId){
+  const entry = getEntry(entryOrId);
+  if(!entry) return;
+  closeSearch();
+
+  const lvl = (entry.level || 'all').toLowerCase();
+  state.ui.currentLevel = lvl;
+  buildLevelBar();
+
+  restoreDeckMarkup();
+  displayedEntry = entry;
+  displayedWord = entry.word;
+  cardFormWord = entry.word;
+
+  const total = WORDS.length;
+  const known = countStatus('k');
+  const unknown = countStatus('u');
+  const levelWords = wordsOfLevel(lvl);
+  const markedInLevel = levelWords.filter(isMarkedWord).length;
+
+  const wordPosEl = document.getElementById('wordPos');
+  if(wordPosEl) wordPosEl.textContent = `${markedInLevel + 1} / ${levelWords.length}`;
+  const lvlBadgeEl = document.getElementById('lvlBadge');
+  if(lvlBadgeEl) lvlBadgeEl.textContent = (entry.level || 'A1').toUpperCase();
+  const wordCountEl = document.getElementById('wordCount');
+  if(wordCountEl) wordCountEl.textContent = `${known + unknown} / ${total}`;
+
+  setCardWord(entry.word);
+  updateCardAudio(entry);
+  updateCardSentence(entry);
+
+  const input = document.getElementById('translationInput');
+  if(input) input.value = noteText(entry.id) || noteText(entry.word);
+
+  const card = document.getElementById('card');
+  if(card){
+    card.className = 'card enter';
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function renderExplorer(){
   const list = document.getElementById('searchList');
   const countEl = document.getElementById('searchCount');
   const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('searchClearBtn');
   if(!list) return;
 
-  const q = input ? input.value.trim() : '';
-  if(!q){
-    if(countEl){
-      countEl.textContent = '';
-      countEl.hidden = true;
-    }
-    list.innerHTML = `<div class="review-empty">${esc(t('search.hint'))}</div>`;
-    return;
+  if(input && explorerState.query !== input.value){
+    explorerState.query = input.value;
+  }
+  if(clearBtn){
+    clearBtn.classList.toggle('show', !!(input && input.value));
   }
 
-  const found = searchWords(q);
+  const results = filterExplorerWords();
+  const limit = 80;
+
   if(countEl){
     countEl.hidden = false;
-    countEl.textContent = t('search.count', { n: found.length });
+    countEl.textContent = t('search.shownCount', { n: Math.min(results.length, limit), total: results.length });
   }
 
-  if(!found.length){
+  if(!results.length){
     list.innerHTML = `<div class="review-empty">${esc(t('search.nomatch'))}</div>`;
     return;
   }
 
-  const limit = 120;
-  list.innerHTML = found.slice(0, limit).map(searchRowHtml).join('');
+  list.innerHTML = results.slice(0, limit).map(explorerCardHtml).join('');
+
+  // Wire up audio buttons and jump buttons inside cards
+  list.querySelectorAll('[data-audio-id]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.getAttribute('data-audio-id');
+      const entry = getEntry(id);
+      if(!entry) return;
+      if(entry.audio_uk || entry.audio_us){
+        const src = (state.ui.speechAcc === 'us' && entry.audio_us) ? entry.audio_us : (entry.audio_uk || entry.audio_us);
+        playAudio(src, btn);
+      } else {
+        speakEnglishText(entry.word);
+      }
+    });
+  });
+
+  list.querySelectorAll('[data-jump-id]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.getAttribute('data-jump-id');
+      jumpToWord(id);
+    });
+  });
+}
+
+function searchWords(query){
+  explorerState.query = String(query || '');
+  return filterExplorerWords().map(x => x.e);
+}
+
+function renderSearchResults(){
+  renderExplorer();
 }
 
 function refreshSearchForLang(){
   if(!isSearchOpen()) return;
-  renderSearchResults();
+  renderExplorer();
 }
 
 function isReviewOpen(){
@@ -3645,9 +4123,234 @@ function currentQuizItem(){
   return quizSession.items[quizSession.index] || null;
 }
 
+function playCatSound(){
+  try{
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if(!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1050, now);
+    filter.Q.setValueAtTime(2.5, now);
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(420, now);
+    osc.frequency.exponentialRampToValueAtTime(780, now + 0.14);
+    osc.frequency.exponentialRampToValueAtTime(340, now + 0.48);
+
+    oscGain.gain.setValueAtTime(0.0001, now);
+    oscGain.gain.linearRampToValueAtTime(0.28, now + 0.08);
+    oscGain.gain.exponentialRampToValueAtTime(0.18, now + 0.28);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.52);
+
+    const sub = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    sub.type = 'triangle';
+    sub.frequency.setValueAtTime(210, now);
+    sub.frequency.exponentialRampToValueAtTime(390, now + 0.14);
+    sub.frequency.exponentialRampToValueAtTime(170, now + 0.48);
+
+    subGain.gain.setValueAtTime(0.0001, now);
+    subGain.gain.linearRampToValueAtTime(0.12, now + 0.08);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+
+    osc.connect(filter);
+    filter.connect(oscGain);
+    oscGain.connect(ctx.destination);
+
+    sub.connect(subGain);
+    subGain.connect(ctx.destination);
+
+    osc.start(now);
+    sub.start(now);
+    osc.stop(now + 0.55);
+    sub.stop(now + 0.55);
+
+    setTimeout(() => {
+      try{ ctx.close(); }catch(e){}
+    }, 700);
+  }catch(e){
+    /* Web Audio optional */
+  }
+}
+
+let quizTimerId = null;
+
+function clearQuizTimer(){
+  if(quizTimerId){
+    clearInterval(quizTimerId);
+    quizTimerId = null;
+  }
+}
+
+function startQuizTimer(){
+  clearQuizTimer();
+  quizTimerId = setInterval(() => {
+    if(!quizSession || quizSession.mode !== 'timeAttack' || quizSession.ended){
+      clearQuizTimer();
+      return;
+    }
+    quizSession.timeLeft--;
+    updateQuizTimerDisplay();
+    if(quizSession.timeLeft <= 0){
+      clearQuizTimer();
+      finishTimeAttack();
+    }
+  }, 1000);
+}
+
+function updateQuizTimerDisplay(){
+  const badge = document.getElementById('quizTimerBadge');
+  if(!badge || !quizSession) return;
+  badge.textContent = `⏱️ ${quizSession.timeLeft}s`;
+  badge.classList.toggle('urgent', quizSession.timeLeft <= 6);
+}
+
+function finishTimeAttack(){
+  clearQuizTimer();
+  if(!quizSession) return;
+  quizSession.ended = true;
+  quizSession.endedAt = Date.now();
+  const body = document.getElementById('quizBody');
+  if(!body) return;
+
+  const score = quizSession.score || 0;
+  const streak = quizSession.bestStreak || 0;
+
+  body.innerHTML = `<div class="quiz-screen" style="text-align:center;padding:16px 8px;">
+    <h3 style="font-size:22px;margin:10px 0;color:var(--gold-deep);">${esc(t('quiz.timeUp'))}</h3>
+    <div class="quiz-stats" style="font-size:15px;line-height:2.2;padding:16px;margin:16px 0;">
+      <b style="font-size:17px;color:var(--teal-deep);">${esc(t('quiz.speedScore', { n: score }))}</b><br>
+      <span>${esc(t('quiz.fastestStreak', { n: streak }))}</span>
+    </div>
+    <div class="quiz-start-actions" style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button type="button" class="tool-btn primary" id="quizAttackReplay">${esc(t('quiz.mode.timeAttack'))}</button>
+      <button type="button" class="tool-btn" id="quizAttackBack">${esc(t('modal.close'))}</button>
+    </div>
+  </div>`;
+
+  const replayBtn = document.getElementById('quizAttackReplay');
+  if(replayBtn) replayBtn.addEventListener('click', () => {
+    state.ui.quizSettings.mode = 'timeAttack';
+    startQuiz();
+  });
+  const backBtn = document.getElementById('quizAttackBack');
+  if(backBtn) backBtn.addEventListener('click', () => closeQuiz(true));
+}
+
+function isEditWordOpen(){
+  const overlay = document.getElementById('editWordOverlay');
+  return !!overlay && overlay.classList.contains('show');
+}
+
+function openEditWordModal(focusId){
+  const overlay = document.getElementById('editWordOverlay');
+  if(!overlay) return;
+  const word = displayedWord;
+  const entry = getEntry(word);
+  if(!entry) return;
+
+  const custom = state.customEdits && (state.customEdits[entry.id] || state.customEdits[entry.word]);
+  const trInput = document.getElementById('editWordTr');
+  const exInput = document.getElementById('editWordEx');
+  const exTrInput = document.getElementById('editWordExTr');
+  const formsInput = document.getElementById('editWordForms');
+  const badge = document.getElementById('editWordBadge');
+  const statusEl = document.getElementById('editWordStatus');
+
+  if(badge) badge.textContent = entry.word + (entry.level ? ' · ' + entry.level : '');
+  if(statusEl) statusEl.hidden = true;
+
+  if(trInput) trInput.value = (custom && custom.tr) ? custom.tr : wordTranslation(entry);
+  if(exInput) exInput.value = (custom && custom.ex) ? custom.ex : (entry.example || '');
+  if(exTrInput) exTrInput.value = (custom && custom.ex_tr) ? custom.ex_tr : sentenceTranslation(entry.example || '');
+  if(formsInput) formsInput.value = (custom && custom.forms) ? custom.forms : (entry.forms_summary || '');
+
+  overlay.classList.add('show');
+  requestAnimationFrame(() => {
+    const target = focusId ? document.getElementById(focusId) : trInput;
+    if(target) target.focus();
+  });
+}
+
+function closeEditWordModal(){
+  const overlay = document.getElementById('editWordOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function saveCustomEdit(){
+  const word = displayedWord;
+  const entry = getEntry(word);
+  if(!entry) return;
+
+  const trInput = document.getElementById('editWordTr');
+  const exInput = document.getElementById('editWordEx');
+  const exTrInput = document.getElementById('editWordExTr');
+  const formsInput = document.getElementById('editWordForms');
+  const statusEl = document.getElementById('editWordStatus');
+
+  if(!state.customEdits) state.customEdits = {};
+  state.customEdits[entry.id] = {
+    tr: trInput ? trInput.value.trim() : '',
+    ex: exInput ? exInput.value.trim() : '',
+    ex_tr: exTrInput ? exTrInput.value.trim() : '',
+    forms: formsInput ? formsInput.value.trim() : '',
+    t: Date.now()
+  };
+
+  scheduleSave();
+  updateCardMeta(entry);
+  renderCardExample(entry);
+
+  if(statusEl){
+    statusEl.textContent = t('edit.saved');
+    statusEl.hidden = false;
+  }
+  setTimeout(() => {
+    closeEditWordModal();
+  }, 600);
+}
+
+function resetCustomEdit(){
+  const word = displayedWord;
+  const entry = getEntry(word);
+  if(!entry) return;
+
+  if(state.customEdits){
+    delete state.customEdits[entry.id];
+    delete state.customEdits[entry.word];
+  }
+
+  scheduleSave();
+  updateCardMeta(entry);
+  renderCardExample(entry);
+
+  const trInput = document.getElementById('editWordTr');
+  const exInput = document.getElementById('editWordEx');
+  const exTrInput = document.getElementById('editWordExTr');
+  const formsInput = document.getElementById('editWordForms');
+  const statusEl = document.getElementById('editWordStatus');
+
+  if(trInput) trInput.value = wordTranslation(entry);
+  if(exInput) exInput.value = entry.example || '';
+  if(exTrInput) exTrInput.value = sentenceTranslation(entry.example || '');
+  if(formsInput) formsInput.value = entry.forms_summary || '';
+
+  if(statusEl){
+    statusEl.textContent = t('edit.reset');
+    statusEl.hidden = false;
+  }
+}
+
 function openQuizModal(){
   lastFocused = document.activeElement;
   quizSession = null;
+  clearQuizTimer();
   renderQuizStart();
   const overlay = document.getElementById('quizOverlay');
   if(!overlay) return;
@@ -3663,6 +4366,7 @@ function closeQuiz(force){
   if(quizSession && !quizSession.ended && !force){
     if(!confirm(t('quiz.confirmExit'))) return;
   }
+  clearQuizTimer();
   const overlay = document.getElementById('quizOverlay');
   overlay.classList.remove('show');
   quizSession = null;
@@ -3692,9 +4396,20 @@ function renderQuizStart(){
     <p class="quiz-hint">${esc(t('quiz.hint'))}</p>
 
     <div class="quiz-field">
+      <span class="quiz-field-label">${esc(t('quiz.mode'))}</span>
+      <div class="quiz-group">
+        <label class="quiz-radio"><input type="radio" name="quizMode" value="standard"${(!s.mode || s.mode === 'standard') ? ' checked' : ''}>${esc(t('quiz.mode.standard'))}</label>
+        <label class="quiz-radio"><input type="radio" name="quizMode" value="timeAttack"${s.mode === 'timeAttack' ? ' checked' : ''}>${esc(t('quiz.mode.timeAttack'))}</label>
+        <label class="quiz-radio"><input type="radio" name="quizMode" value="listening"${s.mode === 'listening' ? ' checked' : ''}>${esc(t('quiz.mode.listening'))}</label>
+      </div>
+    </div>
+
+    <div class="quiz-field">
       <span class="quiz-field-label">${esc(t('quiz.source'))}</span>
-      <label class="quiz-radio"><input type="radio" name="quizSource" value="all"${s.source === 'all' ? ' checked' : ''}>${esc(t('quiz.source.all'))}</label>
-      <label class="quiz-radio"><input type="radio" name="quizSource" value="due"${s.source === 'due' ? ' checked' : ''}>${esc(t('quiz.source.due'))}</label>
+      <div class="quiz-group">
+        <label class="quiz-radio"><input type="radio" name="quizSource" value="all"${s.source === 'all' ? ' checked' : ''}>${esc(t('quiz.source.all'))}</label>
+        <label class="quiz-radio"><input type="radio" name="quizSource" value="due"${s.source === 'due' ? ' checked' : ''}>${esc(t('quiz.source.due'))}</label>
+      </div>
     </div>
 
     <div class="quiz-field">
@@ -3704,9 +4419,11 @@ function renderQuizStart(){
 
     <div class="quiz-field">
       <span class="quiz-field-label">${esc(t('quiz.count'))}</span>
-      <label class="quiz-radio"><input type="radio" name="quizCount" value="10"${s.count === 10 ? ' checked' : ''}>10</label>
-      <label class="quiz-radio"><input type="radio" name="quizCount" value="20"${s.count === 20 ? ' checked' : ''}>20</label>
-      <label class="quiz-radio"><input type="radio" name="quizCount" value="0"${s.count === 0 ? ' checked' : ''}>${esc(t('level.all'))}</label>
+      <div class="quiz-group">
+        <label class="quiz-radio"><input type="radio" name="quizCount" value="10"${s.count === 10 ? ' checked' : ''}>10</label>
+        <label class="quiz-radio"><input type="radio" name="quizCount" value="20"${s.count === 20 ? ' checked' : ''}>20</label>
+        <label class="quiz-radio"><input type="radio" name="quizCount" value="0"${s.count === 0 ? ' checked' : ''}>${esc(t('level.all'))}</label>
+      </div>
     </div>
 
     <p class="quiz-available${pool.length ? '' : ' empty'}">${esc(t('quiz.available', { n: pool.length }))}</p>
@@ -3722,6 +4439,15 @@ function renderQuizStart(){
       <button type="button" class="tool-btn primary" id="quizStartBtn"${pool.length === 0 ? ' disabled' : ''}>${esc(t('quiz.start'))}</button>
     </div>
   </div>`;
+
+  body.querySelectorAll('input[name="quizMode"]').forEach(el => {
+    el.addEventListener('change', () => {
+      if(!el.checked) return;
+      state.ui.quizSettings.mode = el.value;
+      saveQuizSettings();
+      renderQuizStart();
+    });
+  });
 
   body.querySelectorAll('input[name="quizSource"]').forEach(el => {
     el.addEventListener('change', () => {
@@ -3778,6 +4504,11 @@ function startQuiz(onlyWords){
   const items = queue.map(w => ({ word: w, type: 'mc', result: null, extra: false, answered: false, state: {} }));
 
   quizSession = {
+    mode: s.mode || 'standard',
+    timeLeft: 30,
+    score: 0,
+    streak: 0,
+    bestStreak: 0,
     items: items,
     initialWords: queue.slice(),
     answers: answers,
@@ -3791,6 +4522,10 @@ function startQuiz(onlyWords){
     mistakes: new Set()
   };
 
+  if(quizSession.mode === 'timeAttack'){
+    startQuizTimer();
+  }
+
   renderQuizQuestion();
 }
 
@@ -3801,7 +4536,9 @@ function renderQuizQuestion(keep){
   if(!item){ finishQuiz(); return; }
 
   const total = quizSession.items.length;
-  const lvl = WORD_LEVEL.get(item.word) || 'a1';
+  const entry = getEntry(item.word);
+  const displayWord = entry ? entry.word : String(item.word);
+  const lvl = entry ? (entry.level || '').toLowerCase() : (WORD_LEVEL.get(displayWord) || 'a1');
   const pct = total ? ((quizSession.index + 1) / total * 100) : 0;
 
   if(!keep){
@@ -3809,10 +4546,18 @@ function renderQuizQuestion(keep){
     item.state = {};
   }
 
+  const isTimeAttack = quizSession.mode === 'timeAttack';
+  const timerHtml = isTimeAttack
+    ? `<span class="quiz-timer-badge${quizSession.timeLeft <= 6 ? ' urgent' : ''}" id="quizTimerBadge">⏱️ ${quizSession.timeLeft}s</span>`
+    : '';
+
   body.innerHTML = `<div class="quiz-screen">
     <div class="quiz-topline">
       <span>${esc(t('quiz.progress', { n: quizSession.index + 1, total: total }))}</span>
-      <span class="quiz-lvl">${esc(LEVEL_LABELS[lvl] || '')}</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${timerHtml}
+        <span class="quiz-lvl">${esc(LEVEL_LABELS[lvl] || '')}</span>
+      </div>
     </div>
     <div class="quiz-bar"><i style="width:${pct.toFixed(2)}%"></i></div>
     <div id="quizQuestionArea"></div>
@@ -3824,8 +4569,10 @@ function renderQuizQuestion(keep){
 }
 
 function renderMcQuestion(area, item){
-  const word = item.word;
-  const correct = (item.state && item.state.correct) ? item.state.correct : answerFor(word).trim();
+  const entry = getEntry(item.word);
+  const displayWord = entry ? entry.word : String(item.word);
+  const pos = (entry && entry.pos) ? entry.pos : '';
+  const correct = (item.state && item.state.correct) ? item.state.correct : answerFor(entry || displayWord).trim();
   const saved = (item.state && Array.isArray(item.state.options) && item.state.options.length)
     ? item.state.options.slice()
     : null;
@@ -3841,14 +4588,64 @@ function renderMcQuestion(area, item){
   item.state.options = options;
   item.state.correct = correct;
 
-  area.innerHTML = `<div class="quiz-prompt">
-      <div class="quiz-question-word">${esc(word)}</div>
-    </div>
-    <div class="quiz-options" id="quizOptions">
-      ${options.map((op, i) => `<button type="button" class="quiz-option" data-opt="${i}">
-        <span class="num">${i + 1}</span><span>${esc(op)}</span>
-      </button>`).join('')}
-    </div>`;
+  const isListening = quizSession && quizSession.mode === 'listening';
+  if(isListening){
+    area.innerHTML = `<div class="quiz-prompt">
+        <div class="quiz-question-lead">${esc(t('quiz.listenPrompt'))}</div>
+        <div class="quiz-listening-hero">
+          <button type="button" class="quiz-listening-pulse" id="btnQuizListeningPulse" title="${esc(t('quiz.listenAgain'))}" aria-label="${esc(t('quiz.listenAgain'))}">
+            🎧
+          </button>
+          <button type="button" class="quiz-listening-replay-btn" id="btnQuizSpeak">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            <span>${esc(t('quiz.listenAgain'))}</span>
+          </button>
+          <div class="quiz-hidden-word-box" id="quizHiddenWordBox">
+            <span class="quiz-hidden-mask">•••••••</span>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-options" id="quizOptions">
+        ${options.map((op, i) => `<button type="button" class="quiz-option" data-opt="${i}">
+          <span class="num">${i + 1}</span><span>${esc(op)}</span>
+        </button>`).join('')}
+      </div>`;
+  } else {
+    area.innerHTML = `<div class="quiz-prompt">
+        <div class="quiz-question-lead">${esc(t('quiz.questionPrompt'))}</div>
+        <div class="quiz-question-main">
+          <span class="quiz-question-word">${esc(displayWord)}</span>
+          ${pos ? `<span class="quiz-question-pos">${esc(pos)}</span>` : ''}
+          <button type="button" class="quiz-audio-btn" id="btnQuizSpeak" title="${esc(t('card.speak.title'))}" aria-label="${esc(t('card.speak.title'))}">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="quiz-options" id="quizOptions">
+        ${options.map((op, i) => `<button type="button" class="quiz-option" data-opt="${i}">
+          <span class="num">${i + 1}</span><span>${esc(op)}</span>
+        </button>`).join('')}
+      </div>`;
+  }
+
+  const playWordAudio = () => {
+    const speakBtn = document.getElementById('btnQuizSpeak');
+    if(entry && (entry.audio_uk || entry.audio_us)){
+      const src = (state.ui.speechAcc === 'us' && entry.audio_us) ? entry.audio_us : (entry.audio_uk || entry.audio_us);
+      playAudio(src, speakBtn);
+    } else {
+      speakEnglishText(displayWord);
+    }
+  };
+
+  const speakBtn = document.getElementById('btnQuizSpeak');
+  if(speakBtn) speakBtn.addEventListener('click', (e) => { e.stopPropagation(); playWordAudio(); });
+  const pulseBtn = document.getElementById('btnQuizListeningPulse');
+  if(pulseBtn) pulseBtn.addEventListener('click', (e) => { e.stopPropagation(); playWordAudio(); });
+
+  if(isListening){
+    setTimeout(playWordAudio, 180);
+  }
 
   area.querySelectorAll('[data-opt]').forEach(btn => {
     btn.addEventListener('click', () => selectMcOption(Number(btn.getAttribute('data-opt'))));
@@ -3870,6 +4667,49 @@ function selectMcOption(i){
     if(options[idx] === item.state.correct) btn.classList.add('correct');
     else if(idx === i) btn.classList.add('wrong');
   });
+
+  if(quizSession && quizSession.mode === 'listening'){
+    const box = document.getElementById('quizHiddenWordBox');
+    if(box){
+      const entry = getEntry(item.word);
+      const displayWord = entry ? entry.word : String(item.word);
+      const pos = (entry && entry.pos) ? entry.pos : '';
+      box.innerHTML = `<span class="quiz-revealed-word">${esc(displayWord)}</span>${pos ? `<span class="quiz-question-pos" style="margin-inline-start:8px;">${esc(pos)}</span>` : ''}`;
+    }
+  }
+
+  const isTimeAttack = quizSession && quizSession.mode === 'timeAttack';
+  if(isTimeAttack){
+    answerQuestion(passed, { timeAttack: true });
+    if(passed){
+      quizSession.timeLeft += 2;
+      quizSession.score = (quizSession.score || 0) + 1;
+      quizSession.streak = (quizSession.streak || 0) + 1;
+      quizSession.bestStreak = Math.max(quizSession.bestStreak || 0, quizSession.streak);
+      const badge = document.getElementById('quizTimerBadge');
+      if(badge){
+        const f = document.createElement('span');
+        f.className = 'plus-two-float';
+        f.textContent = '+2s';
+        badge.appendChild(f);
+        setTimeout(() => f.remove(), 650);
+      }
+      updateQuizTimerDisplay();
+      setTimeout(() => nextQuizQuestion(), 280);
+    } else {
+      playCatSound();
+      quizSession.streak = 0;
+      const panel = document.querySelector('#quizOverlay .quiz-panel');
+      if(panel){
+        panel.classList.remove('time-attack-wrong');
+        void panel.offsetWidth;
+        panel.classList.add('time-attack-wrong');
+        setTimeout(() => panel.classList.remove('time-attack-wrong'), 450);
+      }
+      setTimeout(() => nextQuizQuestion(), 400);
+    }
+    return;
+  }
 
   answerQuestion(passed, {});
 }
@@ -3900,6 +4740,10 @@ function answerQuestion(passed, info){
     }
   }
 
+  if(info && info.timeAttack){
+    return;
+  }
+
   renderQuizFeedback(passed, info || {});
 }
 
@@ -3922,8 +4766,16 @@ function renderQuizFeedback(passed, info){
   if(builtIn && builtIn !== correctText) extraLines.push(`<p class="quiz-yournote">${esc(builtIn)}</p>`);
   if(note && note !== correctText && note !== builtIn) extraLines.push(`<p class="quiz-yournote">${esc(note)}</p>`);
 
+  const isListening = quizSession && quizSession.mode === 'listening';
+  const entry = getEntry(item.word);
+  const displayWord = entry ? entry.word : String(item.word);
+  const revealedHtml = isListening
+    ? `<div class="quiz-revealed-banner"><span>${esc(t('quiz.wordRevealed'))}:</span> <strong>${esc(displayWord)}</strong></div>`
+    : '';
+
   area.innerHTML = `<div class="quiz-feedback ${passed ? 'ok' : 'no'}">
     <b>${esc(passed ? t('quiz.correct') : t('quiz.wrong'))}</b>
+    ${revealedHtml}
     <p><span class="quiz-correct">${esc(correctText)}</span></p>
     ${extraLines.join('')}
     <label class="quiz-sentence-prompt" for="quizSentenceInput">${esc(t('quiz.personalSentence.prompt', { word: item.word }))}</label>
@@ -3969,6 +4821,11 @@ function nextQuizQuestion(){
 
 function finishQuiz(){
   if(!quizSession) return;
+  clearQuizTimer();
+  if(quizSession.mode === 'timeAttack'){
+    finishTimeAttack();
+    return;
+  }
   const now = Date.now();
   quizSession.endedAt = now;
   quizSession.ended = true;
@@ -4007,19 +4864,22 @@ function renderQuizEnd(){
 
   const rows = words.map(w => {
     const passed = !!quizSession.final[w];
-    const entry = state.srs[w];
-    const box = entry ? entry.box : 1;
-    const lvl = WORD_LEVEL.get(w) || 'a1';
+    const entry = getEntry(w);
+    const displayWord = entry ? entry.word : String(w);
+    const key = entry ? entry.id : w;
+    const srsEntry = state.srs[key] || state.srs[String(key)] || state.srs[displayWord];
+    const box = srsEntry ? srsEntry.box : 1;
+    const lvl = entry ? (entry.level || '').toLowerCase() : (WORD_LEVEL.get(displayWord) || 'a1');
     const pre = (passed && box === 5) ? ' checked' : '';
     return `<div class="quiz-end-row">
       <label class="quiz-check quiz-transfer" style="margin:0;">
-        <input type="checkbox" data-transfer="${esc(w)}"${pre}>
+        <input type="checkbox" data-transfer="${esc(key)}"${pre}>
         <span>${esc(t('quiz.moveToKnown'))}</span>
       </label>
       <span class="quiz-res ${passed ? 'ok' : 'no'}">${passed ? '✓' : '✕'}</span>
-      <span class="quiz-row-word">${esc(w)}</span>
+      <span class="quiz-row-word">${esc(displayWord)}</span>
       <span class="quiz-lvl">${esc(LEVEL_LABELS[lvl] || '')}</span>
-      <span class="quiz-row-note">${esc(noteText(w) || wordTranslation(w))}</span>
+      <span class="quiz-row-note">${esc(noteText(key) || noteText(displayWord) || wordTranslation(displayWord))}</span>
       <span class="quiz-stage">${esc(t('quiz.row.box', { n: box }))}</span>
     </div>`;
   }).join('');
@@ -4272,6 +5132,156 @@ function moveTutorial(direction){
   renderTutorialStep();
 }
 
+let currentWhatsNewTab = 'tab-update13';
+
+function isWhatsNewOpen(){
+  const el = document.getElementById('whatsNewOverlay');
+  return !!(el && el.classList.contains('show'));
+}
+
+function openWhatsNew(tab){
+  const overlay = document.getElementById('whatsNewOverlay');
+  if(!overlay) return;
+  renderWhatsNewContent(tab || 'tab-update13');
+  overlay.classList.add('show');
+  requestAnimationFrame(() => {
+    const btn = document.getElementById('closeWhatsNew');
+    if(btn) btn.focus();
+  });
+}
+
+function closeWhatsNew(){
+  const overlay = document.getElementById('whatsNewOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function renderWhatsNewContent(activeTab){
+  if(activeTab) currentWhatsNewTab = activeTab;
+  const contentEl = document.getElementById('whatsNewContent');
+  if(!contentEl) return;
+
+  document.querySelectorAll('.whats-new-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-tab') === currentWhatsNewTab);
+  });
+
+  const isAr = (currentLang === 'ar');
+
+  if(currentWhatsNewTab === 'tab-update13'){
+    contentEl.innerHTML = `
+      <div class="wn-section">
+        <div class="wn-release-title">
+          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.3' : 'Oxford 5000 - Update 1.3'}</span>
+          <span class="wn-tag">${isAr ? 'أحدث إصدار' : 'Latest Release'}</span>
+        </div>
+        <p class="wn-release-meta">${isAr ? 'تجربة تفاعلية ثورية تجمع بين سرعة الاستحضار، مهارة السمع، والاستكشاف الشامل للمفردات.' : 'A major interactive update featuring Time Attack, Listening Quiz, and Advanced Explorer.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">⚡</span> <span>${isAr ? 'مود سباق الوقت (Time Attack)' : 'Time Attack Mode'}</span></div>
+          <p>${isAr ? 'تحدٍ حماسي مع مؤقت زمني يبدأ بـ 30 ثانية؛ كل إجابة صحيحة تمنحك +2 ثانية إضافية لمواصلة السباق، بينما الإجابة الخاطئة تصدر صوت مواء قطة لطيف وتلويناً أحمر تحذيرياً مع الانتقال الفوري للسؤال التالي.' : 'Fast-paced quiz mode starting at 30s. Each correct answer adds +2s; mistakes trigger a gentle cat meow and instant continuation.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? 'اختبار الاستماع الصوتي فقط (Listening Only)' : 'Audio Listening-Only Quiz'}</span></div>
+          <p>${isAr ? 'نمط جديد كلياً يعتمد على الأذن والسمع؛ تستمع لنطق الكلمة إما باللكنة البريطانية أو الأمريكية دون رؤية النص الإنجليزي، ثم تختار معناها من بين 4 خيارات. بمجرد الإجابة ينكشف النص مع النطق والرموز الصوتية.' : 'Listen to UK/US native audio without seeing the English word, and choose its meaning. The word is revealed with full IPA upon answering.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🔍</span> <span>${isAr ? 'مستكشف الكلمات المتقدم والبحث الذكي' : 'Word Explorer & Smart Search'}</span></div>
+          <p>${isAr ? 'تحفة فنية في تصفح والبحث عن الكلمات تضم 8 أنماط للترتيب (أبجدياً، حسب المستوى A1-C1، الكلمات المستحقة للمراجعة، غير المعروفة، والأهمية)، مع فلاتر سريعة للأفعال والأسماء والصفات وبطاقات غنية تنقلك للكلمة فوراً.' : 'Comprehensive vocabulary explorer with 8 sort modes, filters for CEFR levels and parts of speech, and instant jump to any flashcard.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">✏️</span> <span>${isAr ? 'محرر الكلمات والترجمة والمثال المخصص' : 'Custom Word & Sentence Editor'}</span></div>
+          <p>${isAr ? 'إمكانية تعديل الترجمة، جملة المثال، ترجمة المثال، وصيغ الكلمة بنفسك، مع حفظ تعديلاتك وتشفيرها ودمجها تلقائياً مع نظام المزامنة السريعة لحمايتها من الضياع.' : 'Edit translations, examples, and forms directly. Your custom edits persist and sync seamlessly without account login.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">✨</span> <span>${isAr ? 'تظليل نصوص ذهبي وتوهج بصري فاخر' : 'Golden Highlight & Interactive Glow'}</span></div>
+          <p>${isAr ? 'تنسيق أنيق جداً عند تحديد ونسخ أي نص بلمسات ذهبية عصرية، مع تفاعلية ديناميكية عند النقر وتوهج ناعم للبطاقات وخلفية جمالية انسيابية مريحة للعين.' : 'Custom selection styling with warm gold highlights, glowing button interactions, and a modernized fluid background.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? 'توسيط الأيقونات وضبط شريط الدعم والتواصل' : 'Centered Social Icons & Polished Layout'}</span></div>
+          <p>${isAr ? 'توسيط هندسي دقيق لأيقونات التواصل الاجتماعي في الفوتر (GitHub, X, LinkedIn) وتنسيق شريط الدعم والروابط لتوفير الراحة التامة على مختلف مقاسات الشاشات.' : 'Pixel-perfect centering for social and project links with balanced responsive footer spacing.'}</p>
+        </div>
+      </div>
+    `;
+  } else if(currentWhatsNewTab === 'tab-guide'){
+    contentEl.innerHTML = `
+      <div class="wn-section">
+        <div class="wn-release-title">
+          <span>📖 ${isAr ? 'دليل الموقع الشامل لكافة المزايا' : 'Complete Site Guide & Features'}</span>
+        </div>
+        <p class="wn-release-meta">${isAr ? 'دليل كتابي كامل يشرح كل ركن وزر وخاصية في الموقع خطوة بخطوة.' : 'Everything you need to master English vocabulary efficiently with Oxford 5000.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🃏</span> <span>${isAr ? '1. بطاقات المفردات (Flashcards)' : '1. Flashcards & Word Details'}</span></div>
+          <p>${isAr ? 'كل بطاقة تعرض: الكلمة الإنجليزية، مستواها الأوروبي (A1 إلى C1)، نوعها (فعل، اسم، صفة)، الرمز الصوتي IPA، زري نطق بصوت حقيقي أصلي (UK و US)، جملة سياقية معتمدة، وتصريفات وصيغ الكلمة. انقر على أيقونة القلم ✏️ لتخصيص الترجمة أو المثال.' : 'Each card shows the word, CEFR level (A1-C1), part of speech, IPA pronunciation, native UK/US audio buttons, and verified examples. Click ✏️ to customize.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🧠</span> <span>${isAr ? '2. نظام التكرار المتباعد (SRS)' : '2. Spaced Repetition (SRS)'}</span></div>
+          <p>${isAr ? 'نظام ذكي يجدول مراجعة الكلمات وفق فترات تصاعدية علمية (المرحلة 1: بعد يوم، المرحلة 2: بعد 3 أيام، المرحلة 3: بعد أسبوع، المرحلة 4: بعد أسبوعين، المرحلة 5: بعد شهر). الإجابة الصحيحة ترفع الكلمة لمرحلة أعلى لتثبيتها في الذاكرة طويلة المدى، بينما الخطأ يعيدها للمراجعة اليومية.' : 'Spaced repetition schedules words in progressive intervals (1d, 3d, 7d, 14d, 30d). Correct answers promote words to higher stages.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? '3. أنماط الاختبار الثلاثة (Quiz Modes)' : '3. Quiz Modes'}</span></div>
+          <p>${isAr ? '• <b>الاختبار القياسي:</b> اختيار من متعدد من 4 خيارات للكلمات غير المعروفة أو المستحقة للمراجعة.<br>• <b>سباق الوقت:</b> اختبار سريع مع عداد زمني يبدأ بـ 30 ثانية ويكافئك بـ +2 ثانية لكل إجابة صحيحة.<br>• <b>اختبار الاستماع فقط:</b> الاستماع لنطق الكلمة واختيار المعنى الصحيح دون رؤية النص الإنجليزي.' : '• Standard Multiple Choice<br>• Time Attack Speed Race (+2s per correct)<br>• Audio Listening Mode (guess by ear)'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">📐</span> <span>${isAr ? '4. صيغ وتصريفات الكلمات (Word Forms)' : '4. Word Forms & Grammar Guide'}</span></div>
+          <p>${isAr ? 'دليل متكامل لتصريفات الكلمات يوضح أزمنة الأفعال (V1, V2 past, V3 participle, -ing, -s)، جموع الأسماء المفردة وغير المنتظمة، ومقارنات وتفضيل الصفات (Comparative & Superlative) مع أمثلة توضيحية لكل صيغة.' : 'Clear breakdown of verb tenses, irregular plurals, and comparative/superlative adjective forms backed by contextual examples.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">📂</span> <span>${isAr ? '5. القوائم والمراجعة الذكية' : '5. Smart Queues & Word Lists'}</span></div>
+          <p>${isAr ? 'يمكنك في أي لحظة تصفح قائمة الكلمات غير المعروفة، الكلمات المتقنة، أو المستحقة اليوم، مع تقسيمها حسب المستويات A1..C1 وبدء اختبار مخصص لأي مجموعة بنقرة واحدة.' : 'Browse unknown words, mastered words, or due words grouped by CEFR difficulty. Start a custom review anytime.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🔄</span> <span>${isAr ? '6. المزامنة الفورية والخصوصية التامة (OX6 Sync)' : '6. Instant Serverless Sync (OX6)'}</span></div>
+          <p>${isAr ? 'لا حاجة لإنشاء حساب أو إدخال بيانات شخصية. تقدمك وملاحظاتك وتعديلاتك محفوظة في متصفحك. استخدم زر "مزامنة" لتوليد رابط مشفر ذكي أو كود OX6 لنقل تقدمك فورا بين الحاسوب والهاتف.' : 'Zero account signups required. Your progress is kept securely in your browser. Generate compact OX6 sync links to transfer between devices.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🌐</span> <span>${isAr ? '7. دعم 12 لغة وعمل بدون إنترنت (Offline-First)' : '7. 12 Languages & Offline-First'}</span></div>
+          <p>${isAr ? 'التطبيق متاح بـ 12 لغة كاملة (العربية، الإنجليزية، الإسبانية، الفرنسية، الألمانية، البرتغالية، الروسية، التركية، الأردية، الهندية، الإندونيسية، الصينية) ويعمل كملف HTML مستقل حتى عند انقطاع الإنترنت.' : 'Available in 12 languages and runs 100% offline from a single standalone file.'}</p>
+        </div>
+      </div>
+    `;
+  } else if(currentWhatsNewTab === 'tab-archive'){
+    contentEl.innerHTML = `
+      <div class="wn-section">
+        <div class="wn-release-title">
+          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.3' : 'Full Changelog Archive (1.0 - 1.3)'}</span>
+        </div>
+        <p class="wn-release-meta">${isAr ? 'سجل تاريخي يوثق تطور تطبيق Oxford 5000 منذ إطلاقه الأول وحتى أحدث إصدار.' : 'Historical log of Oxford 5000 releases from inception to the latest version.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🚀</span> <span>Update 1.3 - ${isAr ? 'قفزة التفاعل والسرعة والاستكشاف' : 'Interactivity, Speed & Listening'}</span> <span class="wn-tag">v1.3.0</span></div>
+          <p>${isAr ? 'إضافة مود سباق الوقت مع مواء القطة، اختبار الاستماع الصوتي فقط، مستكشف الكلمات المتقدم بـ 8 طرق فرز وفلاتر الأقسام، محرر الكلمات والترجمة والمثال مع دعم المزامنة، شارة النجمة العائمة ودليل الموقع الشامل، تظليل النصوص الذهبي، وتحسين محاذاة الأيقونات.' : 'Time Attack mode with cat meow sound, Audio Listening quiz, Smart Word Explorer with 8 sorts, Custom Word & Sentence Editor with sync, Floating Star badge & complete site guide, stylish text selection, and centered footer icons.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎙️</span> <span>Update 1.2 - ${isAr ? 'ترقية قاعدة البيانات والنطق الصوتي المزدوج' : 'Oxford 5000 Full & Dual Audio'}</span> <span class="wn-tag">v1.2.0</span></div>
+          <p>${isAr ? 'اعتماد قاعدة بيانات Oxford 5000 Full بـ 5,325 كلمة كاملة، ربط 5,230 كلمة بملفي نطق أصلي (بريطاني UK وأمريكي US)، تغطية 100% للأمثلة السياقية، إضافة اللغة الهولندية، وزر دعم المشروع الصغير.' : 'Expanded dataset to 5,325 words, native British UK and American US pronunciation for 5,230 words, 100% example coverage, and Dutch language support.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🧭</span> <span>Update 1.1 - ${isAr ? 'الجولة التعليمية وتصنيف الصيغ' : 'Guided Tour & Word Forms'}</span> <span class="wn-tag">v1.1.0</span></div>
+          <p>${isAr ? 'إضافة الجولة التعليمية المقسمة بخطوات واضحة، دليل استخدام صيغ الكلمات والفروق بينها، حجب الصيغ غير الموثقة، تحسين طبقات النوافذ وسلاسة اللمس على الجوال.' : 'Structured tutorial tour, dedicated word forms explanation panel, filtered unverified forms, improved modal layering and mobile touch control.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🌱</span> <span>Update 1.0 - ${isAr ? 'الإطلاق الأولي لنظام المفردات الذكي' : 'Initial Release'}</span> <span class="wn-tag">v1.0.0</span></div>
+          <p>${isAr ? 'إطلاق تطبيق البطاقات التعليمية المستقل مع 4,954 كلمة، خوارزمية التكرار المتباعد SRS، اختبار الاختيار من متعدد، المزامنة السريعة عبر روابط OX6، حفظ البيانات محلياً، والعمل الكامل بدون إنترنت.' : 'Initial release with 4,954 Oxford words, SRS spaced repetition, multiple choice quizzes, serverless OX6 sync links, and offline-first single HTML build.'}</p>
+        </div>
+      </div>
+    `;
+  }
+}
+
 function openFeedback(){
   const overlay = document.getElementById('feedbackOverlay');
   if(overlay) overlay.classList.add('show');
@@ -4425,8 +5435,24 @@ function wireEvents(){
   if(closeOnboardingBtn) closeOnboardingBtn.addEventListener('click', closeOnboarding);
   const startOnboarding = document.getElementById('startOnboarding');
   if(startOnboarding) startOnboarding.addEventListener('click', closeOnboarding);
+  const whatsNewBadge = document.getElementById('whatsNewBadge');
+  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update13'));
+  const closeWhatsNewBtn = document.getElementById('closeWhatsNew');
+  if(closeWhatsNewBtn) closeWhatsNewBtn.addEventListener('click', closeWhatsNew);
+  const whatsNewOverlayEl = document.getElementById('whatsNewOverlay');
+  if(whatsNewOverlayEl){
+    whatsNewOverlayEl.addEventListener('click', (e) => {
+      if(e.target === whatsNewOverlayEl) closeWhatsNew();
+    });
+  }
+  document.querySelectorAll('.whats-new-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderWhatsNewContent(btn.getAttribute('data-tab'));
+    });
+  });
+
   const tutorialButton = document.getElementById('openTutorial');
-  if(tutorialButton) tutorialButton.addEventListener('click', openTutorial);
+  if(tutorialButton) tutorialButton.addEventListener('click', () => openWhatsNew('tab-guide'));
   const closeTutorialButton = document.getElementById('closeTutorial');
   if(closeTutorialButton) closeTutorialButton.addEventListener('click', closeTutorial);
   const tutorialPrevious = document.getElementById('tutorialPrevious');
@@ -4464,19 +5490,57 @@ function wireEvents(){
   const card = document.getElementById('card');
   if(card){
     card.addEventListener('mousedown', (e) => {
-      if(e.target.closest('.translation-input') || e.target.closest('.the-word') || e.target.closest('.example-card') || e.target.closest('.forms-bar') || e.target.closest('.legend')) return;
+      if(e.target.closest('.translation-input') || e.target.closest('.the-word') || e.target.closest('.example-card') || e.target.closest('.forms-bar') || e.target.closest('.legend') || e.target.closest('.card-edit-btn') || e.target.closest('.sent-edit-btn')) return;
       onDragStart(e.clientX);
     });
     card.addEventListener('touchstart', (e) => {
-      if(e.target.closest('.translation-input') || e.target.closest('.the-word') || e.target.closest('.example-card') || e.target.closest('.forms-bar') || e.target.closest('.legend')) return;
+      if(e.target.closest('.translation-input') || e.target.closest('.the-word') || e.target.closest('.example-card') || e.target.closest('.forms-bar') || e.target.closest('.legend') || e.target.closest('.card-edit-btn') || e.target.closest('.sent-edit-btn')) return;
       onDragStart(e.touches[0].clientX);
     }, { passive: true });
     card.addEventListener('touchmove', (e) => onDragMove(e.touches[0].clientX), { passive: true });
     card.addEventListener('touchend', onDragEnd);
   }
+
+  const btnEditCard = document.getElementById('btnEditCard');
+  if(btnEditCard) btnEditCard.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openEditWordModal('editWordTr');
+  });
+
+  const btnEditExample = document.getElementById('btnEditExample');
+  if(btnEditExample) btnEditExample.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openEditWordModal('editWordEx');
+  });
+
+  const closeEditWordBtn = document.getElementById('closeEditWord');
+  if(closeEditWordBtn) closeEditWordBtn.addEventListener('click', closeEditWordModal);
+
+  const btnSaveEditWord = document.getElementById('btnSaveEditWord');
+  if(btnSaveEditWord) btnSaveEditWord.addEventListener('click', saveCustomEdit);
+
+  const btnResetEditWord = document.getElementById('btnResetEditWord');
+  if(btnResetEditWord) btnResetEditWord.addEventListener('click', resetCustomEdit);
+
+  const editWordOverlayEl = document.getElementById('editWordOverlay');
+  if(editWordOverlayEl){
+    editWordOverlayEl.addEventListener('click', (e) => {
+      if(e.target.id === 'editWordOverlay') closeEditWordModal();
+    });
+  }
 }
 
 document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && isWhatsNewOpen()){
+    e.preventDefault();
+    closeWhatsNew();
+    return;
+  }
+  if(e.key === 'Escape' && isEditWordOpen()){
+    e.preventDefault();
+    closeEditWordModal();
+    return;
+  }
   const tutorial = document.getElementById('tutorialOverlay');
   const feedback = document.getElementById('feedbackOverlay');
   if(e.key === 'Escape' && tutorial && tutorial.classList.contains('show')){
@@ -4635,7 +5699,52 @@ const closeSearchBtn = document.getElementById('closeSearch');
 if(closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
 
 const searchInputEl = document.getElementById('searchInput');
-if(searchInputEl) searchInputEl.addEventListener('input', renderSearchResults);
+if(searchInputEl) searchInputEl.addEventListener('input', () => {
+  explorerState.query = searchInputEl.value;
+  renderExplorer();
+});
+
+const searchClearBtn = document.getElementById('searchClearBtn');
+if(searchClearBtn) searchClearBtn.addEventListener('click', () => {
+  if(searchInputEl) searchInputEl.value = '';
+  explorerState.query = '';
+  renderExplorer();
+  if(searchInputEl) searchInputEl.focus();
+});
+
+const searchSortSelect = document.getElementById('searchSortSelect');
+if(searchSortSelect) searchSortSelect.addEventListener('change', () => {
+  explorerState.sort = searchSortSelect.value;
+  renderExplorer();
+});
+
+// Explorer filter pills
+document.querySelectorAll('#searchLevelFilters [data-filter-level]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#searchLevelFilters [data-filter-level]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    explorerState.level = btn.getAttribute('data-filter-level') || 'all';
+    renderExplorer();
+  });
+});
+
+document.querySelectorAll('#searchStatusFilters [data-filter-status]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#searchStatusFilters [data-filter-status]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    explorerState.status = btn.getAttribute('data-filter-status') || 'all';
+    renderExplorer();
+  });
+});
+
+document.querySelectorAll('#searchPosFilters [data-filter-pos]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#searchPosFilters [data-filter-pos]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    explorerState.pos = btn.getAttribute('data-filter-pos') || 'all';
+    renderExplorer();
+  });
+});
 
 const searchOverlayEl = document.getElementById('searchOverlay');
 if(searchOverlayEl){
@@ -5311,7 +6420,7 @@ async function selfTest(){
   console.assert(!!document.getElementById('speakMain'), 'card: pronunciation control wired');
   console.assert(!document.getElementById('speakSentence'), 'card: example pronunciation control removed');
   console.assert(!!document.getElementById('btnAudioUk') && !!document.getElementById('btnAudioUs'), 'card: UK/US audio controls wired');
-  console.assert(document.querySelectorAll('.social-icon svg').length === 2, 'footer: social icons rendered');
+  console.assert(document.querySelectorAll('.social-icon svg').length >= 2, 'footer: social icons rendered');
   console.assert(!!document.querySelector('.coffee-support'), 'footer: coffee support control rendered');
   console.assert(document.querySelectorAll('#langMenu [data-lang]').length === langList().length, 'language menu: all languages rendered');
   const mainRect = document.getElementById('mainArea').getBoundingClientRect();
@@ -5323,6 +6432,44 @@ async function selfTest(){
   console.log('SELFTEST PASS');
 }
 
+function initExamplesNotice(){
+  const notice = document.getElementById('examplesNotice');
+  const closeBtn = document.getElementById('closeExamplesNotice');
+  if(!notice) return;
+
+  const KEY_DISMISSED = 'oxford5000_notice_dismissed';
+  const KEY_SEEN = 'oxford5000_notice_seen';
+
+  try {
+    if(localStorage.getItem(KEY_DISMISSED)) return;
+    if(sessionStorage.getItem(KEY_SEEN)) return;
+    sessionStorage.setItem(KEY_SEEN, '1');
+  } catch(_) {}
+
+  function dismiss(){
+    notice.classList.remove('show');
+    try { localStorage.setItem(KEY_DISMISSED, '1'); } catch(_) {}
+  }
+
+  if(closeBtn){
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dismiss();
+    });
+  }
+
+  notice.addEventListener('click', () => {
+    notice.classList.remove('show');
+  });
+
+  setTimeout(() => {
+    notice.classList.add('show');
+    setTimeout(() => {
+      notice.classList.remove('show');
+    }, 8000);
+  }, 1400);
+}
+
 loadState();
 applyPreferences();
 wireEvents();
@@ -5332,6 +6479,7 @@ if(!state.ui.onboardingSeen && location.hash !== '#selftest') openOnboarding();
 loadVisitorCount();
 renderSyncStatus();
 maybeAutoSync();
+initExamplesNotice();
 if(location.hash !== '#selftest') applyHashSync();
 
 if(location.hash === '#selftest'){

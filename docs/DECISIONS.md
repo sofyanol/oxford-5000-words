@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-11-21 — Self-contained audio storage inside oxford5000-app
+
+- **Decision:** Relocate the audio asset library directly inside `oxford5000-app/audio` (copied from `0- update/audio` while keeping `0- update` read-only and untouched). Update `build/build.py` and tools to resolve audio locally (`ROOT / "audio"`), and point internal links (`dist/audio`, `publish/audio`, `src/audio`) to the self-contained folder.
+- **Reason:** Removes dependency on external parent paths, making `oxford5000-app` completely self-contained, portable, and offline-capable without accessing files outside the development folder.
+
+
 ## 2026-11-19 — Floating coffee support button
 
 - **Decision:** Show a fixed, accessible coffee-support control in the corner,

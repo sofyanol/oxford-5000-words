@@ -9,9 +9,37 @@
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/
 
-**Latest release:** Update 1.2
+**Latest release:** [Update 1.3](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.3.0)
 
-## Update 1.2 (Upcoming Release Notes)
+## Update 1.3
+
+Update 1.3 focuses on deeper interactivity, active auditory learning, dynamic speed challenges, and comprehensive vocabulary exploration:
+
+- **Speed Race Mode (Time Attack)**:
+  - 30-second countdown quiz mode where every correct answer awards **+2 bonus seconds**.
+  - Wrong answers play a gentle, friendly cat meow sound and flash red, automatically advancing to the next question.
+  - Urgent countdown pulse when remaining time is 6 seconds or less.
+- **Audio-Only Listening Quiz Mode**:
+  - Training mode where learners listen to native English pronunciation (UK/US) without seeing the English word.
+  - Automatically plays audio on load with an animated listening pulse and replay button.
+  - Hidden word is revealed upon answering with its part of speech and IPA transcription.
+- **Smart Word Explorer & Advanced Search**:
+  - Interactive exploration modal with **8 sorting modes** (Alphabetical A-Z, Z-A, CEFR Level asc/desc, Unknown first, Due first, Mastered first, Importance, and Random).
+  - Filter chips for CEFR levels (A1-C1) and Parts of Speech (Verbs, Nouns, Adjectives, Others).
+  - Rich cards showing IPA, Arabic classifications, audio preview buttons, and direct jump to any card.
+- **Custom Word, Sentence, and Forms Editor**:
+  - Directly edit or correct translations, example sentences, and grammatical forms.
+  - Edits persist in local storage and encode cleanly into OX6 sync codes without data loss.
+- **Floating "What's New" Star Badge & Complete Written Site Guide**:
+  - Circular floating badge with a layered white star in front of a golden star.
+  - Comprehensive 3-tab modal detailing What's New in 1.3, a full written site guide for all features, and a cumulative changelog archive.
+- **Visual & Polish Enhancements**:
+  - Custom golden text selection highlighting across words and sentences.
+  - Subtle interactive glow and card lift effects.
+  - Pixel-perfect centering for GitHub, X, and LinkedIn footer icons.
+  - Balanced mobile-friendly support layout.
+
+## Update 1.2
 
 Update 1.2 is a major dataset and multimedia upgrade that takes the Oxford 5000 Flashcards app to the next level:
 

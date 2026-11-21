@@ -23,7 +23,7 @@ SRC = ROOT / "src"
 DATA = ROOT / "data"
 DIST = ROOT / "dist"
 PUBLISH = ROOT / "publish"
-AUDIO_DIR = ROOT.parent / "audio"
+AUDIO_DIR = ROOT / "audio"
 
 CSS_TAG = '<link rel="stylesheet" href="styles.css">'
 JS_TAG = '<script src="app.js"></script>'
@@ -35,6 +35,29 @@ def read_text(path):
 
 def dumps(obj):
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
+
+
+def ensure_audio_junctions():
+    """Ensure dist/audio, publish/audio, and src/audio properly link to ROOT/audio."""
+    if not AUDIO_DIR.is_dir():
+        return
+    import subprocess
+    for folder in (DIST, PUBLISH, SRC):
+        if not folder.is_dir():
+            folder.mkdir(parents=True, exist_ok=True)
+        dest = folder / "audio"
+        test_file = dest / "a_uk.mp3"
+        if not test_file.is_file():
+            if os.name == "nt":
+                subprocess.run(["cmd", "/c", "rmdir", str(dest)], capture_output=True)
+                subprocess.run(["cmd", "/c", "mklink", "/J", str(dest), str(AUDIO_DIR)], capture_output=True)
+            else:
+                try:
+                    if dest.is_symlink() or dest.exists():
+                        dest.unlink()
+                    dest.symlink_to(AUDIO_DIR, target_is_directory=True)
+                except Exception:
+                    pass
 
 
 def inject(js, placeholder, data, required=True):
@@ -131,6 +154,7 @@ def main():
     entries = words_data.get("words", [])
 
     validate_dataset(entries)
+    ensure_audio_junctions()
 
     js = inject(js, "__WORDS_JSON__", dumps(words_data))
     js = inject(js, "__I18N_JSON__", read_text(DATA / "i18n.json"))

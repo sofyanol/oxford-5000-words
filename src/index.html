@@ -87,6 +87,11 @@
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
   <div id="mainArea">
+  <aside id="examplesNotice" class="examples-notice" role="note" aria-live="polite">
+    <span class="notice-icon" aria-hidden="true">💡</span>
+    <span class="notice-text" data-i18n="card.examples_notice"></span>
+    <button type="button" class="notice-close" id="closeExamplesNotice" data-i18n-aria="modal.close" data-i18n-title="modal.close" aria-label="Close">✕</button>
+  </aside>
   <div class="deck" id="deck">
     <div class="ghost-card g2"></div>
     <div class="ghost-card g1"></div>
@@ -118,7 +123,9 @@
         <div class="word-meta">
           <span class="pos-badge" id="cardPos"></span>
           <span class="cat-ar" id="cardCatAr"></span>
+          <span class="custom-badge" id="cardCustomBadge" data-i18n="edit.customBadge" hidden></span>
           <span class="ipa" id="cardIpa" dir="ltr" hidden></span>
+          <button type="button" class="card-edit-btn" id="btnEditCard" data-i18n-title="edit.button" data-i18n-aria="edit.button" title="Edit">✏️</button>
           <button type="button" class="speak-btn" id="speakMain" data-i18n-title="card.speak.title" data-i18n-aria="card.speak.title" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></button>
         </div>
         <div class="word-sense" id="cardSense" hidden></div>
@@ -128,6 +135,7 @@
       <div class="example-card" id="cardSentence" hidden>
         <div class="example-head">
           <span class="sent-label" data-i18n="card.example"></span>
+          <button type="button" class="sent-edit-btn" id="btnEditExample" data-i18n-title="edit.example" data-i18n-aria="edit.example" title="Edit example">✏️</button>
         </div>
         <div class="sent-text" id="cardSentenceText" dir="ltr"></div>
         <div class="sent-tr" id="cardSentenceTr" dir="auto" hidden></div>
@@ -197,8 +205,11 @@
       <a class="social-icon linkedin-icon" href="https://www.linkedin.com/in/5ofian/" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.linkedin" data-i18n-aria="footer.linkedin">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 8.1H3.4V20h2.8V8.1ZM4.8 3A1.7 1.7 0 1 0 4.8 6.4 1.7 1.7 0 0 0 4.8 3ZM20.6 13.2c0-3.6-1.9-5.3-4.5-5.3-2.1 0-3 1.2-3.5 2v-1.8H9.8V20h2.8v-6.6c0-1.8.3-3.5 2.5-3.5 2.1 0 2.1 2 2.1 3.6V20h2.8l.6-6.8Z"></path></svg>
       </a>
-      <a class="social-icon x-icon" href="https://x.com/home" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.x" data-i18n-aria="footer.x">
+      <a class="social-icon x-icon" href="https://x.com/5ofian_" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.x" data-i18n-aria="footer.x">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4.2l3.3 4.7L16.5 4H19l-5.3 6.1L19.5 20h-4.2l-3.8-5.3L6.8 20H4.3l5.5-6.4L5 4Zm3.1 2.2 8.3 11.6h1.2L9.3 6.2H8.1Z"></path></svg>
+      </a>
+      <a class="social-icon github-icon" href="https://github.com/sofyanol" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.github" data-i18n-aria="footer.github">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg>
       </a>
     </div>
     <a class="coffee-support" href="https://www.paypal.com/ncp/payment/HZXA4F94TEA2A" target="_blank" rel="noopener noreferrer" data-i18n-title="footer.coffee" data-i18n-aria="footer.coffee">
@@ -207,6 +218,13 @@
       </span>
       <span data-i18n="footer.coffee"></span>
     </a>
+    <button type="button" class="whats-new-floating-badge" id="whatsNewBadge" data-i18n-title="whatsnew.title" aria-label="What's New">
+      <span class="star-badge-icon" aria-hidden="true">
+        <span class="star-gold">★</span>
+        <span class="star-white">★</span>
+      </span>
+      <span class="star-badge-text" data-i18n="whatsnew.badge">ما الجديد؟</span>
+    </button>
     <div class="visitor-counter" aria-live="polite">
       <span data-i18n="visitor.label"></span>: <strong id="visitorCount" data-i18n="visitor.loading"></strong>
     </div>
@@ -387,18 +405,63 @@
 </div>
 
 <div class="overlay" id="searchOverlay">
-  <div class="review-panel search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle" tabindex="-1">
-    <div class="review-head">
+  <div class="review-panel search-panel explorer-modal" role="dialog" aria-modal="true" aria-labelledby="searchTitle" tabindex="-1">
+    <div class="review-head explorer-head">
       <div class="review-head-titles">
         <h3 id="searchTitle" data-i18n="search.title"></h3>
         <span class="review-count gold" id="searchCount"></span>
       </div>
       <button class="review-close" id="closeSearch" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
-    <div class="review-controls-wrap">
-      <input class="review-search" id="searchInput" type="search" dir="auto" autocomplete="off" data-i18n-placeholder="search.placeholder" data-i18n-aria="search.placeholder">
+    <div class="explorer-toolbar">
+      <div class="explorer-search-box">
+        <span class="explorer-search-icon" aria-hidden="true">🔍</span>
+        <input class="explorer-search-input" id="searchInput" type="search" dir="auto" autocomplete="off" data-i18n-placeholder="search.placeholder" data-i18n-aria="search.placeholder">
+        <button type="button" id="searchClearBtn" class="explorer-clear-btn" title="مسح">✕</button>
+      </div>
+      <div class="explorer-sort-box">
+        <label for="searchSortSelect" class="explorer-sort-label" data-i18n="search.sortLabel"></label>
+        <select id="searchSortSelect" class="explorer-sort-select">
+          <option value="alpha_asc" data-i18n="search.sortAlphaAsc"></option>
+          <option value="alpha_desc" data-i18n="search.sortAlphaDesc"></option>
+          <option value="level_asc" data-i18n="search.sortLevelAsc"></option>
+          <option value="level_desc" data-i18n="search.sortLevelDesc"></option>
+          <option value="status_unknown" data-i18n="search.sortStatusUnknown"></option>
+          <option value="status_due" data-i18n="search.sortStatusDue"></option>
+          <option value="status_known" data-i18n="search.sortStatusKnown"></option>
+          <option value="importance" data-i18n="search.sortImportance"></option>
+          <option value="random" data-i18n="search.sortRandom"></option>
+        </select>
+      </div>
     </div>
-    <div class="search-list" id="searchList"></div>
+    <div class="explorer-filters">
+      <div class="explorer-filter-group" id="searchLevelFilters">
+        <span class="filter-group-tag" data-i18n="search.levelTag"></span>
+        <button type="button" class="explorer-chip active" data-filter-level="all" data-i18n="search.filterAll"></button>
+        <button type="button" class="explorer-chip" data-filter-level="a1">A1</button>
+        <button type="button" class="explorer-chip" data-filter-level="a2">A2</button>
+        <button type="button" class="explorer-chip" data-filter-level="b1">B1</button>
+        <button type="button" class="explorer-chip" data-filter-level="b2">B2</button>
+        <button type="button" class="explorer-chip" data-filter-level="c1">C1</button>
+      </div>
+      <div class="explorer-filter-group" id="searchStatusFilters">
+        <span class="filter-group-tag" data-i18n="search.statusTag"></span>
+        <button type="button" class="explorer-chip active" data-filter-status="all" data-i18n="search.filterAll"></button>
+        <button type="button" class="explorer-chip chip-unknown" data-filter-status="u" data-i18n="search.status.u"></button>
+        <button type="button" class="explorer-chip chip-due" data-filter-status="due" data-i18n="quiz.source.due"></button>
+        <button type="button" class="explorer-chip chip-known" data-filter-status="k" data-i18n="search.status.k"></button>
+        <button type="button" class="explorer-chip chip-new" data-filter-status="r" data-i18n="search.status.r"></button>
+      </div>
+      <div class="explorer-filter-group" id="searchPosFilters">
+        <span class="filter-group-tag" data-i18n="search.posTag"></span>
+        <button type="button" class="explorer-chip active" data-filter-pos="all" data-i18n="search.filterAll"></button>
+        <button type="button" class="explorer-chip" data-filter-pos="verb" data-i18n="search.filterVerbs"></button>
+        <button type="button" class="explorer-chip" data-filter-pos="noun" data-i18n="search.filterNouns"></button>
+        <button type="button" class="explorer-chip" data-filter-pos="adj" data-i18n="search.filterAdjectives"></button>
+        <button type="button" class="explorer-chip" data-filter-pos="other" data-i18n="search.filterOthers"></button>
+      </div>
+    </div>
+    <div class="search-list explorer-list" id="searchList"></div>
   </div>
 </div>
 
@@ -411,6 +474,62 @@
       <button class="review-close" id="closeQuiz" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
     <div class="quiz-body" id="quizBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="editWordOverlay">
+  <div class="review-panel edit-panel" role="dialog" aria-modal="true" aria-labelledby="editWordTitle" tabindex="-1" style="max-width:520px;">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="editWordTitle" data-i18n="edit.title"></h3>
+        <span class="review-count gold" id="editWordBadge"></span>
+      </div>
+      <button class="review-close" id="closeEditWord" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="edit-body" style="padding:16px 20px 22px; overflow-y:auto; flex:1;">
+      <div class="quiz-field" style="margin:8px 0 14px;">
+        <label for="editWordTr" class="quiz-field-label" data-i18n="edit.tr" style="display:block;margin-bottom:6px;font-weight:700;font-size:13px;"></label>
+        <input type="text" id="editWordTr" class="review-search" dir="auto" style="width:100%;font-size:14px;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:rgba(0,0,0,.03);">
+      </div>
+      <div class="quiz-field" style="margin:14px 0;">
+        <label for="editWordEx" class="quiz-field-label" data-i18n="edit.example" style="display:block;margin-bottom:6px;font-weight:700;font-size:13px;"></label>
+        <textarea id="editWordEx" class="review-search" dir="ltr" rows="3" style="width:100%;font-size:14px;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:rgba(0,0,0,.03);resize:vertical;"></textarea>
+      </div>
+      <div class="quiz-field" style="margin:14px 0;">
+        <label for="editWordExTr" class="quiz-field-label" data-i18n="edit.exampleTr" style="display:block;margin-bottom:6px;font-weight:700;font-size:13px;"></label>
+        <textarea id="editWordExTr" class="review-search" dir="auto" rows="2" style="width:100%;font-size:14px;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:rgba(0,0,0,.03);resize:vertical;"></textarea>
+      </div>
+      <div class="quiz-field" style="margin:14px 0 18px;">
+        <label for="editWordForms" class="quiz-field-label" data-i18n="edit.forms" style="display:block;margin-bottom:6px;font-weight:700;font-size:13px;"></label>
+        <input type="text" id="editWordForms" class="review-search" dir="ltr" style="width:100%;font-size:13px;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:rgba(0,0,0,.03);">
+      </div>
+      <div class="edit-actions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;">
+        <button type="button" class="tool-btn" id="btnResetEditWord" data-i18n="edit.reset" style="min-height:38px;padding:7px 14px;"></button>
+        <button type="button" class="tool-btn primary" id="btnSaveEditWord" data-i18n="edit.save" style="min-height:38px;padding:7px 18px;"></button>
+      </div>
+      <div id="editWordStatus" style="font-size:12.5px;color:var(--teal-deep);margin-top:10px;font-weight:700;text-align:center;" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="whatsNewOverlay">
+  <div class="review-panel whats-new-panel" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle" tabindex="-1">
+    <div class="review-head whats-new-head">
+      <div class="review-head-titles">
+        <div class="whats-new-badge-pill" aria-hidden="true">
+          <span class="star-gold">★</span>
+          <span class="star-white">★</span>
+        </div>
+        <h3 id="whatsNewTitle" data-i18n="whatsnew.title">ما الجديد ودليل الموقع الشامل</h3>
+      </div>
+      <button class="review-close" id="closeWhatsNew" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="whats-new-tabs" role="tablist">
+      <button type="button" class="whats-new-tab active" data-tab="tab-update13" data-i18n="whatsnew.tabNew">🌟 ما الجديد في 1.3</button>
+      <button type="button" class="whats-new-tab" data-tab="tab-guide" data-i18n="whatsnew.tabGuide">📖 دليل الموقع الشامل</button>
+      <button type="button" class="whats-new-tab" data-tab="tab-archive" data-i18n="whatsnew.tabArchive">📜 سجل كافة التحديثات</button>
+    </div>
+    <div class="whats-new-content" id="whatsNewContent"></div>
   </div>
 </div>
 
