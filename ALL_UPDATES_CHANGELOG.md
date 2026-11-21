@@ -11,18 +11,18 @@ A friendly, offline-first vocabulary companion for learners who want to build a 
 
 Update 1.3 focuses on deeper interactivity, active auditory learning, dynamic speed challenges, and comprehensive vocabulary exploration:
 
-- **Speed Race Mode (Time Attack / سباق الوقت)**:
+- **Speed Race Mode (Time Attack Mode)**:
   - 30-second countdown quiz mode where every correct answer awards **+2 bonus seconds** with an animated green indicator (`+2s`).
   - Mistakes trigger a gentle, friendly **cat meow sound** (`playCatSound`) along with an immediate warning flash, automatically advancing to the next question without breaking momentum.
   - Dynamic urgent pulse indicator when time drops below 6 seconds.
 
-- **Audio-Only Listening Quiz Mode (اختبار عبر السمع فقط)**:
+- **Audio-Only Listening Quiz Mode**:
   - A dedicated listening-first training mode where the learner listens to native English pronunciation without seeing the written word.
   - Automatically plays British (UK) or American (US) audio upon entering each question, with a prominent repeat-listening button.
   - Four multiple-choice meaning options in the learner's chosen language.
   - Once answered, the hidden word is revealed in a smooth glowing banner displaying the word, its part of speech, and phonetic IPA.
 
-- **Smart Word Explorer & Advanced Search (مستكشف الكلمات والبحث الذكي)**:
+- **Smart Word Explorer & Advanced Search**:
   - An interactive exploration modal featuring **8 comprehensive sorting algorithms**:
     1. Alphabetical (A to Z)
     2. Alphabetical reverse (Z to A)
@@ -35,27 +35,27 @@ Update 1.3 focuses on deeper interactivity, active auditory learning, dynamic sp
   - Interactive filter chips for CEFR difficulty levels (A1, A2, B1, B2, C1) and Parts of Speech (Verbs, Nouns, Adjectives, Others).
   - Rich word cards showing phonetic IPA, Arabic classifications, audio preview buttons, and one-click direct jump to any card in the study deck.
 
-- **Custom Word, Sentence, and Forms Editor (محرر الكلمات والترجمة والمثال)**:
+- **Custom Word, Sentence, and Forms Editor**:
   - Learners can directly customize and correct word translations, example sentences, example translations, and grammatical forms.
   - All user customizations are preserved locally and seamlessly encoded into OX6 cloud synchronization links, ensuring personal corrections never get lost.
   - Custom indicator badge on cards showing when personalized content is active, with a one-click reset to Oxford defaults.
 
-- **Floating "What's New" Star Badge & Complete Written Site Guide (نجمة ما الجديد ودليل الموقع الشامل)**:
+- **Floating "What's New" Star Badge & Complete Written Site Guide**:
   - A circular floating button anchored opposite the support coffee button, featuring a layered white star in front of a glowing golden star.
   - Clicking opens an all-in-one guide and release portal organized into 3 tabs:
     1. **🌟 What's New in 1.3**: Complete overview of all new features, speed race, and listening mode.
     2. **📖 Complete Site Guide**: A thorough, written manual explaining every component on the site: Flashcards, SRS Spaced Repetition stages 0-5, Word Forms & Grammar, Quiz Modes, Explorer, Sync, and Offline Architecture.
     3. **📜 Changelog Archive**: Detailed chronological history covering releases 1.0, 1.1, 1.2, and 1.3.
 
-- **Gorgeous Golden Text Selection (تنسيق تحديد النصوص)**:
+- **Gorgeous Golden Text Selection**:
   - Custom styling for highlighting and copying text across words, sentences, and translations with a soft golden glow and clean contrast.
 
-- **Interactive Fluid Visuals & Glow Effects (تفاعلية العناصر والخلفية)**:
+- **Interactive Fluid Visuals & Glow Effects**:
   - Responsive, fluid background with subtle ambient gradients.
   - Gentle lift and glowing effects on card and button interactions.
   - Unobtrusive reminder toast near flashcards indicating examples may vary and can be customized.
 
-- **Perfect Social Icon Alignment & Polished Layout (توسيط الأيقونات وتنسيق الدعم)**:
+- **Perfect Social Icon Alignment & Polished Layout**:
   - Pixel-perfect centering for GitHub, X, and LinkedIn footer icons.
   - Refined mobile-responsive spacing for project tools and support actions.
 

@@ -1,118 +1,20 @@
-# البيانات
+# Data Schema & Specifications
 
-كل البيانات جاهزة داخل `data/`، ولا يحتاج التطبيق أي اتصال بالشبكة وقت التشغيل.
-اختلاف الترتيب في `words_cefr.json` هو المرجع: كل مصفوفة ترجمة `w` مبنية على نفس
-الترتيب، وكل `ex` في `forms.json` هو فهرس داخل `sent_list.json`.
+## 1. Core Vocabulary Dataset (data/words.json)
 
-## الملفات
+The vocabulary contains 5,325 entries covering the complete Oxford 3000 & 5000 word lists.
+Each entry has:
+- id: Unique integer identifier.
+- word: The English headword.
+- pos: Part of speech (e.g., , 
+, dj, dv).
+- cefr: European framework level (1, 2, 1, 2, c1).
+- ipa_uk & ipa_us: International Phonetic Alphabet transcriptions.
+- udio_uk & udio_us: Relative paths to native audio files.
+- orms: Derived inflections (past, participle, -ing, plural, etc.).
+- examples: Curated contextual example sentences.
 
-| الملف | الحجم | المحتوى |
-|---|---|---|
-| `words_cefr.json` | 82 KB | `{ "words": ["a", …], "levels": ["a1", …] }` — 4954 كلمة |
-| `sentences.json` | 245 KB | `{ "a": "A bird has wings.", … }` — جملة لكل كلمة (4862 مفتاحًا) |
-| `sent_list.json` | 184 KB | `["A bird has wings.", …]` — 4861 جملة فريدة مرتبة أبجديًا |
-| `forms.json` | 794 KB | صيغ كل كلمة + IPA + أجزاء الكلام + فهرس مثال لكل صيغة |
-| `pos.json` | 141 KB | `{ "abandon": ["verb"], … }` — 4954 مدخلًا |
-| `ipa.json` | 138 KB | `{ "abandon": "/əˈbændən/", … }` — 4953 مدخلًا |
-| `i18n.json` | 114 KB | 11 لغة × 166 مفتاحًا + `_langs` |
-| `tr/<lang>.json` | 0.5 MB لكل لغة | `{ "w": {word: sentence…}, "s": {…} }` |
-| `tr/<lang>_w.json` / `_s.json` | — | ملفات تقدم مؤقتة ينشئها `translate.py` أثناء العمل ثم تُحذف بعد اكتمال اللغة |
+## 2. Localization (data/i18n.json & data/tr/)
 
-### words_cefr.json
-
-```json
-{ "words": ["a", "about"], "levels": ["a1", "a1"] }
-```
-
-التوازي بين المصفوفتين إلزامي. أي إعادة ترتيب أو حذف تُفسد فهارس الترجمة.
-
-### forms.json
-
-```json
-{
-  "go": {
-    "pos": ["noun", "verb"],
-    "ipa": "/ɡəʊ/",
-    "forms": [
-      { "f": "go",    "k": "base", "lbl": "base", "ex": 4732 },
-      { "f": "goes",  "k": "reg",  "lbl": "third", "s": "es", "ex": 1210 },
-      { "f": "went",  "k": "irr",  "lbl": "past",  "ex": 1328 },
-      { "f": "gone",  "k": "irr",  "lbl": "pp",    "ex": 165 }
-    ]
-  }
-}
-```
-
-| الحقل | المعنى |
-|---|---|
-| `f` | الصيغة المكتوبة |
-| `k` | `base` / `reg` / `irr` / `phrase` |
-| `s` | اللاحقة المضافة للصيغة المنتظمة (`s`, `ed`, `ing`, `r`, `st`…) |
-| `lbl` | مفتاح التسمية: `base`, `present`, `third`, `past`, `pp`, `pastpp`, `ing`, `plural`, `comp`, `sup` |
-| `ex` | فهرس داخل `sent_list.json` لجملة تحتوي الصيغة فعلًا |
-
-الإحصاءات الحالية: 4954 كلمة، 2140 كلمة لها أكثر من صيغة، 6736 صيغة لها مثال.
-الصيغ المنتظمة للجمع لا تُضاف إلا إذا وردت في المدونة، لأن قابلية العدّ لا يمكن
-تخمينها بأمان. الصفات التي لا تُقارن (تنتهي بـ `-ly/-ous/-ful/-less/-ic/-ive/...`)
-تُستثنى، وكذلك الصفات الطويلة جدًا تُقارن بـ `more/most`.
-
-### i18n.json
-
-```json
-{
-  "_langs": [ { "code": "ar", "name": "العربية", "dir": "rtl" }, … ],
-  "ar": { "brand.title": "بطاقات المفردات", … },
-  "en": { … }
-}
-```
-
-كل اللغات تملك نفس المفاتيح ونفس العناصر النائبة `{name}`. القيمة قد تحتوي `\n`
-الذي يحوّله `tHtml` إلى `<br>`. الإنجليزية هي لغة المصدر للواجهة والكلمات.
-
-### tr/<lang>.json
-
-```json
-{ "w": { "abandon": "يتخلى عن", … }, "s": { "We had to abandon ship.": "…", … } }
-```
-
-هذا هو الشكل الخام. `build/build.py` يحوّله إلى:
-
-```js
-{ "ar": { "w": ["…", …], "s": ["…", …] }, … }
-```
-
-حيث `w[i]` يقابل `words[i]` و`s[j]` يقابل `sent_list[j]`. لا تحذف `sent_list.json`
-قبل البناء وإلا اختلطت الفهارس.
-
-## مصادر البيانات
-
-| البيانات | المصدر |
-|---|---|
-| الكلمات والمستويات | قائمتا Oxford 3000/5000 (مرجع تعليمي) |
-| أجزاء الكلام | gist `naiyerasif/95f65ac734b55ecfb4b1f4e2a7c42c25` |
-| النطق IPA | `Talhakasikci/cefr-vocabulary-dataset` (en-A1..C1) |
-| جمل الأمثلة | مدونة الجمل المدمجة في المشروع الأصلي (`sentences.json`) |
-| الترجمات | نقطة Google العامة للترجمة، تُنفَّذ مرة واحدة عند البناء وليس وقت التشغيل |
-
-## إعادة التوليد
-
-```bash
-python tools/fetch_meta.py      # pos.json + ipa.json (يحتاج إنترنت)
-python tools/build_forms.py     # forms.json + sent_list.json (محلي)
-python tools/translate.py ar fr # ملفات data/tr (يحتاج إنترنت، قابل للاستئناف)
-python build/build.py           # الملف النهائي
-```
-
-`translate.py` يترجم على دفعات من 60 عنصرًا، ويكتب التقدم بعد كل دفعة، لذلك يمكن
-إيقافه وإكماله لاحقًا. إذا فشلت دفعة بعد 6 محاولات يترجم عناصرها فردًا فردًا حتى لا
-توقف سلسلة كاملة.
-
-## تحذيرات جودة
-
-- الترجمة الآلية جيدة للاستخدام الشخصي، لكنها ليست معجمًا: بعض الكلمات متعددة
-  المعاني قد تأخذ معنى واحدًا فقط. ملاحظة المستخدم لها الأولوية دائمًا في الاختبار.
-- جمل الأمثلة مأخوذة من مدونة، لذا قد تكون طويلة أو ذات سياق غريب أحيانًا.
-  `build_forms.py` يفضّل الجمل بين 3 و14 كلمة، ويفضّل جملة الكلمة الأساسية.
-- IPA مكتوب لكل كلمة، وليس نطقًا صوتيًا؛ التطبيق لا يشغّل أي صوت.
-- كلمة `the` بلا ترجمة في الهندية لأن الهندية لا تستخدم أداة تعريف. التطبيق يعرض
-  الكلمة الإنجليزية وحدها بدل ترجمة غير صحيحة.
+- i18n.json: Interface translation strings across 12 languages.
+- 	r/<lang>.json: Direct translations of English headwords and example sentences.
