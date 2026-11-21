@@ -4,48 +4,58 @@
 ### 🎓 The Modern, Offline-First English Vocabulary Companion
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Try_Now-2ea44f?style=for-the-badge)](https://sofyanol.github.io/oxford-5000-words/)
-[![Latest Release](https://img.shields.io/github/v/release/sofyanol/oxford-5000-words?color=e5a93c&label=🌟%20Latest%20Release&style=for-the-badge)](https://github.com/sofyanol/oxford-5000-words/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/sofyanol/oxford-5000-words?color=e5a93c&label=🌟%20Release&style=for-the-badge)](https://github.com/sofyanol/oxford-5000-words/releases/latest)
+[![GitHub Stars](https://img.shields.io/github/stars/sofyanol/oxford-5000-words?style=for-the-badge&logo=github&color=gold)](https://github.com/sofyanol/oxford-5000-words/stargazers)
 [![Donate with PayPal](https://img.shields.io/badge/☕_Support-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/HZXA4F94TEA2A)
 
-[![Words](https://img.shields.io/badge/📚_Words-5%2C325_Oxford-blue?style=flat-square)](#)
-[![Audio](https://img.shields.io/badge/🔊_Native_Audio-UK_%26_US_Dual-teal?style=flat-square)](#)
+[![Words](https://img.shields.io/badge/📚_Vocabulary-5%2C325_Oxford_Words-blue?style=flat-square)](#)
+[![Audio](https://img.shields.io/badge/🔊_Native_Audio-10%2C460_Recordings_(UK_%26_US)-teal?style=flat-square)](#)
 [![Algorithm](https://img.shields.io/badge/🧠_Spaced_Repetition-SRS_5_Stages-purple?style=flat-square)](#)
-[![Languages](https://img.shields.io/badge/🌐_Languages-12_Supported-orange?style=flat-square)](#)
-[![Offline First](https://img.shields.io/badge/⚡_Offline-100%25_Static_HTML-success?style=flat-square)](#)
-[![License](https://img.shields.io/badge/⚖️_License-MIT-lightgrey?style=flat-square)](LICENSE)
+[![Languages](https://img.shields.io/badge/🌐_Languages-12_Global_Locales-orange?style=flat-square)](#)
+[![Offline First](https://img.shields.io/badge/⚡_Zero_Backend-100%25_Offline_First-success?style=flat-square)](#)
+[![Dependencies](https://img.shields.io/badge/📦_Dependencies-Zero_(Vanilla_HTML5%2FCSS3%2FJS)-black?style=flat-square)](#)
+[![License: MIT](https://img.shields.io/badge/⚖️_License-MIT-lightgrey?style=flat-square)](LICENSE)
 
 <br>
 
-**A friendly, distraction-free, account-free learning experience designed to master high-frequency English vocabulary through science-backed spaced repetition, authentic UK/US native audio, and dynamic speed quizzes.**
+**A fast, private, distraction-free educational application built to master high-frequency English vocabulary through scientifically structured spaced repetition (SRS), authentic dual UK/US native audio, and active listening challenges.**
 
-[🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New in 1.3**](#-what's-new-in-update-13) • [🎯 **Features**](#-features-at-a-glance) • [☕ **Support Project**](#-support-the-project)
+[🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New in 1.3**](#-whats-new-in-update-13) • [🎯 **Features**](#-features-at-a-glance) • [🌐 **12 Languages**](#-supported-languages-12-locales) • [☕ **Support Project**](#-support-the-project)
 
 <hr>
 </div>
 
 ## 🌟 What's New in Update 1.3
 
-Update 1.3 introduces major interactivity, auditory training, speed racing, and full customization:
+Update 1.3 focuses on deeper interactivity, active auditory training, dynamic speed challenges, and comprehensive vocabulary exploration:
 
-* ⚡ **Speed Race Mode (Time Attack / سباق الوقت)**:
-  * Fast-paced 30-second countdown quiz.
+* ⚡ **Speed Race Mode (Time Attack)**:
+  * Fast-paced 30-second countdown quiz mode designed to test rapid vocabulary recall.
   * Every correct answer awards **+2 bonus seconds** with an animated green float badge (`+2s`).
-  * Mistakes trigger an adorable **cat meow sound** (`playCatSound`) and an instant warning flash, auto-advancing to keep the flow alive.
-  * Urgent pulse animation activates when time drops under 6 seconds.
+  * Mistakes trigger an adorable **cat meow sound** (`playCatSound`) and an instant warning flash, automatically advancing to keep your learning momentum alive.
+  * Dynamic urgent pulse indicator activates when time drops under 6 seconds.
 
-* 🎧 **Audio-Only Listening Quiz Mode (اختبار عبر السمع فقط)**:
-  * Train your ear first: listen to native English UK/US pronunciation without seeing the written word.
-  * Automatic audio playback on question entry with an animated listening pulse and replay button.
-  * Choose the correct meaning from 4 options, followed by an instant glowing reveal of the hidden English word with its phonetic IPA and part of speech.
+* 🎧 **Audio-Only Listening Quiz Mode**:
+  * Dedicated ear-training mode: listen to authentic native English UK/US pronunciation without seeing the written word.
+  * Automatic audio playback on question entry with an animated listening pulse and instant replay button.
+  * Select the correct meaning from 4 multiple-choice options, followed by a glowing reveal of the hidden English word with its phonetic IPA and part of speech.
 
-* 🔍 **Smart Word Explorer & Advanced Search (مستكشف الكلمات والبحث الذكي)**:
-  * **8 sorting algorithms**: Alphabetical (A-Z & Z-A), CEFR Level (A1 to C1 & reverse), Due for Review (SRS), Unknown First, Mastered First, Oxford Importance, and Random Shuffle.
-  * Quick interactive filter chips for difficulty (A1, A2, B1, B2, C1) and Parts of Speech (Verbs, Nouns, Adjectives, Others).
-  * Rich cards with IPA, Arabic category labels, audio preview, and one-click direct jump to any card in the study deck.
+* 🔍 **Smart Word Explorer & Advanced Search**:
+  * An interactive exploration modal featuring **8 comprehensive sorting algorithms**:
+    1. Alphabetical (A to Z)
+    2. Alphabetical reverse (Z to A)
+    3. CEFR Level (A1 to C1)
+    4. CEFR Level reverse (C1 to A1)
+    5. Unknown Words First
+    6. Due for Review First (SRS)
+    7. Mastered / Known Words First
+    8. Oxford Frequency / Importance & Random Shuffle
+  * Interactive filter chips for CEFR difficulty levels (A1, A2, B1, B2, C1) and Parts of Speech (Verbs, Nouns, Adjectives, Others).
+  * Rich cards with IPA, category classifications, audio preview, and one-click direct jump to any card in the study deck.
 
-* ✏️ **Custom Word, Sentence, and Forms Editor (محرر الكلمات والترجمة والمثال)**:
+* ✏️ **Custom Word, Sentence, and Forms Editor**:
   * Directly edit or customize translations, example sentences, example translations, and grammatical forms.
-  * User modifications persist in browser storage and encode cleanly into compact OX6 sync links—your edits never get lost.
+  * User modifications persist in browser storage and encode cleanly into compact OX6 sync links—your personal customizations never get lost.
   * Includes a card indicator badge for customized entries and a one-click reset to Oxford defaults.
 
 * ⭐ **Floating "What's New" Star Badge & Complete Written Site Guide**:
@@ -63,21 +73,42 @@ Update 1.3 introduces major interactivity, auditory training, speed racing, and 
 
 | Feature | Description |
 | :--- | :--- |
-| 📚 **5,325 Oxford Words** | Complete Oxford 3000 & Oxford 5000 dataset categorized from CEFR A1 to C1. |
-| 🔊 **Dual Native Audio** | 5,230 authentic UK (British) and US (American) native pronunciation recordings. |
+| 📚 **5,325 Oxford Words** | Complete Oxford 3000 & Oxford 5000 dataset categorized across CEFR levels A1, A2, B1, B2, and C1. |
+| 🔊 **Dual Native Audio** | 5,230 authentic UK (British) and US (American) native pronunciation recordings (10,460 files). |
 | 📝 **100% Contextual Sentences** | Every single entry includes an authentic contextual example sentence. |
-| 🧠 **Spaced Repetition (SRS)** | 5 scientifically structured review intervals (1d, 3d, 7d, 14d, 30d). |
+| 🧠 **Spaced Repetition (SRS)** | 5 scientifically structured review intervals (1d, 3d, 7d, 14d, 30d) for long-term memory retention. |
 | 🎮 **3 Study Modes** | Standard Multiple Choice, Speed Race (Time Attack), and Audio-Only Listening. |
-| 📐 **Word Forms & Grammar** | Complete verb forms (V1-V3, -ing, -s), noun plurals, and comparative/superlative adjectives. |
-| 🔄 **Serverless Link Sync** | Instant bidirectional synchronization using compact `OX6` binary codes without an account. |
-| 🌐 **12 Languages** | English, Arabic, Spanish, French, German, Portuguese, Russian, Turkish, Urdu, Hindi, Indonesian, and Chinese. |
+| 📐 **Word Forms & Grammar** | Complete verb inflections (V1-V3, -ing, -s), noun plurals, and comparative/superlative adjectives. |
+| 🔄 **Serverless Link Sync** | Instant bidirectional synchronization using compact `OX6` binary codes without an account or server. |
+| 🌐 **12 Global Languages** | Fully localized interface and word translations across 12 world languages. |
 | ⚡ **Offline-First Build** | Fully self-contained single HTML release file (~4.14 MB) that runs anywhere without internet. |
+
+<hr>
+
+## 🌐 Supported Languages (12 Locales)
+
+Oxford 5000 is built for learners worldwide. Switch instantly between 12 localized interface and translation languages with a single click:
+
+| Flag | Language | Native Name | Code |
+| :---: | :--- | :--- | :---: |
+| 🇬🇧 | **English** | English | `en` |
+| 🇸🇦 | **Arabic** | العربية | `ar` |
+| 🇪🇸 | **Spanish** | Español | `es` |
+| 🇫🇷 | **French** | Français | `fr` |
+| 🇩🇪 | **German** | Deutsch | `de` |
+| 🇵🇹 | **Portuguese** | Português | `pt` |
+| 🇷🇺 | **Russian** | Русский | `ru` |
+| 🇹🇷 | **Turkish** | Türkçe | `tr` |
+| 🇵🇰 | **Urdu** | اردو | `ur` |
+| 🇮🇳 | **Hindi** | हिन्दी | `hi` |
+| 🇮🇩 | **Indonesian** | Bahasa Indonesia | `id` |
+| 🇨🇳 | **Chinese** | 中文 | `zh` |
 
 <hr>
 
 ## ☕ Support the Project
 
-If Oxford 5000 helps you learn English, study vocabulary, or teach students, please consider supporting its ongoing development and maintenance!
+If Oxford 5000 helps you learn English, prepare for exams (IELTS, TOEFL, Cambridge), or teach students, please consider supporting its ongoing development and maintenance!
 
 <div align="center">
 
