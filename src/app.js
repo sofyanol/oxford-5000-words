@@ -6271,6 +6271,10 @@ function renderWhatsNewContent(activeTab){
 function openFeedback(){
   const overlay = document.getElementById('feedbackOverlay');
   if(overlay) overlay.classList.add('show');
+  const wordEl = document.getElementById('feedbackCurrentWord');
+  if(wordEl) wordEl.textContent = displayedWord || '-';
+  const status = document.getElementById('feedbackStatus');
+  if(status) status.textContent = '';
 }
 
 function closeFeedback(){
@@ -6363,20 +6367,91 @@ function wireSettings(){
   if(autoPronounce) autoPronounce.addEventListener('change', () => { state.ui.preferences.autoPronounce = autoPronounce.checked; savePreferences(); });
 }
 
-function submitFeedback(){
+async function submitFeedback(){
   const input = document.getElementById('feedbackInput');
+  const contact = document.getElementById('feedbackContact');
+  const status = document.getElementById('feedbackStatus');
+  const submitBtn = document.getElementById('submitFeedback');
+  const typeRadio = document.querySelector('input[name="feedbackType"]:checked');
+
   const body = input ? input.value.trim() : '';
   if(!body){
     if(input) input.focus();
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? '⚠️ يرجى كتابة ملاحظتك أو طلبك قبل الإرسال.'
+        : '⚠️ Please enter your note or feedback before submitting.';
+      status.style.color = 'var(--brick-deep)';
+    }
     return;
   }
-  if(!TALLY_FORM_URL){
-    const status = document.getElementById('feedbackStatus');
-    if(status) status.textContent = t('feedback.setup');
-    return;
+
+  const selectedType = typeRadio ? typeRadio.value : 'General Feedback';
+  const senderContact = contact ? contact.value.trim() : '';
+  const currentWord = displayedWord || '-';
+
+  if(submitBtn){
+    submitBtn.disabled = true;
+    submitBtn.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الإرسال... ⏳' : 'Sending... ⏳';
   }
-  const url = TALLY_FORM_URL + (TALLY_FORM_URL.indexOf('?') >= 0 ? '&' : '?') + 'feedback=' + encodeURIComponent(body);
-  window.open(url, '_blank', 'noopener,noreferrer');
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري إرسال ملاحظتك... ⏳' : 'Sending your feedback... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  try {
+    const payload = {
+      _subject: 'Oxford 5000: ' + selectedType,
+      _template: 'table',
+      _captcha: 'false',
+      _replyto: senderContact.includes('@') ? senderContact : undefined,
+      'Feedback Type': selectedType,
+      'Sender / Contact': senderContact || 'Anonymous Learner',
+      'Message': body,
+      'Current Word': currentWord,
+      'User Level': (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'All',
+      'App Language': (state.ui && state.ui.lang) ? state.ui.lang : 'ar',
+      'Sent At': new Date().toLocaleString()
+    };
+
+    const response = await fetch('https://formsubmit.co/ajax/sufian1424@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if(response.ok){
+      if(status){
+        status.innerHTML = (state.ui && state.ui.lang === 'ar')
+          ? '✅ <b>تم استلام ملاحظتك بنجاح!</b> شكراً جزيلاً لك على دعمك، ستصل ملاحظتك مباشرة إلى صاحب الموقع.'
+          : '✅ <b>Your feedback was received!</b> Thank you for helping us improve Oxford 5000.';
+        status.style.color = 'var(--teal-deep)';
+      }
+      if(input) input.value = '';
+      if(contact) contact.value = '';
+      setTimeout(() => {
+        closeFeedback();
+        if(status) status.textContent = '';
+      }, 4000);
+    } else {
+      throw new Error('Form submission failed');
+    }
+  } catch(err){
+    if(status){
+      status.innerHTML = (state.ui && state.ui.lang === 'ar')
+        ? 'تعذر الإرسال التلقائي. يرجى مراسلتنا مباشرة عبر البريد: <a href="mailto:sufian1424@gmail.com" style="color:#1f6f6d;font-weight:bold;">sufian1424@gmail.com</a>'
+        : 'Could not send automatically. Please email us directly at: <a href="mailto:sufian1424@gmail.com" style="color:#1f6f6d;font-weight:bold;">sufian1424@gmail.com</a>';
+      status.style.color = 'var(--brick-deep)';
+    }
+  } finally {
+    if(submitBtn){
+      submitBtn.disabled = false;
+      submitBtn.textContent = (state.ui && state.ui.lang === 'ar') ? 'إرسال الملاحظة 🚀' : 'Send Feedback 🚀';
+    }
+  }
 }
 
 function loadVisitorCount(){

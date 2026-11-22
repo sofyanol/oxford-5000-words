@@ -1291,12 +1291,27 @@
   .tutorial-number{ flex:0 0 23px; height:23px; border-radius:50%; display:grid; place-items:center; background:var(--gold); color:#241b09; font-weight:800; font-size:11px; }
   .tutorial-actions{ display:flex; justify-content:space-between; gap:10px; padding:18px 24px 24px; position:sticky; bottom:0; background:var(--paper); border-top:1px solid var(--line); }
   .tutorial-actions .tool-btn{ min-width:110px; justify-content:center; }
-  .feedback-panel{ max-width:540px; border:1px solid rgba(31,111,109,.3); }
-  .feedback-input{ display:block; width:calc(100% - 48px); margin:4px 24px 10px; min-height:150px; resize:vertical; border:1px solid rgba(31,111,109,.35); border-radius:14px; padding:13px; background:#fffdf7; color:var(--ink-text); font:inherit; line-height:1.8; }
-  .feedback-input:focus{ outline:2px solid rgba(31,111,109,.25); border-color:var(--teal); }
-  .feedback-note{ padding:0 24px; color:#5c5238; font-size:12px; line-height:1.8; }
-  .feedback-status{ min-height:20px; padding:0 24px; color:var(--brick-deep); font-size:12px; line-height:1.6; }
-  .feedback-panel .tool-btn{ margin:0 24px 24px; }
+  .feedback-panel{ max-width:540px; border:1px solid rgba(217,164,65,.45); background:var(--paper); color:#10161f; border-radius:24px; box-shadow:0 18px 48px rgba(0,0,0,.45); }
+  .feedback-body{ padding:18px 24px 24px; display:flex; flex-direction:column; gap:14px; }
+  .feedback-desc{ margin:0; font-size:13px; line-height:1.7; color:#2b2011; font-weight:600; }
+  .feedback-field{ display:flex; flex-direction:column; gap:6px; }
+  .feedback-label{ font-size:12.5px; font-weight:800; color:#1f6f6d; }
+  .feedback-types-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; }
+  .feedback-type-chip{ display:flex; align-items:center; gap:8px; padding:8px 12px; background:#ffffff; border:1px solid rgba(217,164,65,.35); border-radius:12px; font-size:12px; font-weight:700; color:#10161f; cursor:pointer; transition:all .15s ease; user-select:none; }
+  .feedback-type-chip:has(input:checked){ background:rgba(217,164,65,.18); border-color:#d9a441; box-shadow:0 2px 8px rgba(217,164,65,.25); }
+  .feedback-type-chip input{ accent-color:#d9a441; cursor:pointer; }
+  .feedback-text-input{ width:100%; border:1px solid rgba(31,111,109,.35); border-radius:12px; padding:10px 14px; background:#ffffff; color:#10161f; font:inherit; font-size:13px; box-sizing:border-box; transition:border-color .15s ease; }
+  .feedback-text-input:focus{ outline:none; border-color:#1f6f6d; box-shadow:0 0 0 3px rgba(31,111,109,.15); }
+  .feedback-input{ display:block; width:100%; min-height:110px; resize:vertical; border:1px solid rgba(31,111,109,.35); border-radius:12px; padding:12px 14px; background:#ffffff; color:#10161f; font:inherit; font-size:13px; line-height:1.7; box-sizing:border-box; transition:border-color .15s ease; }
+  .feedback-input:focus{ outline:none; border-color:#1f6f6d; box-shadow:0 0 0 3px rgba(31,111,109,.15); }
+  .feedback-context-tag{ display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(31,111,109,.1); border:1px solid rgba(31,111,109,.25); border-radius:8px; font-size:12px; color:#1f6f6d; font-weight:600; width:fit-content; }
+  .feedback-context-tag b{ color:#10161f; font-family:'IBM Plex Mono',monospace; direction:ltr; }
+  .feedback-status{ min-height:22px; margin:0; font-size:12.5px; font-weight:700; line-height:1.6; }
+  .feedback-submit-btn{ width:100%; justify-content:center; padding:12px; font-size:14px; font-weight:800; border-radius:14px; }
+  [data-theme="oled"] .feedback-panel{ background:#0a0c10 !important; color:#f0f4f8 !important; border-color:rgba(217,164,65,.5) !important; }
+  [data-theme="oled"] .feedback-desc{ color:#cbd5e1 !important; }
+  [data-theme="oled"] .feedback-type-chip{ background:#161c26 !important; color:#f0f4f8 !important; border-color:rgba(255,255,255,.15) !important; }
+  [data-theme="oled"] .feedback-text-input, [data-theme="oled"] .feedback-input{ background:#121720 !important; color:#ffffff !important; border-color:rgba(255,255,255,.2) !important; }
   .follow-links{
     display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:7px 10px;
     margin-top:14px; color:var(--text-on-ink); opacity:.95;

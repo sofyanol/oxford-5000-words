@@ -334,13 +334,51 @@
 <div class="overlay" id="feedbackOverlay">
   <div class="review-panel feedback-panel" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle" tabindex="-1">
     <div class="review-head">
-      <div class="review-head-titles"><h3 id="feedbackTitle" data-i18n="feedback.title"></h3></div>
+      <div class="review-head-titles"><h3 id="feedbackTitle" data-i18n="feedback.title">إرسال ملاحظة أو اقتراح 💬</h3></div>
       <button class="review-close" id="closeFeedback" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
-    <textarea id="feedbackInput" class="feedback-input" rows="6" data-i18n-placeholder="feedback.placeholder"></textarea>
-    <p class="feedback-note" data-i18n="feedback.note"></p>
-    <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
-    <button class="tool-btn primary" id="submitFeedback" type="button" data-i18n="feedback.open"></button>
+    <div class="feedback-body">
+      <p class="feedback-desc" data-i18n="feedback.desc"></p>
+      
+      <div class="feedback-field">
+        <label class="feedback-label" data-i18n="feedback.typeLabel"></label>
+        <div class="feedback-types-grid">
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="💡 اقتراح ميزة جديدة" checked>
+            <span data-i18n="feedback.typeSuggest">💡 اقتراح</span>
+          </label>
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="📝 تصحيح كلمة أو ترجمة">
+            <span data-i18n="feedback.typeCorrection">📝 تصحيح</span>
+          </label>
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="⚠️ مشكلة فنية أو عطل">
+            <span data-i18n="feedback.typeBug">⚠️ عطل فني</span>
+          </label>
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="💬 رسالة عامة وشكر">
+            <span data-i18n="feedback.typeOther">💬 أخرى</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="feedback-field">
+        <label class="feedback-label" for="feedbackContact" data-i18n="feedback.contactLabel"></label>
+        <input type="text" id="feedbackContact" class="feedback-text-input" placeholder="اسمك أو بريدك الإلكتروني">
+      </div>
+
+      <div class="feedback-field">
+        <label class="feedback-label" for="feedbackInput" data-i18n="feedback.messageLabel"></label>
+        <textarea id="feedbackInput" class="feedback-input" rows="4" data-i18n-placeholder="feedback.placeholder"></textarea>
+      </div>
+
+      <div class="feedback-context-tag" id="feedbackContextTag">
+        <span data-i18n="feedback.currentWord">الكلمة الحالية:</span> <b id="feedbackCurrentWord">-</b>
+      </div>
+
+      <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
+      <button class="tool-btn primary feedback-submit-btn" id="submitFeedback" type="button" data-i18n="feedback.submit">إرسال الملاحظة 🚀</button>
+    </div>
   </div>
 </div>
 
