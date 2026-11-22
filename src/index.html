@@ -92,6 +92,16 @@
     <span class="notice-text" data-i18n="card.examples_notice"></span>
     <button type="button" class="notice-close" id="closeExamplesNotice" data-i18n-aria="modal.close" data-i18n-title="modal.close" aria-label="Close">✕</button>
   </aside>
+
+  <button type="button" class="deck-side-search" id="btnSearch" data-i18n-title="search.button" aria-label="Search Words">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="M21 21l-4.35-4.35"></path>
+    </svg>
+    <span class="search-label" data-i18n="search.button"></span>
+    <kbd class="search-kbd">/</kbd>
+  </button>
+
   <div class="deck" id="deck">
     <div class="ghost-card g2"></div>
     <div class="ghost-card g1"></div>
@@ -182,15 +192,18 @@
     </button>
   </div>
 
-  <div class="toolbar">
-    <button class="tool-btn primary" id="btnQuiz" data-i18n="quiz.button"></button>
-    <button class="tool-btn" id="btnMatch" data-i18n="match.button"></button>
-    <button class="tool-btn" id="btnAnalytics" data-i18n="analytics.button"></button>
-    <button class="tool-btn" id="btnSearch" data-i18n="search.button"></button>
-    <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
-    <button class="tool-btn" id="btnShuffle"></button>
-    <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
-    <button class="tool-btn primary" id="btnDownload" data-i18n="toolbar.download"></button>
+  <div class="toolbar" id="toolbar">
+    <div class="toolbar-grid primary-grid">
+      <button class="tool-btn primary-tool quiz-tool" id="btnQuiz" data-i18n="quiz.button"></button>
+      <button class="tool-btn primary-tool match-tool" id="btnMatch" data-i18n="match.button"></button>
+      <button class="tool-btn primary-tool analytics-tool" id="btnAnalytics" data-i18n="analytics.button"></button>
+    </div>
+    <div class="toolbar-grid secondary-grid">
+      <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
+      <button class="tool-btn" id="btnShuffle"></button>
+      <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
+      <button class="tool-btn download-tool" id="btnDownload" data-i18n="toolbar.download"></button>
+    </div>
   </div>
   </div>
 
