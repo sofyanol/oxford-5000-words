@@ -5,3 +5,6 @@ build\app.injected.js
 .mypy_cache/
 .venv/
 venv/
+
+.tmp_browser_profile/
+
