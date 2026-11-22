@@ -199,7 +199,27 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    padding: 22px 16px 40px;
+    padding: 0 16px 40px;
+  }
+
+  /* --- Fixed / Sticky Top Navigation Bar --- */
+  .top-nav-bar{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    width: 100%;
+    max-width: 760px;
+    background: rgba(12, 16, 28, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 16px 8px 6px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgba(217, 164, 65, 0.16);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
   html.compact-cards .deck{ height:560px; }
@@ -361,7 +381,7 @@
   .progress-track{
     width:100%; max-width:760px; height:6px;
     background: rgba(255,255,255,.08);
-    border-radius:999px; overflow:hidden; margin-bottom: 30px;
+    border-radius:999px; overflow:hidden; margin-bottom: 6px;
     box-shadow: inset 0 1px 3px rgba(0,0,0,.35);
   }
   .progress-fill{
