@@ -1,4 +1,4 @@
-﻿{
+{
   "_langs": [
     {
       "code": "ar",
@@ -361,7 +361,8 @@
     "export.anki.title": "تصدير البطاقات بصيغة جاهزة للاستيراد المباشر في برنامج Anki",
     "export.anki.success": "تم تصدير {n} كلمة إلى ملف Anki بنجاح!",
     "pwa.install": "تثبيت التطبيق",
-    "pwa.install.title": "تثبيت Oxford 5000 على جهازك أو شاشتك الرئيسية للعمل دون إنترنت"
+    "pwa.install.title": "تثبيت Oxford 5000 على جهازك أو شاشتك الرئيسية للعمل دون إنترنت",
+    "header.toggle": "طي أو توسيع الشريط العلوي"
   },
   "en": {
     "a11y.delete": "Delete from list",
@@ -663,7 +664,8 @@
     "export.anki.title": "Export cards formatted for instant import into Anki",
     "export.anki.success": "{n} words exported to Anki TSV file!",
     "pwa.install": "Install App",
-    "pwa.install.title": "Install Oxford 5000 on desktop or home screen for offline use"
+    "pwa.install.title": "Install Oxford 5000 on desktop or home screen for offline use",
+    "header.toggle": "Collapse or expand top bar"
   },
   "fr": {
     "a11y.delete": "Supprimer de la liste",
@@ -965,7 +967,8 @@
     "export.anki.title": "Exporter les cartes prêtes pour Anki",
     "export.anki.success": "{n} mots exportés vers le fichier Anki !",
     "pwa.install": "Installer l'application",
-    "pwa.install.title": "Installer Oxford 5000 pour une utilisation hors ligne"
+    "pwa.install.title": "Installer Oxford 5000 pour une utilisation hors ligne",
+    "header.toggle": "Réduire ou agrandir la barre supérieure"
   },
   "es": {
     "a11y.delete": "Eliminar de la lista",
@@ -1267,7 +1270,8 @@
     "export.anki.title": "Exportar tarjetas listas para Anki",
     "export.anki.success": "¡{n} palabras exportadas a Anki!",
     "pwa.install": "Instalar aplicación",
-    "pwa.install.title": "Instalar Oxford 5000 para uso sin conexión"
+    "pwa.install.title": "Instalar Oxford 5000 para uso sin conexión",
+    "header.toggle": "Plegar o desplegar la barra superior"
   },
   "pt": {
     "a11y.delete": "Excluir da lista",
@@ -1569,7 +1573,8 @@
     "export.anki.title": "Exportar cartões prontos para Anki",
     "export.anki.success": "{n} palavras exportadas para o Anki!",
     "pwa.install": "Instalar aplicativo",
-    "pwa.install.title": "Instalar o Oxford 5000 para uso offline"
+    "pwa.install.title": "Instalar o Oxford 5000 para uso offline",
+    "header.toggle": "Recolher ou expandir a barra superior"
   },
   "ru": {
     "a11y.delete": "Удалить из списка",
@@ -1871,7 +1876,8 @@
     "export.anki.title": "Экспорт карточек для Anki",
     "export.anki.success": "{n} слов экспортировано в Anki!",
     "pwa.install": "Установить приложение",
-    "pwa.install.title": "Установить Oxford 5000 для работы офлайн"
+    "pwa.install.title": "Установить Oxford 5000 для работы офлайн",
+    "header.toggle": "Свернуть или развернуть верхнюю панель"
   },
   "tr": {
     "a11y.delete": "Listeden sil",
@@ -2173,7 +2179,8 @@
     "export.anki.title": "Anki için hazır kartları dışa aktarın",
     "export.anki.success": "{n} kelime Anki dosyasına aktarıldı!",
     "pwa.install": "Uygulamayı Yükle",
-    "pwa.install.title": "Çevrimdışı kullanım için Oxford 5000'i yükleyin"
+    "pwa.install.title": "Çevrimdışı kullanım için Oxford 5000'i yükleyin",
+    "header.toggle": "Üst çubuğu daralt veya genişlet"
   },
   "ur": {
     "a11y.delete": "فہرست سے حذف کریں",
@@ -2475,7 +2482,8 @@
     "export.anki.title": "Anki کے لیے تیار کارڈز برآمد کریں",
     "export.anki.success": "{n} الفاظ برآمد ہوئے!",
     "pwa.install": "ایپ انسٹال کریں",
-    "pwa.install.title": "آف لائن استعمال کے لیے ایپ انسٹال کریں"
+    "pwa.install.title": "آف لائن استعمال کے لیے ایپ انسٹال کریں",
+    "header.toggle": "اوپری پٹی کو سمیٹیں یا پھیلائیں"
   },
   "hi": {
     "a11y.delete": "सूची से हटाएँ",
@@ -2777,7 +2785,8 @@
     "export.anki.title": "Anki के लिए कार्ड निर्यात करें",
     "export.anki.success": "{n} शब्द Anki फ़ाइल में निर्यात किए गए!",
     "pwa.install": "ऐप इंस्टॉल करें",
-    "pwa.install.title": "ऑफ़लाइन उपयोग के लिए ऐप इंस्टॉल करें"
+    "pwa.install.title": "ऑफ़लाइन उपयोग के लिए ऐप इंस्टॉल करें",
+    "header.toggle": "शीर्ष पट्टी को संक्षिप्त या विस्तृत करें"
   },
   "id": {
     "a11y.delete": "Hapus dari daftar",
@@ -3079,7 +3088,8 @@
     "export.anki.title": "Ekspor kartu yang siap untuk Anki",
     "export.anki.success": "{n} kata berhasil diekspor ke Anki!",
     "pwa.install": "Instal Aplikasi",
-    "pwa.install.title": "Instal Oxford 5000 untuk penggunaan offline"
+    "pwa.install.title": "Instal Oxford 5000 untuk penggunaan offline",
+    "header.toggle": "Lipat atau perluas bilah atas"
   },
   "zh": {
     "a11y.delete": "从列表删除",
@@ -3381,7 +3391,8 @@
     "export.anki.title": "导出标准格式卡片，可一键导入 Anki",
     "export.anki.success": "已成功导出 {n} 个单词到 Anki 文件！",
     "pwa.install": "安装应用程序",
-    "pwa.install.title": "安装到桌面或主屏幕，随时随地完全离线使用"
+    "pwa.install.title": "安装到桌面或主屏幕，随时随地完全离线使用",
+    "header.toggle": "折叠或展开顶部栏"
   },
   "nl": {
     "brand.title": "Woordenkaarten",
@@ -3683,6 +3694,7 @@
     "export.anki.title": "Exporteer kaarten klaar voor Anki",
     "export.anki.success": "{n} woorden geëxporteerd naar Anki!",
     "pwa.install": "App installeren",
-    "pwa.install.title": "Installeer Oxford 5000 voor offline gebruik"
+    "pwa.install.title": "Installeer Oxford 5000 voor offline gebruik",
+    "header.toggle": "Bovenste balk in- of uitklappen"
   }
 }

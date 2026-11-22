@@ -57,33 +57,63 @@
 <div class="app">
 
   <div class="top-nav-bar" id="topNavBar">
-  <header>
-    <div class="brand">
-      <span class="eyebrow">Oxford 5000</span>
-      <h1 data-i18n="brand.title"></h1>
+    <div class="header-main-content" id="headerMainContent">
+      <header>
+        <div class="brand">
+          <span class="eyebrow">Oxford 5000</span>
+          <h1 data-i18n="brand.title"></h1>
+        </div>
+        <div class="stats">
+          <div class="lang-switch" data-i18n-title="lang.label">
+            <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.4 4 5.6 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.6-4-9s1.4-6.6 4-9z"></path></svg>
+            <button type="button" id="langSelectButton" class="lang-select-button" data-i18n-aria="lang.label" aria-haspopup="listbox" aria-expanded="false">
+              <span id="langSelectLabel"></span>
+            </button>
+            <div id="langMenu" class="lang-menu" role="listbox" aria-multiselectable="true" hidden></div>
+            <select id="langSelect" class="lang-select-native" data-i18n-aria="lang.label" tabindex="-1" aria-hidden="true"></select>
+            <span class="lang-code" id="langCode">AR</span>
+            <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+          <button type="button" class="stat-pill" id="openKnown" data-i18n-title="stat.known.title"><span class="dot know"></span><b id="knowCount">0</b></button>
+          <button type="button" class="stat-pill" id="openUnknown" data-i18n-title="stat.unknown.title"><span class="dot unknow"></span><b id="unknowCount">0</b></button>
+          <button type="button" class="stat-pill" id="openLeft" data-i18n-title="stat.left.title"><span class="dot left"></span><b id="leftCount">0</b></button>
+          <button type="button" class="stat-pill habit-pill" id="openHabit" data-i18n-title="habit.goal"><span class="habit-flame">🔥</span><b id="habitStreakCount">0</b><span class="habit-sep">·</span><span id="habitGoalProgress">0/20</span></button>
+          <button type="button" class="link-btn" id="openSync" data-i18n="sync.button"></button>
+          <button type="button" class="header-toggle-btn" id="btnToggleHeaderCollapse" data-i18n-title="header.toggle" aria-label="Toggle Header">
+            <svg class="header-toggle-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M18 15l-6-6-6 6"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="level-bar" id="levelBar"></div>
     </div>
-    <div class="stats">
-      <div class="lang-switch" data-i18n-title="lang.label">
-        <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.4 4 5.6 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.6-4-9s1.4-6.6 4-9z"></path></svg>
-        <button type="button" id="langSelectButton" class="lang-select-button" data-i18n-aria="lang.label" aria-haspopup="listbox" aria-expanded="false">
-          <span id="langSelectLabel"></span>
-        </button>
-        <div id="langMenu" class="lang-menu" role="listbox" aria-multiselectable="true" hidden></div>
-        <select id="langSelect" class="lang-select-native" data-i18n-aria="lang.label" tabindex="-1" aria-hidden="true"></select>
-        <span class="lang-code" id="langCode">AR</span>
-        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+
+    <!-- Collapsed Slim Bar -->
+    <div class="header-collapsed-strip" id="headerCollapsedStrip" aria-hidden="true">
+      <div class="collapsed-left">
+        <span class="collapsed-badge">O5</span>
+        <span class="collapsed-level" id="collapsedLevelBadge">A1</span>
+        <span class="collapsed-streak"><span class="habit-flame">🔥</span><b id="collapsedStreakVal">0</b></span>
       </div>
-      <button type="button" class="stat-pill" id="openKnown" data-i18n-title="stat.known.title"><span class="dot know"></span><b id="knowCount">0</b></button>
-      <button type="button" class="stat-pill" id="openUnknown" data-i18n-title="stat.unknown.title"><span class="dot unknow"></span><b id="unknowCount">0</b></button>
-      <button type="button" class="stat-pill" id="openLeft" data-i18n-title="stat.left.title"><span class="dot left"></span><b id="leftCount">0</b></button>
-      <button type="button" class="stat-pill habit-pill" id="openHabit" data-i18n-title="habit.goal"><span class="habit-flame">🔥</span><b id="habitStreakCount">0</b><span class="habit-sep">·</span><span id="habitGoalProgress">0/20</span></button>
-      <button type="button" class="link-btn" id="openSync" data-i18n="sync.button"></button>
+      <div class="collapsed-center">
+        <span class="collapsed-counts">
+          <span class="dot know"></span><b id="collapsedKnow">0</b>
+          <span class="dot unknow"></span><b id="collapsedUnknow">0</b>
+          <span class="dot left"></span><b id="collapsedLeft">0</b>
+        </span>
+      </div>
+      <div class="collapsed-right">
+        <button type="button" class="header-expand-btn" id="btnExpandHeader" data-i18n-title="header.toggle" aria-label="Expand Header">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-  </header>
 
-  <div class="level-bar" id="levelBar"></div>
-
-  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   </div>
 
   <div id="mainArea">

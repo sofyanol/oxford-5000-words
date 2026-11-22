@@ -2714,6 +2714,7 @@ function render(){
   unknowCountEl.textContent = String(unknown);
   leftCountEl.textContent = String(total - known - unknown);
   progressFillEl.style.width = (total ? ((known + unknown) / total * 100) : 0).toFixed(2) + '%';
+  updateCollapsedStrip();
 
   const undoBtn = document.getElementById('btnUndo');
   if(undoBtn) undoBtn.disabled = state.history.length === 0;
@@ -6396,7 +6397,7 @@ function wireEvents(){
   const startOnboarding = document.getElementById('startOnboarding');
   if(startOnboarding) startOnboarding.addEventListener('click', closeOnboarding);
   const whatsNewBadge = document.getElementById('whatsNewBadge');
-  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update14'));
+  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update15'));
   const closeWhatsNewBtn = document.getElementById('closeWhatsNew');
   if(closeWhatsNewBtn) closeWhatsNewBtn.addEventListener('click', closeWhatsNew);
   const whatsNewOverlayEl = document.getElementById('whatsNewOverlay');
@@ -7535,6 +7536,74 @@ function initExamplesNotice(){
   }, 1400);
 }
 
+function updateCollapsedStrip(){
+  const strip = document.getElementById('headerCollapsedStrip');
+  if(!strip) return;
+  const lvlBadge = document.getElementById('collapsedLevelBadge');
+  if(lvlBadge){
+    const curr = (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'all';
+    lvlBadge.textContent = (curr === 'all') ? t('level.all') : (LEVEL_LABELS[curr] || curr.toUpperCase());
+  }
+  const streakEl = document.getElementById('collapsedStreakVal');
+  if(streakEl){
+    const hCount = document.getElementById('habitStreakCount');
+    streakEl.textContent = hCount ? hCount.textContent : '0';
+  }
+  const knowEl = document.getElementById('collapsedKnow');
+  if(knowEl && typeof knowCountEl !== 'undefined' && knowCountEl){
+    knowEl.textContent = knowCountEl.textContent || '0';
+  }
+  const unknowEl = document.getElementById('collapsedUnknow');
+  if(unknowEl && typeof unknowCountEl !== 'undefined' && unknowCountEl){
+    unknowEl.textContent = unknowCountEl.textContent || '0';
+  }
+  const leftEl = document.getElementById('collapsedLeft');
+  if(leftEl && typeof leftCountEl !== 'undefined' && leftCountEl){
+    leftEl.textContent = leftCountEl.textContent || '0';
+  }
+}
+
+function toggleHeaderCollapse(force){
+  const bar = document.getElementById('topNavBar');
+  if(!bar) return;
+  const isCollapsed = (typeof force === 'boolean') ? force : !bar.classList.contains('is-collapsed');
+  bar.classList.toggle('is-collapsed', isCollapsed);
+  try {
+    localStorage.setItem('oxford_header_collapsed', isCollapsed ? '1' : '0');
+  } catch(_){}
+  updateCollapsedStrip();
+}
+
+function initHeaderCollapse(){
+  const toggleBtn = document.getElementById('btnToggleHeaderCollapse');
+  if(toggleBtn){
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleHeaderCollapse();
+    });
+  }
+  const expandBtn = document.getElementById('btnExpandHeader');
+  if(expandBtn){
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleHeaderCollapse(false);
+    });
+  }
+  const strip = document.getElementById('headerCollapsedStrip');
+  if(strip){
+    strip.addEventListener('click', (e) => {
+      if(!e.target.closest('button')) toggleHeaderCollapse(false);
+    });
+  }
+  try {
+    if(localStorage.getItem('oxford_header_collapsed') === '1'){
+      const bar = document.getElementById('topNavBar');
+      if(bar) bar.classList.add('is-collapsed');
+    }
+  } catch(_){}
+  updateCollapsedStrip();
+}
+
 loadState();
 applyPreferences();
 wireEvents();
@@ -7545,6 +7614,7 @@ loadVisitorCount();
 renderSyncStatus();
 maybeAutoSync();
 initExamplesNotice();
+initHeaderCollapse();
 if(location.hash !== '#selftest') applyHashSync();
 
 if(location.hash === '#selftest'){
