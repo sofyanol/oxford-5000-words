@@ -7,17 +7,44 @@ A friendly, offline-first vocabulary companion for learners who want to build a 
 
 ---
 
-## Update 1.5 (In Development)
+## Update 1.5
 
-Update 1.5 focuses on code quality verification, security auditing via SonarQube, glitch prevention, and advanced interactive learning capabilities, building directly upon the complete v1.4 foundation:
+Update 1.5 is a landmark release introducing an expansive study and focus ecosystem alongside high-end visual aesthetics and hardened code quality:
 
-- **Security & Code Quality Scanning**:
-  - Integration of SonarQube static code analysis to audit frontend vulnerabilities and syntax glitches.
-  - Hardened client-side data handling and resilient localStorage synchronization.
-- **Project Structure & Update Alignment**:
-  - Upgraded PWA cache to `oxford5000-v1.5.0`.
-  - Updated "What's New in 1.5" UI guides across all 12 supported languages.
-  - Preserved all v1.4 features: Daily Streaks (🔥), Audio Speed Controls (`1.0x`/`0.8x`/`0.6x`), Spelling Quiz, Word Match Challenge, CEFR Pentagon Radar, Anki TSV Export, and Sticky Header.
+- **Hands-Free Auto-Play Walk & Sleep Mode (🎧)**:
+  - Eyes-free vocabulary listening engine for commuting, walking, or bedtime study.
+  - Dual pronunciation sequence (UK, US, or sequential UK followed by US).
+  - Pacing interval selectors (2.0s Fast, 3.2s Normal, 5.0s Relaxed) with animated progress ring/bar.
+  - Sleep timer (15, 30, 45, 60 minutes) with graceful automatic audio shutdown.
+
+- **Gamification Badges & Milestone Achievements (🏆)**:
+  - 10 distinct unlockable milestones (First Step, Curious Mind, Habit Builder, Week Warrior, Quiz Master, Speed Racer, Orthographer, Memory Champ, CEFR Conqueror, Century Scholar).
+  - Real-time celebratory achievement toast alerts with custom icons and confetti celebrations.
+  - Interactive Badges showcase modal with overall unlock percentage and progress bars.
+
+- **Smart Focus Deck / Leech Hunter (🎯)**:
+  - Automated detection of tricky words based on review lapses and missed quiz questions.
+  - One-click targeted focus deck drill to master problematic vocabulary in isolation.
+  - Dedicated Leech Hunter modal displaying lapse frequency and CEFR level tags.
+
+- **Printable Study Sheets & Cut-Out Flashcards PDF (🖨️)**:
+  - Ink-friendly A4 print engine with dedicated `@media print` typography.
+  - Two export formats: 3×3 cut-out flashcard grids with dashed cutting guides, or structured vocabulary revision tables.
+  - Configurable inclusion of IPA phonetics, translations, and example sentences.
+
+- **Procedural Ambient Focus Soundscapes (🌧️)**:
+  - 100% procedural Web Audio API synthesizer running completely offline with 0 external audio files.
+  - Three soothing soundscapes: Gentle Rain, Cozy Fireplace, and Ocean Waves with individual volume sliders and master mute.
+
+- **Luxury OLED Pure Black & Warm Classic Sepia Themes (🎨)**:
+  - Customizable theme switcher in Settings: Default Midnight Navy & Gold, battery-saving OLED Pure Black (`#000000`), and Warm Classic Sepia.
+  - Tactile spring micro-interactions and high-definition card depth styling.
+
+- **Security & Quality Hardening (🛡️)**:
+  - 100% clean security audit with zero vulnerabilities (`eval`, dynamic `Function`, or `document.write`).
+  - 71 protected `localStorage` calls with try/catch error boundaries.
+  - 100% i18n key parity across all 12 supported languages.
+  - PWA service worker cache upgraded to `oxford5000-v1.5.0`.
 
 ---
 

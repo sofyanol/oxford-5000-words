@@ -1,11 +1,18 @@
 # Changelog
 
-## Update 1.5.0 (In Development)
-- Initiated Update 1.5 development roadmap and environment preparation.
-- Integrated SonarQube code quality verification and security audit tooling.
-- Configured service worker caching for version `oxford5000-v1.5.0`.
-- Updated multilingual "What's New in 1.5" UI indicators across 12 supported languages.
-- Preserved complete baseline of v1.4.0 features (streaks, audio speed controls, spelling quiz, match game, radar analytics, Anki export, PWA, sticky header).
+## Update 1.5.0
+- Added Hands-Free Auto-Play Walk & Sleep Mode with dual audio pacing (UK/US) and configurable sleep timer.
+- Added Gamification Badges & Milestone Achievements with 10 unlockable badges, celebratory toasts, and confetti.
+- Added Smart Focus Deck (Leech Hunter) to automatically track, isolate, and drill tricky words.
+- Added Printable Study Sheets & Cut-Out Flashcards PDF (A4 3×3 grid and structured vocabulary table).
+- Added Procedural Ambient Focus Soundscapes (Gentle Rain, Cozy Fireplace, Ocean Waves) via Web Audio API.
+- Added Luxury OLED Pure Black (`#000000`) and Warm Classic Sepia theme customizer in Settings.
+- Added Floating Island Top Header with smooth Collapse/Expand toggle.
+- Added Tactile Spring Micro-Interactions across all buttons and interactive cards.
+- Added Comprehensive Code Quality & Security Audit script (`tools/audit_code_quality.py`) with 100% pass rate.
+- Added Autonomous Release Trigger (`python tools/publish_and_bump.py --publish`).
+- Updated service worker caching to `oxford5000-v1.5.0`.
+- Updated multilingual localization across all 12 supported languages.
 
 ## Update 1.4.0
 - Added Daily Study Habit, Goals & Streak Counter (🔥) with customizable daily targets and celebration confetti.

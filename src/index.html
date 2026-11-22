@@ -223,12 +223,19 @@
   </div>
 
   <div class="toolbar" id="toolbar">
-    <div class="toolbar-grid primary-grid">
+    <div class="toolbar-grid primary-grid four-col">
       <button class="tool-btn primary-tool quiz-tool" id="btnQuiz" data-i18n="quiz.button"></button>
       <button class="tool-btn primary-tool match-tool" id="btnMatch" data-i18n="match.button"></button>
+      <button class="tool-btn primary-tool handsfree-tool" id="btnHandsFree" data-i18n="toolbar.handsfree"></button>
       <button class="tool-btn primary-tool analytics-tool" id="btnAnalytics" data-i18n="analytics.button"></button>
     </div>
-    <div class="toolbar-grid secondary-grid">
+    <div class="toolbar-grid secondary-grid four-col">
+      <button class="tool-btn accent-tool" id="btnBadges" data-i18n="toolbar.badges"></button>
+      <button class="tool-btn accent-tool" id="btnLeeches" data-i18n="toolbar.leeches"></button>
+      <button class="tool-btn accent-tool" id="btnPrint" data-i18n="toolbar.print"></button>
+      <button class="tool-btn accent-tool" id="btnAmbient" data-i18n="toolbar.ambient"></button>
+    </div>
+    <div class="toolbar-grid tertiary-grid four-col">
       <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
       <button class="tool-btn" id="btnShuffle"></button>
       <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
@@ -643,6 +650,14 @@
     </div>
     <div class="settings-body" style="padding:16px 22px 24px; overflow-y:auto; flex:1;">
       <div class="settings-row" style="margin-bottom:14px;">
+        <label for="settingsTheme" data-i18n="settings.theme" style="font-weight:700;display:block;margin-bottom:6px;"></label>
+        <select id="settingsTheme" style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.18);background:rgba(20,25,38,0.85);color:var(--text-on-ink);font-weight:700;font-size:13.5px;cursor:pointer;">
+          <option value="midnight" data-i18n="theme.navy">Midnight Navy & Gold (Default)</option>
+          <option value="oled" data-i18n="theme.oled">OLED Pure Black</option>
+          <option value="sepia" data-i18n="theme.sepia">Warm Classic Sepia</option>
+        </select>
+      </div>
+      <div class="settings-row" style="margin-bottom:14px;">
         <label for="settingsFontScale" data-i18n="settings.fontScale" style="font-weight:700;"></label>
         <span id="settingsFontScaleValue" style="margin-inline-start:8px;font-family:var(--font-mono);font-weight:700;">100%</span>
         <input type="range" id="settingsFontScale" min="90" max="120" step="5" value="100" style="width:100%;margin-top:6px;">
@@ -664,6 +679,235 @@
     </div>
   </div>
 </div>
+
+<!-- Hands-Free Auto-Play Walk & Sleep Mode Modal -->
+<div class="overlay" id="handsFreeOverlay">
+  <div class="review-panel handsfree-panel" role="dialog" aria-modal="true" aria-labelledby="handsFreeTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="handsFreeTitle" data-i18n="toolbar.handsfree">Hands-Free Mode</h3>
+        <span class="hf-status-badge" id="hfStatusBadge">Paused</span>
+      </div>
+      <button class="review-close" id="closeHandsFree" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="handsfree-body">
+      <div class="hf-display-card">
+        <div class="hf-word-box">
+          <span class="hf-badge" id="hfCefrBadge">A1</span>
+          <h2 class="hf-word" id="hfCurrentWord">---</h2>
+          <div class="hf-ipa" id="hfCurrentIpa">/.../</div>
+          <p class="hf-tr" id="hfCurrentTr">---</p>
+        </div>
+        <div class="hf-progress-bar-wrap">
+          <div class="hf-progress-bar" id="hfProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="hf-controls">
+        <button type="button" class="hf-btn" id="btnHfPrev" title="Previous Word">⏮️</button>
+        <button type="button" class="hf-btn hf-play-btn" id="btnHfPlayPause" title="Play / Pause">▶️ Start</button>
+        <button type="button" class="hf-btn" id="btnHfNext" title="Next Word">⏭️</button>
+      </div>
+
+      <div class="hf-settings-grid">
+        <div class="hf-setting-item">
+          <label for="hfVoiceMode">Accent:</label>
+          <select id="hfVoiceMode">
+            <option value="both" selected>UK then US (Both)</option>
+            <option value="uk">UK Accent only</option>
+            <option value="us">US Accent only</option>
+          </select>
+        </div>
+        <div class="hf-setting-item">
+          <label for="hfDelaySelect">Interval:</label>
+          <select id="hfDelaySelect">
+            <option value="2000">Fast (2.0s)</option>
+            <option value="3200" selected>Normal (3.2s)</option>
+            <option value="5000">Relaxed (5.0s)</option>
+          </select>
+        </div>
+        <div class="hf-setting-item">
+          <label for="hfSleepSelect">Sleep Timer:</label>
+          <select id="hfSleepSelect">
+            <option value="0" selected>Off (Continuous)</option>
+            <option value="15">15 Minutes</option>
+            <option value="30">30 Minutes</option>
+            <option value="45">45 Minutes</option>
+            <option value="60">60 Minutes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Gamification Badges & Milestone Achievements Modal -->
+<div class="overlay" id="badgesOverlay">
+  <div class="review-panel badges-panel" role="dialog" aria-modal="true" aria-labelledby="badgesTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="badgesTitle" data-i18n="toolbar.badges">Achievements & Badges</h3>
+      </div>
+      <button class="review-close" id="closeBadges" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="badges-body">
+      <div class="badges-summary">
+        <div class="badges-progress-label">
+          <span id="badgesProgressText">0 / 10 Unlocked (0%)</span>
+          <span class="badges-trophy-icon">🏆</span>
+        </div>
+        <div class="badges-bar-wrap">
+          <div class="badges-bar" id="badgesProgressBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Smart Focus Deck / Leech Hunter Modal -->
+<div class="overlay" id="leechesOverlay">
+  <div class="review-panel leeches-panel" role="dialog" aria-modal="true" aria-labelledby="leechesTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="leechesTitle" data-i18n="toolbar.leeches">Tricky Words (Focus Deck)</h3>
+      </div>
+      <button class="review-close" id="closeLeeches" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="leeches-body">
+      <div class="leeches-header-card">
+        <div class="leeches-count-box">
+          <span class="leeches-count-num" id="leechesCountNum">0</span>
+          <span class="leeches-count-label">Words Requiring Focus</span>
+        </div>
+        <div class="leeches-actions">
+          <button type="button" class="tool-btn primary-tool" id="btnStartLeechDeck">🎯 Practice Focus Deck</button>
+          <button type="button" class="tool-btn" id="btnClearLeeches">🗑️ Clear List</button>
+        </div>
+      </div>
+      <div class="leeches-list" id="leechesList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Printable Study Sheets & Flashcards Modal -->
+<div class="overlay" id="printOverlay">
+  <div class="review-panel print-panel" role="dialog" aria-modal="true" aria-labelledby="printTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="printTitle" data-i18n="toolbar.print">Printable Study Sheets & Flashcards</h3>
+      </div>
+      <button class="review-close" id="closePrint" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="print-body">
+      <p class="print-desc">Generate crisp, ink-friendly printable flashcards or study cheat-sheets for offline review.</p>
+      <div class="print-config-group">
+        <label class="print-label">Layout Format:</label>
+        <div class="print-options-row">
+          <label class="quiz-check"><input type="radio" name="printLayout" value="grid" checked><span>Cut-out Flashcards (3×3 Grid)</span></label>
+          <label class="quiz-check"><input type="radio" name="printLayout" value="table"><span>Structured Vocabulary Table</span></label>
+        </div>
+      </div>
+      <div class="print-config-group">
+        <label class="print-label">Word Source:</label>
+        <select id="printSourceSelect" class="print-select">
+          <option value="current">Current Deck / Filter (<span id="printCurrentCount">0</span> words)</option>
+          <option value="bookmarked">Bookmarked Words Only</option>
+          <option value="leeches">Tricky Words (Focus Deck)</option>
+          <option value="a1">Level A1 Foundation Words</option>
+          <option value="a2">Level A2 Elementary Words</option>
+          <option value="b1">Level B1 Intermediate Words</option>
+          <option value="b2">Level B2 Upper-Intermediate Words</option>
+          <option value="c1">Level C1 Advanced Words</option>
+        </select>
+      </div>
+      <div class="print-config-group">
+        <label class="print-label">Content Inclusions:</label>
+        <div class="print-options-grid">
+          <label class="quiz-check"><input type="checkbox" id="printIncludeIpa" checked><span>IPA Phonetics</span></label>
+          <label class="quiz-check"><input type="checkbox" id="printIncludeTr" checked><span>Translation</span></label>
+          <label class="quiz-check"><input type="checkbox" id="printIncludeEx" checked><span>Example Sentence</span></label>
+          <label class="quiz-check"><input type="checkbox" id="printIncludeForms" checked><span>Word Forms</span></label>
+        </div>
+      </div>
+      <div class="print-action-bar">
+        <button type="button" class="tool-btn primary-tool" id="btnExecutePrint">🖨️ Open Print Preview / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ambient Focus Soundscapes Modal -->
+<div class="overlay" id="ambientOverlay">
+  <div class="review-panel ambient-panel" role="dialog" aria-modal="true" aria-labelledby="ambientTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="ambientTitle" data-i18n="toolbar.ambient">Focus Soundscapes (Procedural Lo-Fi)</h3>
+        <span class="ambient-sub-badge">100% Web Audio Synthesizer</span>
+      </div>
+      <button class="review-close" id="closeAmbient" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="ambient-body">
+      <div class="ambient-master-card">
+        <div class="ambient-master-header">
+          <span class="ambient-master-title">Master Volume</span>
+          <button type="button" class="tool-btn ambient-mute-btn" id="btnAmbientMasterToggle">🔊 Mute All</button>
+        </div>
+        <input type="range" id="ambientMasterVol" min="0" max="100" value="70" class="ambient-slider">
+      </div>
+
+      <div class="ambient-tracks">
+        <div class="ambient-track-card" id="cardAmbientRain">
+          <div class="ambient-track-header">
+            <div class="ambient-track-info">
+              <span class="ambient-icon">🌧️</span>
+              <div>
+                <strong>Gentle Rain</strong>
+                <small>Soft rhythmic rainfall</small>
+              </div>
+            </div>
+            <button type="button" class="ambient-track-toggle" id="btnToggleRain">Off</button>
+          </div>
+          <input type="range" id="volRain" min="0" max="100" value="50" class="ambient-slider">
+        </div>
+
+        <div class="ambient-track-card" id="cardAmbientFire">
+          <div class="ambient-track-header">
+            <div class="ambient-track-info">
+              <span class="ambient-icon">🔥</span>
+              <div>
+                <strong>Cozy Fireplace</strong>
+                <small>Warm crackles and soothing embers</small>
+              </div>
+            </div>
+            <button type="button" class="ambient-track-toggle" id="btnToggleFire">Off</button>
+          </div>
+          <input type="range" id="volFire" min="0" max="100" value="50" class="ambient-slider">
+        </div>
+
+        <div class="ambient-track-card" id="cardAmbientWaves">
+          <div class="ambient-track-header">
+            <div class="ambient-track-info">
+              <span class="ambient-icon">🌊</span>
+              <div>
+                <strong>Ocean Waves</strong>
+                <small>Deep hypnotic tidal swells</small>
+              </div>
+            </div>
+            <button type="button" class="ambient-track-toggle" id="btnToggleWaves">Off</button>
+          </div>
+          <input type="range" id="volWaves" min="0" max="100" value="50" class="ambient-slider">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Achievement Toast Notification Container -->
+<div id="achievementToastContainer" class="achievement-toast-container" aria-live="polite"></div>
+
+<!-- Hidden Print Area for High-Quality Printable Output -->
+<div id="printArea" class="print-area" aria-hidden="true"></div>
 
 <div class="overlay" id="whatsNewOverlay">
   <div class="review-panel whats-new-panel" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle" tabindex="-1">

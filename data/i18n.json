@@ -362,7 +362,16 @@
     "export.anki.success": "تم تصدير {n} كلمة إلى ملف Anki بنجاح!",
     "pwa.install": "تثبيت التطبيق",
     "pwa.install.title": "تثبيت Oxford 5000 على جهازك أو شاشتك الرئيسية للعمل دون إنترنت",
-    "header.toggle": "طي أو توسيع الشريط العلوي"
+    "header.toggle": "طي أو توسيع الشريط العلوي",
+    "toolbar.handsfree": "تشغيل تلقائي 🎧",
+    "toolbar.badges": "الإنجازات 🏆",
+    "toolbar.leeches": "الكلمات الصعبة 🎯",
+    "toolbar.print": "طباعة ورقية 🖨️",
+    "toolbar.ambient": "أصوات التركيز 🌧️",
+    "settings.theme": "المظهر والسمة",
+    "theme.navy": "كحلي وذهبي فاخر (الافتراضي)",
+    "theme.oled": "أسود ليلي فاحم (OLED)",
+    "theme.sepia": "ورقي دافئ كلاسيكي (Sepia)"
   },
   "en": {
     "a11y.delete": "Delete from list",
@@ -665,7 +674,16 @@
     "export.anki.success": "{n} words exported to Anki TSV file!",
     "pwa.install": "Install App",
     "pwa.install.title": "Install Oxford 5000 on desktop or home screen for offline use",
-    "header.toggle": "Collapse or expand top bar"
+    "header.toggle": "Collapse or expand top bar",
+    "toolbar.handsfree": "Hands-Free 🎧",
+    "toolbar.badges": "Badges 🏆",
+    "toolbar.leeches": "Tricky Words 🎯",
+    "toolbar.print": "Print Sheets 🖨️",
+    "toolbar.ambient": "Focus Sounds 🌧️",
+    "settings.theme": "App Theme",
+    "theme.navy": "Midnight Navy & Gold (Default)",
+    "theme.oled": "OLED Pure Black",
+    "theme.sepia": "Warm Classic Sepia"
   },
   "fr": {
     "a11y.delete": "Supprimer de la liste",
@@ -968,7 +986,16 @@
     "export.anki.success": "{n} mots exportés vers le fichier Anki !",
     "pwa.install": "Installer l'application",
     "pwa.install.title": "Installer Oxford 5000 pour une utilisation hors ligne",
-    "header.toggle": "Réduire ou agrandir la barre supérieure"
+    "header.toggle": "Réduire ou agrandir la barre supérieure",
+    "toolbar.handsfree": "Mains libres 🎧",
+    "toolbar.badges": "Succès 🏆",
+    "toolbar.leeches": "Mots difficiles 🎯",
+    "toolbar.print": "Imprimer 🖨️",
+    "toolbar.ambient": "Sons d ambiance 🌧️",
+    "settings.theme": "Thème",
+    "theme.navy": "Bleu nuit & Or (Défaut)",
+    "theme.oled": "Noir pur OLED",
+    "theme.sepia": "Sépia chaleureux"
   },
   "es": {
     "a11y.delete": "Eliminar de la lista",
@@ -1271,7 +1298,16 @@
     "export.anki.success": "¡{n} palabras exportadas a Anki!",
     "pwa.install": "Instalar aplicación",
     "pwa.install.title": "Instalar Oxford 5000 para uso sin conexión",
-    "header.toggle": "Plegar o desplegar la barra superior"
+    "header.toggle": "Plegar o desplegar la barra superior",
+    "toolbar.handsfree": "Manos libres 🎧",
+    "toolbar.badges": "Logros 🏆",
+    "toolbar.leeches": "Palabras difíciles 🎯",
+    "toolbar.print": "Imprimir 🖨️",
+    "toolbar.ambient": "Sonidos relax 🌧️",
+    "settings.theme": "Tema",
+    "theme.navy": "Azul noche y oro (Por defecto)",
+    "theme.oled": "Negro puro OLED",
+    "theme.sepia": "Sepia cálido"
   },
   "pt": {
     "a11y.delete": "Excluir da lista",
@@ -1574,7 +1610,16 @@
     "export.anki.success": "{n} palavras exportadas para o Anki!",
     "pwa.install": "Instalar aplicativo",
     "pwa.install.title": "Instalar o Oxford 5000 para uso offline",
-    "header.toggle": "Recolher ou expandir a barra superior"
+    "header.toggle": "Recolher ou expandir a barra superior",
+    "toolbar.handsfree": "Mãos livres 🎧",
+    "toolbar.badges": "Conquistas 🏆",
+    "toolbar.leeches": "Palavras difíceis 🎯",
+    "toolbar.print": "Imprimir 🖨️",
+    "toolbar.ambient": "Sons de foco 🌧️",
+    "settings.theme": "Tema",
+    "theme.navy": "Azul escuro e ouro (Padrão)",
+    "theme.oled": "Preto puro OLED",
+    "theme.sepia": "Sépia acolhedor"
   },
   "ru": {
     "a11y.delete": "Удалить из списка",
@@ -1877,7 +1922,16 @@
     "export.anki.success": "{n} слов экспортировано в Anki!",
     "pwa.install": "Установить приложение",
     "pwa.install.title": "Установить Oxford 5000 для работы офлайн",
-    "header.toggle": "Свернуть или развернуть верхнюю панель"
+    "header.toggle": "Свернуть или развернуть верхнюю панель",
+    "toolbar.handsfree": "Авто-режим 🎧",
+    "toolbar.badges": "Достижения 🏆",
+    "toolbar.leeches": "Сложные слова 🎯",
+    "toolbar.print": "Печать 🖨️",
+    "toolbar.ambient": "Звуки фокуса 🌧️",
+    "settings.theme": "Тема",
+    "theme.navy": "Полночный синий с золотом",
+    "theme.oled": "Чистый черный OLED",
+    "theme.sepia": "Теплая сепия"
   },
   "tr": {
     "a11y.delete": "Listeden sil",
@@ -2180,7 +2234,16 @@
     "export.anki.success": "{n} kelime Anki dosyasına aktarıldı!",
     "pwa.install": "Uygulamayı Yükle",
     "pwa.install.title": "Çevrimdışı kullanım için Oxford 5000'i yükleyin",
-    "header.toggle": "Üst çubuğu daralt veya genişlet"
+    "header.toggle": "Üst çubuğu daralt veya genişlet",
+    "toolbar.handsfree": "Eller Serbest 🎧",
+    "toolbar.badges": "Rozetler 🏆",
+    "toolbar.leeches": "Zor Kelimeler 🎯",
+    "toolbar.print": "Yazdır 🖨️",
+    "toolbar.ambient": "Odak Sesleri 🌧️",
+    "settings.theme": "Tema",
+    "theme.navy": "Gece Mavisi ve Altın",
+    "theme.oled": "Saf Siyah OLED",
+    "theme.sepia": "Sıcak Sepya"
   },
   "ur": {
     "a11y.delete": "فہرست سے حذف کریں",
@@ -2483,7 +2546,16 @@
     "export.anki.success": "{n} الفاظ برآمد ہوئے!",
     "pwa.install": "ایپ انسٹال کریں",
     "pwa.install.title": "آف لائن استعمال کے لیے ایپ انسٹال کریں",
-    "header.toggle": "اوپری پٹی کو سمیٹیں یا پھیلائیں"
+    "header.toggle": "اوپری پٹی کو سمیٹیں یا پھیلائیں",
+    "toolbar.handsfree": "خودکار پلے 🎧",
+    "toolbar.badges": "کامیابیاں 🏆",
+    "toolbar.leeches": "مشکل الفاظ 🎯",
+    "toolbar.print": "پرنٹ کریں 🖨️",
+    "toolbar.ambient": "توجہ کی آوازیں 🌧️",
+    "settings.theme": "تھیم",
+    "theme.navy": "نیلا اور سنہری (پہلے سے طے شدہ)",
+    "theme.oled": "خالص سیاہ OLED",
+    "theme.sepia": "گرم سیپیا"
   },
   "hi": {
     "a11y.delete": "सूची से हटाएँ",
@@ -2786,7 +2858,16 @@
     "export.anki.success": "{n} शब्द Anki फ़ाइल में निर्यात किए गए!",
     "pwa.install": "ऐप इंस्टॉल करें",
     "pwa.install.title": "ऑफ़लाइन उपयोग के लिए ऐप इंस्टॉल करें",
-    "header.toggle": "शीर्ष पट्टी को संक्षिप्त या विस्तृत करें"
+    "header.toggle": "शीर्ष पट्टी को संक्षिप्त या विस्तृत करें",
+    "toolbar.handsfree": "हैंड्स-फ्री 🎧",
+    "toolbar.badges": "उपलब्धियां 🏆",
+    "toolbar.leeches": "कठिन शब्द 🎯",
+    "toolbar.print": "प्रिंट करें 🖨️",
+    "toolbar.ambient": "फोकस ध्वनियां 🌧️",
+    "settings.theme": "थीम",
+    "theme.navy": "मध्यरात्रि नीला और स्वर्ण",
+    "theme.oled": "शुद्ध काला OLED",
+    "theme.sepia": "गर्म सेपिया"
   },
   "id": {
     "a11y.delete": "Hapus dari daftar",
@@ -3089,7 +3170,16 @@
     "export.anki.success": "{n} kata berhasil diekspor ke Anki!",
     "pwa.install": "Instal Aplikasi",
     "pwa.install.title": "Instal Oxford 5000 untuk penggunaan offline",
-    "header.toggle": "Lipat atau perluas bilah atas"
+    "header.toggle": "Lipat atau perluas bilah atas",
+    "toolbar.handsfree": "Bebas Genggam 🎧",
+    "toolbar.badges": "Lencana 🏆",
+    "toolbar.leeches": "Kata Sulit 🎯",
+    "toolbar.print": "Cetak 🖨️",
+    "toolbar.ambient": "Suara Fokus 🌧️",
+    "settings.theme": "Tema",
+    "theme.navy": "Biru Malam & Emas",
+    "theme.oled": "Hitam Pekat OLED",
+    "theme.sepia": "Sepia Hangat"
   },
   "zh": {
     "a11y.delete": "从列表删除",
@@ -3392,7 +3482,16 @@
     "export.anki.success": "已成功导出 {n} 个单词到 Anki 文件！",
     "pwa.install": "安装应用程序",
     "pwa.install.title": "安装到桌面或主屏幕，随时随地完全离线使用",
-    "header.toggle": "折叠或展开顶部栏"
+    "header.toggle": "折叠或展开顶部栏",
+    "toolbar.handsfree": "自动播放 🎧",
+    "toolbar.badges": "成就徽章 🏆",
+    "toolbar.leeches": "难记单词 🎯",
+    "toolbar.print": "打印卡片 🖨️",
+    "toolbar.ambient": "专注白噪音 🌧️",
+    "settings.theme": "外观主题",
+    "theme.navy": "午夜深蓝鎏金 (默认)",
+    "theme.oled": "OLED 纯黑极简",
+    "theme.sepia": "暖木复古羊皮纸"
   },
   "nl": {
     "brand.title": "Woordenkaarten",
@@ -3695,6 +3794,15 @@
     "export.anki.success": "{n} woorden geëxporteerd naar Anki!",
     "pwa.install": "App installeren",
     "pwa.install.title": "Installeer Oxford 5000 voor offline gebruik",
-    "header.toggle": "Bovenste balk in- of uitklappen"
+    "header.toggle": "Bovenste balk in- of uitklappen",
+    "toolbar.handsfree": "Handsfree 🎧",
+    "toolbar.badges": "Prestaties 🏆",
+    "toolbar.leeches": "Moeilijke woorden 🎯",
+    "toolbar.print": "Afdrukken 🖨️",
+    "toolbar.ambient": "Focusgeluiden 🌧️",
+    "settings.theme": "Thema",
+    "theme.navy": "Nachtblauw en goud",
+    "theme.oled": "Puur zwart OLED",
+    "theme.sepia": "Warm sepia"
   }
 }
