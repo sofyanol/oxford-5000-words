@@ -8329,6 +8329,17 @@ function executePrint(){
 }
 
 function wireV15ToolbarAndModals(){
+  const btnToggleToolsHub = document.getElementById('btnToggleToolsHub');
+  const toolsHubDrawer = document.getElementById('toolsHubDrawer');
+  if(btnToggleToolsHub && toolsHubDrawer){
+    btnToggleToolsHub.addEventListener('click', () => {
+      const isHidden = toolsHubDrawer.hidden;
+      toolsHubDrawer.hidden = !isHidden;
+      btnToggleToolsHub.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+      btnToggleToolsHub.textContent = isHidden ? (t('toolbar.toolsHubClose') || 'إخفاء الأدوات ✖️') : (t('toolbar.toolsHub') || 'أدوات إضافية ⚡');
+    });
+  }
+
   const btnHandsFree = document.getElementById('btnHandsFree');
   if(btnHandsFree) btnHandsFree.addEventListener('click', openHandsFreeModal);
   const closeHandsFreeBtn = document.getElementById('closeHandsFree');

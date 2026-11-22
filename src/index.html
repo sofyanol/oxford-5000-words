@@ -223,23 +223,40 @@
   </div>
 
   <div class="toolbar" id="toolbar">
-    <div class="toolbar-grid primary-grid four-col">
+    <!-- Primary Row: 4 key activities (Clean, prominent, uncrowded) -->
+    <div class="toolbar-grid primary-grid four-col" id="primaryToolbarGrid">
       <button class="tool-btn primary-tool quiz-tool" id="btnQuiz" data-i18n="quiz.button"></button>
       <button class="tool-btn primary-tool match-tool" id="btnMatch" data-i18n="match.button"></button>
       <button class="tool-btn primary-tool handsfree-tool" id="btnHandsFree" data-i18n="toolbar.handsfree"></button>
-      <button class="tool-btn primary-tool analytics-tool" id="btnAnalytics" data-i18n="analytics.button"></button>
+      <button class="tool-btn primary-tool tools-hub-btn" id="btnToggleToolsHub" type="button" aria-expanded="false" data-i18n="toolbar.toolsHub">أدوات إضافية ⚡</button>
     </div>
-    <div class="toolbar-grid secondary-grid four-col">
-      <button class="tool-btn accent-tool" id="btnBadges" data-i18n="toolbar.badges"></button>
-      <button class="tool-btn accent-tool" id="btnLeeches" data-i18n="toolbar.leeches"></button>
-      <button class="tool-btn accent-tool" id="btnPrint" data-i18n="toolbar.print"></button>
-      <button class="tool-btn accent-tool" id="btnAmbient" data-i18n="toolbar.ambient"></button>
-    </div>
-    <div class="toolbar-grid tertiary-grid four-col">
-      <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
-      <button class="tool-btn" id="btnShuffle"></button>
-      <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
-      <button class="tool-btn download-tool" id="btnDownload" data-i18n="toolbar.download"></button>
+
+    <!-- Collapsible Tools Drawer: Organizes extra utilities without cluttering the screen -->
+    <div class="tools-hub-drawer" id="toolsHubDrawer" hidden>
+      <div class="tools-hub-section">
+        <div class="tools-hub-heading">
+          <span class="tools-hub-badge">🎯 أدوات التعلم والتركيز</span>
+        </div>
+        <div class="tools-hub-grid">
+          <button class="tool-btn accent-tool" id="btnBadges" data-i18n="toolbar.badges"></button>
+          <button class="tool-btn primary-tool analytics-tool" id="btnAnalytics" data-i18n="analytics.button"></button>
+          <button class="tool-btn accent-tool" id="btnLeeches" data-i18n="toolbar.leeches"></button>
+          <button class="tool-btn accent-tool" id="btnAmbient" data-i18n="toolbar.ambient"></button>
+          <button class="tool-btn accent-tool" id="btnPrint" data-i18n="toolbar.print"></button>
+        </div>
+      </div>
+
+      <div class="tools-hub-section">
+        <div class="tools-hub-heading">
+          <span class="tools-hub-badge">⚙️ إدارة البطاقات والمزامنة</span>
+        </div>
+        <div class="tools-hub-grid">
+          <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
+          <button class="tool-btn" id="btnShuffle"></button>
+          <button class="tool-btn download-tool" id="btnDownload" data-i18n="toolbar.download"></button>
+          <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
+        </div>
+      </div>
     </div>
   </div>
   </div>
