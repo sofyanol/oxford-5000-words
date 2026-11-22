@@ -1,86 +1,35 @@
-# Oxford 5000 Agent Guide
+# Oxford 5000 - AI Agent Directives & Project Guide
 
-## Project
+## 1. Core Mandates Established by the Owner
 
-Oxford 5000 is an offline-first English vocabulary flashcard app. It contains
-4,954 Oxford 3000/5000 words, CEFR levels A1-C1, examples, IPA, word forms,
-translations, spaced review, multiple-choice review, search, progress export,
-and static-link synchronization. The generated release is one standalone HTML
-file and needs no server or account.
+- **100% English Language Policy**: All repository-facing assets (README, source code comments, markdown docs, commit messages, PRs, issues) MUST be written in 100% English. Never use Arabic in repository code comments or documentation. (Arabic is provided only as a dynamic in-app translation for end users).
+- **Standalone Offline-First Architecture**: Single standalone HTML build with no server, zero tracking, and no external npm/Node dependencies. User state resides solely in `localStorage`.
+- **Dataset & Audio Coverage**: 5,325 verified English words across CEFR levels A1-C1 with 10,460 native MP3 recordings (5,230 UK + 5,230 US) located in `audio/`.
+- **Supported Languages (12 Languages)**: English, Arabic, Spanish, French, German, Portuguese, Russian, Turkish, Urdu, Hindi, Indonesian, and Chinese.
+- **GitHub Pages & Actions Pipeline**: Deployed at `https://sofyanol.github.io/oxford-5000-words/` from branch `master`. The `.github/workflows/pages.yml` must keep `build` and `deploy` separate jobs with `needs: build` to allow 384MB audio indexing. Both `master` and `main` branches must stay synchronized.
+- **Support & Topics**: PayPal link `https://www.paypal.com/ncp/payment/HZXA4F94TEA2A`. High-traffic tags only.
 
-The source is plain HTML, CSS, JavaScript, JSON, and Python. There is no
-Node.js/npm workflow. Python 3.8+ is required for the build.
+## 2. Build & Test Commands
 
-## Commands
-
-Run from the repository root:
-
+Run from project root:
 ```powershell
 python build\build.py
 ```
+This updates `dist\oxford5000-flashcards-final.html` and `publish\index.html`.
+Copy `publish\index.html` to root `index.html`.
 
-This writes `dist\oxford5000-flashcards-final.html`. To run the built-in checks,
-serve the root and open
-`http://127.0.0.1:8765/dist/oxford5000-flashcards-final.html#selftest`; the
-browser console must print `SELFTEST PASS`.
+To verify changes:
+Serve the project and open with `#selftest`:
+`http://127.0.0.1:8765/dist/oxford5000-flashcards-final.html#selftest`
+Verify the browser console prints `SELFTEST PASS` without errors.
 
-```powershell
-python -m http.server 8765
-```
+## 3. Directory Map
 
-There is currently no separate test runner. The build reports translation gaps
-and example gaps without inventing data; invalid form indexes fail the build.
-
-## Code and data rules
-
-- Edit `src/` and `data/`; do not hand-edit generated `dist/` output.
-- Keep visible interface text in `data/i18n.json` and add all supported-language
-  keys together. Preserve `{n}` placeholders and RTL support for Arabic and
-  Urdu.
-- Keep English example text left-to-right even when the interface is RTL.
-- Preserve the standalone, offline-capable output and existing local-progress
-  compatibility.
-- Reuse existing naming, rendering, state, and validation patterns. Avoid
-  unrelated refactors and do not claim machine translations are human-reviewed.
-- Word forms shown to learners must have a valid example reference. Do not
-  invent example sentences or translations.
-
-## Repository map
-
-- `src/`: HTML structure, CSS, and application logic.
-- `data/`: word list, examples, forms, IPA, CEFR, translations, and audits.
-- `build/build.py`: injects data and source into the standalone HTML.
-- `tools/`: optional data and audit utilities.
-- `docs/`: architecture, data, publishing, plans, tasks, decisions, and handoff.
-- `dist/`: generated local build output.
-- `publish/`: static-host publication copy and issue templates.
-- `START-HERE.md`: legacy detailed project guide; use the canonical handoff files
-  in `docs/` first.
-
-## Agent protocol
-
-When starting any session, do this without being asked:
-
-1. Read `docs/HANDOFF.md`, then `docs/TASKS.md`, then `docs/DECISIONS.md`.
-2. Run `git log --oneline -15` and `git status` to understand recent work.
-3. Run the tests to confirm the baseline is healthy before starting.
-4. Follow the existing code style, structure, and patterns; do not impose a new
-   style.
-5. Take one task from `TASKS.md`, record yourself on it, and work on an
-   independent branch.
-6. Make small commits with clear messages.
-7. Before ending or stopping: update `HANDOFF.md` and `TASKS.md`, and record any
-   important decision and its reason in `DECISIONS.md`.
-8. If the user says “open the project” or “continue”, execute these steps.
-
-If Git is unavailable or the folder is not a Git repository, record that blocker
-in the handoff instead of fabricating branch or commit state.
-
-## Delivery checklist
-
-- Build succeeds with `python build\build.py`.
-- Browser self-test prints `SELFTEST PASS` with no console errors.
-- No placeholder tokens remain in the generated HTML.
-- Test Arabic and English, a regular/irregular word form, language switching,
-  search, quiz, and progress handling when the change affects them.
-- Update the relevant docs before handoff.
+- `src/`: Core HTML skeleton, CSS3 stylesheet, and ES6+ JavaScript.
+- `data/`: Core vocabulary (`words.json`), UI localization (`i18n.json`), translations (`tr/*.json`).
+- `audio/`: 10,460 native MP3 recordings (UK and US).
+- `build/`: Python build script `build.py`.
+- `dist/`: Standalone compiled application.
+- `publish/`: Deployment bundle for GitHub Pages.
+- `docs/`: Technical records, guides, and architectural decisions.
+- `GEMINI.md`: Full canonical guidelines for AI agents.
