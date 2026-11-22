@@ -1,9 +1,23 @@
-# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.4)
+# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.5)
 
 A friendly, offline-first vocabulary companion for learners who want to build a strong English foundation one word at a time.
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/  
-**Latest release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
+**Current active milestone:** Update 1.5 (In Development) • **Previous stable release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
+
+---
+
+## Update 1.5 (In Development)
+
+Update 1.5 focuses on code quality verification, security auditing via SonarQube, glitch prevention, and advanced interactive learning capabilities, building directly upon the complete v1.4 foundation:
+
+- **Security & Code Quality Scanning**:
+  - Integration of SonarQube static code analysis to audit frontend vulnerabilities and syntax glitches.
+  - Hardened client-side data handling and resilient localStorage synchronization.
+- **Project Structure & Update Alignment**:
+  - Upgraded PWA cache to `oxford5000-v1.5.0`.
+  - Updated "What's New in 1.5" UI guides across all 12 supported languages.
+  - Preserved all v1.4 features: Daily Streaks (🔥), Audio Speed Controls (`1.0x`/`0.8x`/`0.6x`), Spelling Quiz, Word Match Challenge, CEFR Pentagon Radar, Anki TSV Export, and Sticky Header.
 
 ---
 

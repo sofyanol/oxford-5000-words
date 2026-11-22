@@ -1,5 +1,12 @@
 # Changelog
 
+## Update 1.5.0 (In Development)
+- Initiated Update 1.5 development roadmap and environment preparation.
+- Integrated SonarQube code quality verification and security audit tooling.
+- Configured service worker caching for version `oxford5000-v1.5.0`.
+- Updated multilingual "What's New in 1.5" UI indicators across 12 supported languages.
+- Preserved complete baseline of v1.4.0 features (streaks, audio speed controls, spelling quiz, match game, radar analytics, Anki export, PWA, sticky header).
+
 ## Update 1.4.0
 - Added Daily Study Habit, Goals & Streak Counter (🔥) with customizable daily targets and celebration confetti.
 - Added Audio Playback Speed Selector (`1.0x`, `0.8x`, `0.6x`) and Auto-Pronounce on card navigation.

@@ -6028,7 +6028,7 @@ function moveTutorial(direction){
   renderTutorialStep();
 }
 
-let currentWhatsNewTab = 'tab-update14';
+let currentWhatsNewTab = 'tab-update15';
 
 function isWhatsNewOpen(){
   const el = document.getElementById('whatsNewOverlay');
@@ -6038,7 +6038,7 @@ function isWhatsNewOpen(){
 function openWhatsNew(tab){
   const overlay = document.getElementById('whatsNewOverlay');
   if(!overlay) return;
-  renderWhatsNewContent(tab || 'tab-update14');
+  renderWhatsNewContent(tab || 'tab-update15');
   overlay.classList.add('show');
   requestAnimationFrame(() => {
     const btn = document.getElementById('closeWhatsNew');
@@ -6062,7 +6062,32 @@ function renderWhatsNewContent(activeTab){
 
   const isAr = (currentLang === 'ar');
 
-  if(currentWhatsNewTab === 'tab-update14'){
+  if(currentWhatsNewTab === 'tab-update15'){
+    contentEl.innerHTML = `
+      <div class="wn-section">
+        <div class="wn-release-title">
+          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.5' : 'Oxford 5000 - Update 1.5'}</span>
+          <span class="wn-tag">${isAr ? 'قيد التطوير' : 'In Development'}</span>
+        </div>
+        <p class="wn-release-meta">${isAr ? 'مرحباً بكم في تحديث 1.5! يجري العمل حالياً على تطبيق معايير الأمان المتقدمة وفحص الجودة ومنع القلتشات عبر SonarQube وتطوير تجربة التعلم.' : 'Welcome to Update 1.5 in active development! Featuring code quality and security verification via SonarQube, performance optimizations, and built upon the full v1.4 feature foundation.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🛡️</span> <span>${isAr ? '1. فحص الأمان وجودة الكود (SonarQube Verification)' : '1. Code Quality & Security Verification'}</span></div>
+          <p>${isAr ? 'تطبيق معايير أمان وفحص مستمر للثغرات والقلتشات البرمجية لضمان استقرار فائق للكود والواجهات وتخزين البيانات المحلي.' : 'Static code analysis and bug prevention to ensure hardened offline storage, clean logic, and zero frontend glitches.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🚀</span> <span>${isAr ? '2. تطويرات قادمة ومزايا تعلم جديدة' : '2. Advanced Learning Enhancements'}</span></div>
+          <p>${isAr ? 'توسيع أنماط التعلم وتسهيل الاسترجاع النشط لكلمات أكسفورد الـ 5,325 مع مزيد من التحسينات البصرية التفاعلية.' : 'Continuous refinement of active recall algorithms, responsive layouts, and multilingual vocabulary acquisition.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">✨</span> <span>${isAr ? '3. قاعدة مزايا 1.4 الكاملة مدمجة وجاهزة' : '3. Complete Update 1.4 Foundation Included'}</span></div>
+          <p>${isAr ? 'جميع مزايا 1.4 (سلسلة الأيام 🔥، سرعة الصوت 🎚️، اختبار الإملاء ✍️، لعبة المطابقة 🧩، رادار CEFR 📊، تصدير أنكي 📥، تثبيت PWA 📱، والشريط العلوي الثابت 📌) مفعلة وتعمل بكفاءة.' : 'All v1.4 milestone features (streak tracker, audio speed controls, spelling quiz, memory match, CEFR radar, Anki export, PWA, sticky header) are fully active.'}</p>
+        </div>
+      </div>
+    `;
+  } else if(currentWhatsNewTab === 'tab-update14'){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
@@ -6175,9 +6200,14 @@ function renderWhatsNewContent(activeTab){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
-          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.4' : 'Full Changelog Archive (1.0 - 1.4)'}</span>
+          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.5' : 'Full Changelog Archive (1.0 - 1.5)'}</span>
         </div>
         <p class="wn-release-meta">${isAr ? 'سجل تاريخي يوثق تطور تطبيق Oxford 5000 منذ إطلاقه الأول وحتى أحدث إصدار.' : 'Historical log of Oxford 5000 releases from inception to the latest version.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">⚡</span> <span>Update 1.5 - ${isAr ? 'فحص الأمان والتحسينات المتقدمة' : 'Security Verification & Advanced Enhancements'}</span> <span class="wn-tag">v1.5.0-dev</span></div>
+          <p>${isAr ? 'دمج فحص الأمان والجودة البرمجية بواسطة SonarQube، تعزيز الأمان ضد الثغرات والقلتشات، والتحضير لمزايا التعلم المتقدمة.' : 'Integration of static security and code quality auditing via SonarQube, glitch prevention, and advanced feature preparation.'}</p>
+        </div>
 
         <div class="wn-card">
           <div class="wn-card-head"><span class="wn-card-icon">🌟</span> <span>Update 1.4 - ${isAr ? 'العادات اليومية وسرعة الصوت ومطابقة الكلمات والتحليلات وتثبيت الشريط' : 'Daily Habits, Audio Controls, Word Match, Analytics & Sticky Header'}</span> <span class="wn-tag">v1.4.0</span></div>

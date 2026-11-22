@@ -1,5 +1,5 @@
 // Service Worker for Oxford 5000 Offline Flashcards
-const CACHE_NAME = 'oxford5000-v1.4.0';
+const CACHE_NAME = 'oxford5000-v1.5.0';
 const STATIC_ASSETS = [
   './',
   './index.html',

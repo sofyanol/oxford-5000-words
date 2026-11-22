@@ -20,13 +20,21 @@
 
 **A fast, private, distraction-free educational application built to master high-frequency English vocabulary through scientifically structured spaced repetition (SRS), authentic dual UK/US native audio, and active listening challenges.**
 
-[🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New in 1.4**](#-whats-new-in-update-14) • [🎯 **Features**](#-features-at-a-glance) • [🌐 **12 Languages**](#-supported-languages-12-locales) • [☕ **Support Project**](#-support-the-project)
+[🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New (1.4 & 1.5 Roadmap)**](#-whats-new-in-update-14--15-roadmap) • [🎯 **Features**](#-features-at-a-glance) • [🌐 **12 Languages**](#-supported-languages-12-locales) • [☕ **Support Project**](#-support-the-project)
 
 <hr>
 </div>
 
-## 🌟 What's New in Update 1.4
+## 🌟 What's New in Update 1.4 & 1.5 Roadmap
 
+### ⚡ Update 1.5 (In Development)
+* 🛡️ **SonarQube Integration**: Static code analysis, vulnerability scanning, and syntax/glitch prevention.
+* 📦 **Upgraded PWA Cache**: Synchronized cache management for `oxford5000-v1.5.0`.
+* 🌐 **Updated 12-Language In-App Notes**: Multi-language "What's New in 1.5" guidance across all supported languages.
+
+---
+
+### 🚀 Update 1.4 Milestone Features (Released)
 Update 1.4 introduces powerful new learning habits, audio controls, an interactive spelling quiz, memory mini-game, visual learning analytics, and full PWA installation:
 
 * 🔥 **Daily Study Habit, Goals & Streak Counter**: Track daily study streaks in `localStorage`, set daily card targets (10, 20, 50, or 100), and enjoy a joyful confetti celebration when reaching your daily goal.
@@ -208,7 +216,8 @@ oxford5000-app/
 ├─ dist/                     Generated release files (single-file distribution)
 ├─ publish/                  Publishing deployment files
 ├─ docs/                     Architecture, data guidelines, and changelogs
-├─ ALL_UPDATES_CHANGELOG.md  Master historical changelog from 1.0 to 1.4
+├─ ALL_UPDATES_CHANGELOG.md  Master historical changelog from 1.0 to 1.5
+├─ RELEASE_NOTES_v1.5.md     Dedicated 1.5 release notes (In Development)
 └─ RELEASE_NOTES_v1.4.md     Dedicated 1.4 release notes
 ```
 
