@@ -31,8 +31,10 @@
 <meta name="twitter:title" content="Oxford 5000">
 <meta name="twitter:description" content="A friendly offline-first English vocabulary app with Oxford 3000/5000 words, examples, pronunciation, spaced repetition, and quizzes.">
 <meta name="apple-mobile-web-app-title" content="Oxford 5000">
+<meta name="theme-color" content="#0c1017">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310161f'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='25' font-weight='700' fill='%23d9a441' text-anchor='middle'%3EO5%3C/text%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'; manifest-src 'self' data:;">
 <title>Oxford 5000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,6 +75,7 @@
       <button type="button" class="stat-pill" id="openKnown" data-i18n-title="stat.known.title"><span class="dot know"></span><b id="knowCount">0</b></button>
       <button type="button" class="stat-pill" id="openUnknown" data-i18n-title="stat.unknown.title"><span class="dot unknow"></span><b id="unknowCount">0</b></button>
       <button type="button" class="stat-pill" id="openLeft" data-i18n-title="stat.left.title"><span class="dot left"></span><b id="leftCount">0</b></button>
+      <button type="button" class="stat-pill habit-pill" id="openHabit" data-i18n-title="habit.goal"><span class="habit-flame">🔥</span><b id="habitStreakCount">0</b><span class="habit-sep">·</span><span id="habitGoalProgress">0/20</span></button>
       <button type="button" class="link-btn" id="openSync" data-i18n="sync.button"></button>
     </div>
   </header>
@@ -113,6 +116,9 @@
           <button type="button" class="audio-btn audio-us" id="btnAudioUs" aria-label="Play American pronunciation" title="US Pronunciation">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
             <span>US</span>
+          </button>
+          <button type="button" class="audio-speed-btn" id="btnAudioSpeed" data-i18n-title="audio.speed" aria-label="Audio playback speed">
+            <span id="audioSpeedLabel">1.0x</span>
           </button>
         </div>
         <div class="word-meta">
@@ -176,6 +182,8 @@
 
   <div class="toolbar">
     <button class="tool-btn primary" id="btnQuiz" data-i18n="quiz.button"></button>
+    <button class="tool-btn" id="btnMatch" data-i18n="match.button"></button>
+    <button class="tool-btn" id="btnAnalytics" data-i18n="analytics.button"></button>
     <button class="tool-btn" id="btnSearch" data-i18n="search.button"></button>
     <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
     <button class="tool-btn" id="btnShuffle"></button>
@@ -185,6 +193,7 @@
   </div>
 
   <aside class="side-tools" aria-label="Helpful tools">
+    <button type="button" class="side-tool" id="openSettings" data-i18n="settings.button"></button>
     <button type="button" class="side-tool" id="openTutorial" data-i18n="tutorial.button"></button>
     <button type="button" class="side-tool" id="openFeedback" data-i18n="feedback.button"></button>
   </aside>
@@ -214,9 +223,8 @@
       <span data-i18n="footer.coffee"></span>
     </a>
     <button type="button" class="whats-new-floating-badge" id="whatsNewBadge" data-i18n-title="whatsnew.title" aria-label="What's New">
-      <span class="star-badge-icon" aria-hidden="true">
-        <span class="star-gold">★</span>
-        <span class="star-white">★</span>
+      <span class="whats-new-icon-circle" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2h7.6l-6.1 4.5 2.3 7.3-6.2-4.6-6.2 4.6 2.3-7.3-6.1-4.5h7.6z"/></svg>
       </span>
       <span class="star-badge-text" data-i18n="whatsnew.badge">What's New?</span>
     </button>
@@ -312,6 +320,7 @@
     <div class="review-footer">
       <button class="review-clear" id="btnClearAll" data-i18n="modal.clear"></button>
       <button class="tool-btn primary" id="btnQuizFromList" style="display:none;" data-i18n="quiz.button"></button>
+      <button class="tool-btn" id="btnExportAnki" data-i18n="export.anki" data-i18n-title="export.anki.title"></button>
       <button class="tool-btn primary" id="btnDownloadFromReview" data-i18n="modal.download"></button>
     </div>
   </div>
@@ -507,20 +516,123 @@
   </div>
 </div>
 
+<div class="overlay" id="habitOverlay">
+  <div class="review-panel habit-panel" role="dialog" aria-modal="true" aria-labelledby="habitTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="habitTitle" data-i18n="habit.goal"></h3>
+      </div>
+      <button class="review-close" id="closeHabit" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="habit-body" id="habitBody">
+      <div class="habit-hero">
+        <div class="habit-flame-circle">
+          <span class="habit-flame-icon">🔥</span>
+          <span class="habit-streak-num" id="habitModalStreak">0</span>
+        </div>
+        <div class="habit-hero-info">
+          <h4 id="habitModalStreakLabel">0 Day Streak</h4>
+          <p id="habitModalEncouragement" class="habit-encouragement"></p>
+        </div>
+      </div>
+      <div class="habit-progress-card">
+        <div class="habit-progress-top">
+          <span class="habit-progress-label" id="habitModalTodayLabel">Today: 0/20</span>
+          <span class="habit-progress-pct" id="habitModalTodayPct">0%</span>
+        </div>
+        <div class="habit-meter-track"><div class="habit-meter-fill" id="habitModalMeter"></div></div>
+      </div>
+      <div class="habit-targets-section">
+        <span class="habit-targets-title" data-i18n="habit.target">Select Daily Target</span>
+        <div class="habit-targets-grid">
+          <button type="button" class="habit-target-btn" data-goal="10" data-i18n="habit.target.10"></button>
+          <button type="button" class="habit-target-btn" data-goal="20" data-i18n="habit.target.20"></button>
+          <button type="button" class="habit-target-btn" data-goal="50" data-i18n="habit.target.50"></button>
+          <button type="button" class="habit-target-btn" data-goal="100" data-i18n="habit.target.100"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="analyticsOverlay">
+  <div class="review-panel analytics-panel" role="dialog" aria-modal="true" aria-labelledby="analyticsTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="analyticsTitle" data-i18n="analytics.title"></h3>
+      </div>
+      <button class="review-close" id="closeAnalytics" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="analytics-body" id="analyticsBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="matchOverlay">
+  <div class="review-panel match-panel" role="dialog" aria-modal="true" aria-labelledby="matchTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="matchTitle" data-i18n="match.title"></h3>
+      </div>
+      <button class="review-close" id="closeMatch" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="match-body" id="matchBody">
+      <div class="match-topbar">
+        <div class="match-stat-item" id="matchTimer">⏱️ 00:00</div>
+        <div class="match-stat-item" id="matchScore">Pairs: 0/8</div>
+        <div class="match-stat-item" id="matchCombo">Combo: x0 🔥</div>
+      </div>
+      <p class="match-hint" data-i18n="match.hint"></p>
+      <div class="match-grid" id="matchGrid"></div>
+      <div class="match-win-screen" id="matchWinScreen" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="review-panel settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="settingsTitle" data-i18n="settings.title"></h3>
+      </div>
+      <button class="review-close" id="closeSettings" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="settings-body" style="padding:16px 22px 24px; overflow-y:auto; flex:1;">
+      <div class="settings-row" style="margin-bottom:14px;">
+        <label for="settingsFontScale" data-i18n="settings.fontScale" style="font-weight:700;"></label>
+        <span id="settingsFontScaleValue" style="margin-inline-start:8px;font-family:var(--font-mono);font-weight:700;">100%</span>
+        <input type="range" id="settingsFontScale" min="90" max="120" step="5" value="100" style="width:100%;margin-top:6px;">
+      </div>
+      <div class="settings-group" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:10px;margin-bottom:18px;">
+        <label class="quiz-check"><input type="checkbox" id="settingsCompact"><span data-i18n="settings.compact"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsIpa"><span data-i18n="settings.ipa"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsForms"><span data-i18n="settings.forms"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsExample"><span data-i18n="settings.example"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsTranslations"><span data-i18n="settings.translations"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsProgress"><span data-i18n="settings.progress"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsLargeControls"><span data-i18n="settings.largeControls"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsMotion"><span data-i18n="settings.motion"></span></label>
+        <label class="quiz-check"><input type="checkbox" id="settingsAutoPronounce"><span data-i18n="settings.autoPronounce"></span></label>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" class="tool-btn" id="btnResetSettings" data-i18n="settings.reset"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="whatsNewOverlay">
   <div class="review-panel whats-new-panel" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle" tabindex="-1">
     <div class="review-head whats-new-head">
       <div class="review-head-titles">
         <div class="whats-new-badge-pill" aria-hidden="true">
-          <span class="star-gold">★</span>
-          <span class="star-white">★</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6.1 4.5 2.3 7.3-6.2-4.6-6.2 4.6 2.3-7.3-6.1-4.5h7.6z"/></svg>
         </div>
         <h3 id="whatsNewTitle" data-i18n="whatsnew.title">What's New & Comprehensive Guide</h3>
       </div>
       <button class="review-close" id="closeWhatsNew" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
     <div class="whats-new-tabs" role="tablist">
-      <button type="button" class="whats-new-tab active" data-tab="tab-update13" data-i18n="whatsnew.tabNew">🌟 What's New in 1.3</button>
+      <button type="button" class="whats-new-tab active" data-tab="tab-update14" data-i18n="whatsnew.tabNew">🌟 What's New in 1.4</button>
       <button type="button" class="whats-new-tab" data-tab="tab-guide" data-i18n="whatsnew.tabGuide">📖 Complete Site Guide</button>
       <button type="button" class="whats-new-tab" data-tab="tab-archive" data-i18n="whatsnew.tabArchive">📜 Changelog Archive</button>
     </div>

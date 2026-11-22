@@ -1,9 +1,68 @@
-# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.3)
+# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.4)
 
 A friendly, offline-first vocabulary companion for learners who want to build a strong English foundation one word at a time.
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/  
-**Latest release:** [Update 1.3](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.3.0)
+**Latest release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
+
+---
+
+## Update 1.4
+
+Update 1.4 is a major feature expansion and stability release bringing daily study habit tracking, customized audio speed controls, an interactive spelling quiz, a fast-paced memory match game, visual learning analytics with a CEFR radar chart, one-click Anki export, and complete Progressive Web App (PWA) offline installation:
+
+- **Daily Study Habit, Goals & Streak Counter (🔥)**:
+  - Daily Streak Engine tracking consecutive study days in `localStorage` with automated daily rollover.
+  - Customizable Daily Goal target (10, 20, 50, or 100 cards).
+  - Circular / linear header progress pill displaying streak and target completion.
+  - Canvas confetti particle celebration upon completing daily goals.
+
+- **Audio & Pronunciation Controls**:
+  - Playback speed selector (`1.0x`, `0.8x`, `0.6x`) next to audio pronunciation buttons for clear slow articulation.
+  - Optional Auto-Pronounce on navigation setting in Preferences.
+
+- **Interactive Spelling & Writing Quiz Mode**:
+  - 4th quiz mode focused on active recall, typing, and spelling.
+  - Masked target word in contextual example sentence with IPA phonetic hint and native audio replay.
+  - Immediate letter-by-letter validation and error handling.
+
+- **Fast-Paced Word Match Challenge (Memory Pairs Game)**:
+  - Rapid-fire mini-game matching 6-8 pairs of English words with their active language meanings against a 45s timer.
+  - Interactive Web Audio sound effects, combo multipliers, and victory celebration.
+
+- **Visual Learning Analytics & CEFR Radar**:
+  - SVG Pentagon Radar chart visualizing vocabulary mastery across CEFR levels (A1, A2, B1, B2, C1).
+  - Detailed CEFR level progress bars and Leitner SRS stage distribution (Boxes 1-5).
+  - High score tracking for Speed Race and Word Match modes.
+
+- **One-Click Export to Anki (TSV)**:
+  - Clean export of Unknown words, Due reviews, or filtered lists formatted as Anki-ready TSV files with UTF-8 BOM.
+
+- **Progressive Web App (PWA) Offline Manifest & Service Worker**:
+  - `manifest.webmanifest` and cache-first `sw.js` allowing full home-screen installation and offline access.
+
+- **Resilient Unknown Words Export & File Generation**:
+  - Resolved critical `TypeError: a.localeCompare is not a function` when clicking "Download unknown words" (`#btnDownloadUnknown`).
+  - Correctly extracts headwords and definitions instead of numeric IDs.
+  - Generates cleanly ordered UTF-8 text files for offline study.
+
+- **Instant Visual Undo Synchronization**:
+  - Enhanced `applyUndo` to handle both `id` and `word` keys simultaneously, properly transitioning unrated cards back to the unmarked queue.
+  - Guaranteed visual rollback to the previous card on undo, even when shuffle mode is active.
+  - Immediate decrement of Known / Unknown header counters upon undo.
+
+- **Listening Quiz Prompt & Text Sanitization**:
+  - Displays the actual English word name in sentence writing prompts instead of raw numeric tokens.
+  - Eliminated duplicated colons in revealed word banners.
+  - Cleaned up template quote tokens across all 12 localization tables.
+
+- **"What's New in 1.4" Modal & Multi-Language Navigation**:
+  - Upgraded floating star badge modal with Update 1.4 notes.
+  - Updated tab headers across all 12 supported runtime languages.
+
+- **Full System Verification**:
+  - Verified all interactive controls, CEFR filters, quiz modes, and dual UK/US audio playback for 5,325 words.
+  - 100% pass on internal unit tests (`#selftest`).
 
 ---
 

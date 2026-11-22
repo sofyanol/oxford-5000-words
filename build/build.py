@@ -188,6 +188,16 @@ def main():
         pub_target.write_text(out, encoding="utf-8")
         print("done -> %s (%.2f MB)" % (pub_target, pub_target.stat().st_size / 1048576))
 
+    # Copy PWA assets (manifest and service worker) to dist and publish
+    for asset in ("manifest.webmanifest", "sw.js"):
+        src_asset = ROOT / asset
+        if src_asset.is_file():
+            content = read_text(src_asset)
+            (DIST / asset).write_text(content, encoding="utf-8")
+            if PUBLISH.is_dir():
+                (PUBLISH / asset).write_text(content, encoding="utf-8")
+    print("pwa assets copied: manifest.webmanifest, sw.js")
+
 
 if __name__ == "__main__":
     main()

@@ -400,14 +400,15 @@ function updateLangSelect(){
 function buildLangSelect(){
   const sel = document.getElementById('langSelect');
   if(!sel) return;
-  sel.innerHTML = '';
+  const options = [];
   langList().forEach(l => {
     if(!l || !l.code) return;
     const opt = document.createElement('option');
     opt.value = l.code;
     opt.textContent = l.name || l.code;
-    sel.appendChild(opt);
+    options.push(opt);
   });
+  sel.replaceChildren(...options);
   sel.value = currentLang;
   sel.addEventListener('change', () => { applyLang(sel.value); });
 
@@ -607,6 +608,21 @@ function defaultUi(){
     multiLang: false,
     onboardingSeen: false,
     speechAccent: 'us',
+    audioSpeed: 1.0,
+    habit: {
+      streak: 0,
+      lastActiveDate: null,
+      bestStreak: 0,
+      todayCount: 0,
+      todayDate: null,
+      goal: 20,
+      celebratedDate: null
+    },
+    records: {
+      timeAttackBest: 0,
+      matchBestTime: null,
+      matchBestCombo: 0
+    },
     preferences: {
       fontScale: 100,
       compactCards: false,
@@ -616,7 +632,8 @@ function defaultUi(){
       showTranslations: true,
       showProgress: true,
       largeControls: false,
-      reducedMotion: false
+      reducedMotion: false,
+      autoPronounce: false
     },
     quizSettings: defaultQuizSettings(),
     quizStreak: { last: null, n: 0 },
@@ -648,6 +665,26 @@ function cloneUi(ui){
     if(!out.multiLang) out.displayLangs = [out.lang];
     out.onboardingSeen = ui.onboardingSeen === true;
     if(ui.speechAccent === 'uk' || ui.speechAccent === 'us') out.speechAccent = ui.speechAccent;
+    if(Number.isFinite(ui.audioSpeed) && ui.audioSpeed > 0 && ui.audioSpeed <= 2) out.audioSpeed = ui.audioSpeed;
+
+    if(ui.habit && typeof ui.habit === 'object'){
+      const h = ui.habit;
+      out.habit.streak = Number.isFinite(h.streak) ? Math.max(0, Math.floor(h.streak)) : 0;
+      out.habit.lastActiveDate = (typeof h.lastActiveDate === 'string') ? h.lastActiveDate : null;
+      out.habit.bestStreak = Number.isFinite(h.bestStreak) ? Math.max(0, Math.floor(h.bestStreak)) : 0;
+      out.habit.todayCount = Number.isFinite(h.todayCount) ? Math.max(0, Math.floor(h.todayCount)) : 0;
+      out.habit.todayDate = (typeof h.todayDate === 'string') ? h.todayDate : null;
+      out.habit.goal = Number.isFinite(h.goal) ? Math.max(5, Math.floor(h.goal)) : 20;
+      out.habit.celebratedDate = (typeof h.celebratedDate === 'string') ? h.celebratedDate : null;
+    }
+
+    if(ui.records && typeof ui.records === 'object'){
+      const r = ui.records;
+      out.records.timeAttackBest = Number.isFinite(r.timeAttackBest) ? Math.max(0, Math.floor(r.timeAttackBest)) : 0;
+      out.records.matchBestTime = Number.isFinite(r.matchBestTime) ? Math.max(0, Math.floor(r.matchBestTime)) : null;
+      out.records.matchBestCombo = Number.isFinite(r.matchBestCombo) ? Math.max(0, Math.floor(r.matchBestCombo)) : 0;
+    }
+
     if(ui.preferences && typeof ui.preferences === 'object'){
       const p = ui.preferences;
       if(Number.isFinite(p.fontScale)) out.preferences.fontScale = Math.max(90, Math.min(120, Math.round(p.fontScale)));
@@ -659,6 +696,7 @@ function cloneUi(ui){
       out.preferences.showProgress = p.showProgress !== false;
       out.preferences.largeControls = p.largeControls === true;
       out.preferences.reducedMotion = p.reducedMotion === true;
+      out.preferences.autoPronounce = p.autoPronounce === true;
     }
 
     const qs = (ui.quizSettings && typeof ui.quizSettings === 'object') ? ui.quizSettings : {};
@@ -907,11 +945,17 @@ function pushHistoryEntry(history, entry){
 
 function applyUndo(marks, entry, now){
   const next = Object.assign({}, marks);
-  if(!entry || typeof entry.word !== 'string') return next;
-  if(entry.prev){
-    next[entry.word] = { s: entry.prev.s, t: now };
-  } else {
-    next[entry.word] = { s: 'r', t: now };
+  if(!entry) return next;
+  const wordKey = typeof entry.word === 'string' ? entry.word : null;
+  const idKey = entry.id != null ? entry.id : null;
+  const newStatus = entry.prev ? { s: entry.prev.s, t: now } : { s: 'r', t: now };
+
+  if(wordKey){
+    next[wordKey] = newStatus;
+  }
+  if(idKey != null){
+    next[idKey] = newStatus;
+    next[String(idKey)] = newStatus;
   }
   return next;
 }
@@ -1817,6 +1861,8 @@ function playAudio(src, btn){
     return;
   }
   const audio = new Audio(src);
+  const speed = (state.ui && Number.isFinite(state.ui.audioSpeed)) ? state.ui.audioSpeed : 1.0;
+  audio.playbackRate = speed;
   currentAudio = audio;
   if(btn) btn.classList.add('playing');
   audio.onended = () => {
@@ -1835,6 +1881,240 @@ function playAudio(src, btn){
     if(btn) btn.classList.remove('playing');
     if(currentAudio === audio) currentAudio = null;
   });
+}
+
+const SPEED_STEPS = [1.0, 0.8, 0.6];
+
+function updateAudioSpeedButton(){
+  const btn = document.getElementById('btnAudioSpeed');
+  const lbl = document.getElementById('audioSpeedLabel');
+  const speed = (state.ui && Number.isFinite(state.ui.audioSpeed)) ? state.ui.audioSpeed : 1.0;
+  const speedStr = speed.toFixed(1) + 'x';
+  if(lbl) lbl.textContent = speedStr;
+  if(btn) btn.title = t('audio.speed.title', { speed: speedStr });
+}
+
+function cycleAudioSpeed(){
+  const cur = (state.ui && Number.isFinite(state.ui.audioSpeed)) ? state.ui.audioSpeed : 1.0;
+  let idx = SPEED_STEPS.indexOf(cur);
+  if(idx === -1) idx = 0;
+  const next = SPEED_STEPS[(idx + 1) % SPEED_STEPS.length];
+  state.ui.audioSpeed = next;
+  scheduleSave();
+  updateAudioSpeedButton();
+}
+
+function playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.08){
+  try{
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if(!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  }catch(_){}
+}
+
+function playMatchSuccessSound(){
+  playTone(523.25, 'triangle', 0.1, 0.09);
+  setTimeout(() => playTone(659.25, 'triangle', 0.12, 0.09), 80);
+  setTimeout(() => playTone(783.99, 'triangle', 0.22, 0.1), 160);
+}
+
+function playMatchErrorSound(){
+  playTone(220, 'sawtooth', 0.15, 0.06);
+}
+
+function showToast(msg){
+  let tEl = document.getElementById('globalToast');
+  if(!tEl){
+    tEl = document.createElement('div');
+    tEl.id = 'globalToast';
+    tEl.className = 'global-toast';
+    document.body.appendChild(tEl);
+  }
+  tEl.textContent = msg;
+  tEl.classList.add('show');
+  setTimeout(() => { if(tEl) tEl.classList.remove('show'); }, 2400);
+}
+
+function triggerCelebration(){
+  if(document.getElementById('confettiCanvas')) return;
+  const canvas = document.createElement('canvas');
+  canvas.id = 'confettiCanvas';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  const colors = ['#d9a441', '#b9822b', '#1f6f6d', '#3a8a4f', '#b8543f', '#f6f1e4'];
+  const particles = [];
+  const count = 70;
+  for(let i = 0; i < count; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * (canvas.height * 0.35) - 20,
+      w: Math.random() * 8 + 6,
+      h: Math.random() * 6 + 4,
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 3 + 2.5,
+      rot: Math.random() * 360,
+      vrot: (Math.random() - 0.5) * 8,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    });
+  }
+
+  const start = performance.now();
+  const duration = 2500;
+
+  function frame(now){
+    const elapsed = now - start;
+    if(elapsed > duration){
+      if(canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const fade = elapsed > duration - 600 ? (duration - elapsed) / 600 : 1;
+
+    for(let i = 0; i < particles.length; i++){
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rot * Math.PI) / 180);
+      ctx.globalAlpha = Math.max(0, fade);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function updateHabitDate(){
+  if(!state.ui) state.ui = defaultUi();
+  if(!state.ui.habit) state.ui.habit = defaultUi().habit;
+  const today = localDateStr();
+  const habit = state.ui.habit;
+
+  if(!habit.todayDate){
+    habit.todayDate = today;
+    habit.todayCount = 0;
+  } else if(habit.todayDate !== today){
+    const todayMs = new Date(today).getTime();
+    const lastMs = habit.lastActiveDate ? new Date(habit.lastActiveDate).getTime() : 0;
+    const diffDays = Math.round((todayMs - lastMs) / (1000 * 60 * 60 * 24));
+    if(diffDays > 1){
+      habit.streak = 0;
+    }
+    habit.todayDate = today;
+    habit.todayCount = 0;
+    habit.celebratedDate = null;
+  }
+}
+
+function incrementDailyProgress(amount = 1){
+  if(!state.ui) state.ui = defaultUi();
+  if(!state.ui.habit) state.ui.habit = defaultUi().habit;
+  updateHabitDate();
+  const today = localDateStr();
+  const habit = state.ui.habit;
+  const prev = habit.todayCount || 0;
+  habit.todayCount = prev + (amount > 0 ? amount : 1);
+
+  if(habit.lastActiveDate !== today){
+    const todayMs = new Date(today).getTime();
+    const lastMs = habit.lastActiveDate ? new Date(habit.lastActiveDate).getTime() : 0;
+    const diffDays = Math.round((todayMs - lastMs) / (1000 * 60 * 60 * 24));
+    if(diffDays === 1){
+      habit.streak = (habit.streak || 0) + 1;
+    } else {
+      habit.streak = 1;
+    }
+    habit.lastActiveDate = today;
+    habit.bestStreak = Math.max(habit.bestStreak || 0, habit.streak);
+  }
+
+  const goal = habit.goal || 20;
+  if(prev < goal && habit.todayCount >= goal && habit.celebratedDate !== today){
+    habit.celebratedDate = today;
+    triggerCelebration();
+    showToast(t('habit.completed'));
+  }
+
+  scheduleSave();
+  renderHabitDisplay();
+}
+
+function renderHabitDisplay(){
+  if(!state.ui || !state.ui.habit) return;
+  updateHabitDate();
+  const habit = state.ui.habit;
+  const streak = habit.streak || 0;
+  const count = habit.todayCount || 0;
+  const goal = habit.goal || 20;
+
+  const streakEl = document.getElementById('habitStreakCount');
+  if(streakEl) streakEl.textContent = String(streak);
+
+  const goalEl = document.getElementById('habitGoalProgress');
+  if(goalEl) goalEl.textContent = `${count}/${goal}`;
+
+  const pill = document.getElementById('openHabit');
+  if(pill){
+    pill.classList.toggle('goal-reached', count >= goal);
+    pill.title = t('habit.today', { n: count, goal: goal });
+  }
+
+  const mStreak = document.getElementById('habitModalStreak');
+  if(mStreak) mStreak.textContent = String(streak);
+
+  const mStreakLabel = document.getElementById('habitModalStreakLabel');
+  if(mStreakLabel) mStreakLabel.textContent = t('habit.streak', { n: streak });
+
+  const mEncouragement = document.getElementById('habitModalEncouragement');
+  if(mEncouragement){
+    mEncouragement.textContent = count >= goal ? t('habit.completed') : (streak > 0 ? t('habit.encouragement') : t('habit.resetNotice'));
+  }
+
+  const mTodayLabel = document.getElementById('habitModalTodayLabel');
+  if(mTodayLabel) mTodayLabel.textContent = t('habit.today', { n: count, goal: goal });
+
+  const pct = Math.min(100, Math.round(count / goal * 100));
+  const mTodayPct = document.getElementById('habitModalTodayPct');
+  if(mTodayPct) mTodayPct.textContent = pct + '%';
+
+  const mMeter = document.getElementById('habitModalMeter');
+  if(mMeter) mMeter.style.width = pct + '%';
+
+  document.querySelectorAll('.habit-target-btn').forEach(btn => {
+    const g = Number(btn.getAttribute('data-goal'));
+    btn.classList.toggle('active', g === goal);
+  });
+}
+
+function openHabitModal(){
+  const overlay = document.getElementById('habitOverlay');
+  if(!overlay) return;
+  renderHabitDisplay();
+  overlay.classList.add('show');
+}
+
+function closeHabitModal(){
+  const overlay = document.getElementById('habitOverlay');
+  if(overlay) overlay.classList.remove('show');
 }
 
 function updateCardAudio(entry){
@@ -2047,8 +2327,7 @@ function highlightSentence(sentence, word, forms){
 
   const map = {};
   list.forEach(f => { map[f.f.toLowerCase()] = f; });
-  const pattern = list.slice()
-    .sort((a, b) => b.f.length - a.f.length)
+  const pattern = list.toSorted((a, b) => b.f.length - a.f.length)
     .map(f => escapeRegExp(f.f).replace(/\s+/g, '\\s+'))
     .join('|');
   const re = new RegExp('\\b(' + pattern + ')\\b', 'gi');
@@ -2151,6 +2430,7 @@ function speakEnglishText(text){
     const targetLang = accent === 'uk' ? 'en-GB' : 'en-US';
     const utterance = new SpeechSynthesisUtterance(value);
     utterance.lang = targetLang;
+    utterance.rate = (state.ui && Number.isFinite(state.ui.audioSpeed)) ? state.ui.audioSpeed : 1.0;
     const voices = typeof window.speechSynthesis.getVoices === 'function'
       ? window.speechSynthesis.getVoices() : [];
     const matching = voices.filter(v => v && new RegExp('^' + targetLang.replace('-', '[-_]'), 'i').test(v.lang));
@@ -2243,7 +2523,7 @@ function buildFormsBar(word, forms){
   const summary = (custom && custom.forms) ? custom.forms : (entry ? entry.forms_summary : '');
   if(!state.ui.preferences.showForms || !summary || summary === 'no changing forms'){
     bar.hidden = true;
-    bar.innerHTML = '';
+    bar.replaceChildren();
     return;
   }
   bar.hidden = false;
@@ -2284,7 +2564,7 @@ function renderCardExample(wordOrEntry){
 
   if(!sentence || !state.ui.preferences.showExample){
     box.hidden = true;
-    textEl.innerHTML = '';
+    textEl.replaceChildren();
     if(trEl){ trEl.textContent = ''; trEl.hidden = true; }
     return;
   }
@@ -2346,25 +2626,48 @@ function seededShuffle(arr, rand){
   return a;
 }
 
+let pendingUndoItem = null;
+
 function deckQueue(level){
   const src = wordsOfLevel(level);
   const base = [];
   for(let i = 0; i < src.length; i++){
     if(!isMarkedWord(src[i])) base.push(src[i]);
   }
+  let res;
   const seed = state.ui.seed[level];
-  if(typeof seed === 'number') return seededShuffle(base, mulberry32(seed));
-  return base;
+  if(typeof seed === 'number'){
+    res = seededShuffle(base, mulberry32(seed));
+  } else {
+    res = base;
+  }
+  if(pendingUndoItem != null){
+    const target = pendingUndoItem;
+    const idx = res.findIndex(x => {
+      if(!x) return false;
+      if(x === target) return true;
+      if(typeof x === 'object'){
+        if(x.id === target || String(x.id) === String(target)) return true;
+        if(x.word === target) return true;
+      }
+      return false;
+    });
+    if(idx > -1){
+      const [it] = res.splice(idx, 1);
+      res.unshift(it);
+    }
+  }
+  return res;
 }
 
 function buildLevelBar(){
-  levelBar.innerHTML = '';
+  const buttons = [];
 
   const allBtn = document.createElement('div');
   allBtn.className = 'level-btn' + (state.ui.currentLevel === 'all' ? ' active' : '');
   allBtn.innerHTML = `${esc(t('level.all'))}<small>${WORDS.length}</small>`;
   allBtn.addEventListener('click', () => switchLevel('all'));
-  levelBar.appendChild(allBtn);
+  buttons.push(allBtn);
 
   LEVEL_ORDER.forEach(lvl => {
     const btn = document.createElement('div');
@@ -2372,11 +2675,14 @@ function buildLevelBar(){
     btn.innerHTML = `${LEVEL_LABELS[lvl]}<small>${wordsOfLevel(lvl).length}</small>`;
     btn.title = LEVEL_NAMES(lvl);
     btn.addEventListener('click', () => switchLevel(lvl));
-    levelBar.appendChild(btn);
+    buttons.push(btn);
   });
+
+  levelBar.replaceChildren(...buttons);
 }
 
 function switchLevel(level){
+  pendingUndoItem = null;
   state.ui.currentLevel = level;
   scheduleSave();
   buildLevelBar();
@@ -2449,6 +2755,19 @@ function render(){
   setCardWord(word);
   updateCardAudio(entry);
   updateCardSentence(entry || word);
+  updateAudioSpeedButton();
+  renderHabitDisplay();
+
+  if(state.ui && state.ui.preferences && state.ui.preferences.autoPronounce && entry && location.hash !== '#selftest'){
+    const accent = state.ui.speechAccent || 'us';
+    const audioSrc = (accent === 'uk' && entry.audio_uk) ? entry.audio_uk : (entry.audio_us || entry.audio_uk);
+    if(audioSrc){
+      setTimeout(() => {
+        const btn = (accent === 'uk') ? document.getElementById('btnAudioUk') : document.getElementById('btnAudioUs');
+        playAudio(audioSrc, btn);
+      }, 150);
+    }
+  }
 
   const input = document.getElementById('translationInput');
   if(input) input.value = noteText(entry ? entry.id : word) || noteText(word);
@@ -2498,6 +2817,7 @@ let displayedEntry = null;
 
 function markWord(known){
   if(cardLocked) return;
+  pendingUndoItem = null;
   const entry = displayedEntry;
   const word = displayedWord;
   if(!word && !entry) return;
@@ -2516,6 +2836,7 @@ function markWord(known){
   state.marks = applyMark(state.marks, id, known ? 'k' : 'u', Date.now());
   state.srs = applySrsOnMark(state.srs, id, prev, known ? 'k' : 'u', Date.now());
   bumpChanges();
+  incrementDailyProgress(1);
 
   const card = document.getElementById('card');
   if(card) card.classList.add(known ? 'leave-left' : 'leave-right');
@@ -2533,6 +2854,7 @@ function undo(){
   if(state.history.length === 0) return;
   const last = state.history.pop();
   state.marks = applyUndo(state.marks, last, Date.now());
+  pendingUndoItem = last ? (last.id != null ? last.id : last.word) : null;
   bumpChanges();
   cardLocked = false;
   scheduleSave();
@@ -2594,15 +2916,17 @@ function downloadWords(words, fileLabel, emptyMessage){
     return;
   }
   const lines = words.map(w => {
+    const entry = getEntry(w);
+    const wordText = entry ? entry.word : (typeof w === 'object' && w !== null ? (w.word || '') : String(w || ''));
     const tr = noteText(w).trim() || wordTranslation(w).trim();
-    return tr ? `${w} - ${tr}` : w;
+    return tr ? `${wordText} - ${tr}` : wordText;
   });
   const date = new Date().toISOString().slice(0, 10);
   saveTextFile(lines.join('\n'), `${safeFileNamePart(fileLabel)} ${date}.txt`);
 }
 
 function downloadUnknown(){
-  const list = buildUnknownWords().slice().sort((a, b) => a.localeCompare(b));
+  const list = sortWords(buildUnknownWords(), 'alpha_asc');
   downloadWords(list, t('file.unknown'), t('alert.noUnknown'));
 }
 
@@ -2610,6 +2934,52 @@ function downloadCurrentList(){
   const cfg = MODE_CONFIG[currentMode];
   const list = sortWords(cfg.getWords(), state.ui.sort);
   downloadWords(list, t(cfg.fileKey), t('alert.listEmpty'));
+}
+
+function exportToAnki(filter = 'unknown'){
+  let list = [];
+  if(filter === 'unknown'){
+    list = sortWords(buildUnknownWords(), 'alpha_asc');
+    if(!list.length) list = wordsOfStatus('u');
+    if(!list.length) list = wordsOfStatus('r');
+  } else if(filter === 'due'){
+    list = dueWords(Date.now());
+  } else if(filter === 'level'){
+    list = wordsOfLevel(state.ui.currentLevel);
+  } else {
+    list = WORDS;
+  }
+
+  if(!list.length){
+    alert(t('alert.noUnknown'));
+    return;
+  }
+
+  const lines = [
+    '#separator:tab',
+    '#html:true',
+    '#tags column:7',
+    ['Word', 'Part of Speech', 'CEFR', 'IPA', 'Translation/Definition', 'Context Sentence', 'Tags'].join('\t')
+  ];
+
+  list.forEach(w => {
+    const e = getEntry(w);
+    if(!e) return;
+    const word = e.word;
+    const pos = e.pos || '';
+    const level = (e.level || '').toUpperCase();
+    const ipa = e.ipa || '';
+    const tr = wordTranslation(e.word) || noteText(e.id) || noteText(e.word) || e.definition || '';
+    const ex = e.example || '';
+    const tags = `oxford5000 ${level.toLowerCase()}`;
+    const clean = str => String(str || '').replace(/\t/g, ' ').replace(/[\r\n]+/g, '<br>');
+    lines.push([clean(word), clean(pos), clean(level), clean(ipa), clean(tr), clean(ex), tags].join('\t'));
+  });
+
+  const tsv = '\uFEFF' + lines.join('\n');
+  const date = new Date().toISOString().slice(0, 10);
+  saveTextFile(tsv, `oxford5000-anki-${filter}-${date}.tsv`);
+  showToast(t('export.anki.success', { n: list.length }));
 }
 const MODE_CONFIG = {
   unknown: {
@@ -3008,8 +3378,30 @@ function renderExplorer(){
 }
 
 function searchWords(query){
-  explorerState.query = String(query || '');
-  return filterExplorerWords().map(x => x.e);
+  const qStr = (typeof query === 'object' && query !== null) ? query.word : String(query || '');
+  const q = qStr.trim().toLowerCase();
+  if(!q) return [];
+  const hits = [];
+  for(let i = 0; i < WORDS.length; i++){
+    const item = WORDS[i];
+    const word = (typeof item === 'object' && item !== null) ? item.word : String(item || '');
+    const lw = word.toLowerCase();
+    let score = -1;
+    if(lw === q) score = 0;
+    else if(lw.indexOf(q) === 0) score = 1;
+    else if(lw.indexOf(q) !== -1) score = 2;
+    if(score === -1){
+      const note = noteText(item).toLowerCase();
+      if(note && note.indexOf(q) !== -1) score = 3;
+    }
+    if(score === -1){
+      const tr = wordTranslation(word).toLowerCase();
+      if(tr && tr.indexOf(q) !== -1) score = 4;
+    }
+    if(score !== -1) hits.push({ w: item, word: word, s: score });
+  }
+  hits.sort((a, b) => (a.s - b.s) || a.word.localeCompare(b.word));
+  return hits.map(x => x.w);
 }
 
 function renderSearchResults(){
@@ -3073,7 +3465,7 @@ function renderReviewSummary(allWords){
   const el = document.getElementById('reviewSummary');
   if(!el) return;
   if(!allWords.length){
-    el.innerHTML = '';
+    el.replaceChildren();
     return;
   }
   const counts = {};
@@ -3126,7 +3518,7 @@ function renderReviewList(filter){
   let html = '';
 
   if(byLevel){
-    const levels = state.ui.sort === 'level_desc' ? LEVEL_ORDER.slice().reverse() : LEVEL_ORDER;
+    const levels = state.ui.sort === 'level_desc' ? LEVEL_ORDER.toReversed() : LEVEL_ORDER;
     levels.forEach(lvl => {
       const getLvl = w => (typeof w === 'object' && w !== null) ? (w.level || '').toLowerCase() : (WORD_LEVEL.get(w) || 'a1');
       const rows = shown.filter(w => getLvl(w) === lvl);
@@ -4222,6 +4614,10 @@ function finishTimeAttack(){
   const score = quizSession.score || 0;
   const streak = quizSession.bestStreak || 0;
 
+  if(!state.ui.records) state.ui.records = { timeAttackBest: 0, matchBestTime: null, matchBestCombo: 0 };
+  state.ui.records.timeAttackBest = Math.max(state.ui.records.timeAttackBest || 0, score);
+  scheduleSave();
+
   body.innerHTML = `<div class="quiz-screen" style="text-align:center;padding:16px 8px;">
     <h3 style="font-size:22px;margin:10px 0;color:var(--gold-deep);">${esc(t('quiz.timeUp'))}</h3>
     <div class="quiz-stats" style="font-size:15px;line-height:2.2;padding:16px;margin:16px 0;">
@@ -4347,6 +4743,376 @@ function resetCustomEdit(){
   }
 }
 
+// ---------- Word Match Challenge (Memory Pairs Game) ----------
+
+let matchSession = null;
+let matchTimerInterval = null;
+
+function openWordMatch(filterLevel){
+  const overlay = document.getElementById('matchOverlay');
+  if(!overlay) return;
+  const level = filterLevel || state.ui.currentLevel || 'all';
+  const pool = wordsOfLevel(level);
+  if(pool.length < 6){
+    showToast(t('alert.listEmpty'));
+    return;
+  }
+
+  const count = Math.min(8, pool.length);
+  const shuffledPool = shuffleArray(pool.slice());
+  const selected = [];
+  for(let i = 0; i < shuffledPool.length && selected.length < count; i++){
+    const e = getEntry(shuffledPool[i]);
+    if(e && e.word && (wordTranslation(e.word) || e.definition)){
+      selected.push(e);
+    }
+  }
+
+  if(selected.length < 4){
+    showToast(t('alert.listEmpty'));
+    return;
+  }
+
+  const cards = [];
+  selected.forEach((entry, idx) => {
+    const tr = wordTranslation(entry.word) || noteText(entry.id) || entry.definition;
+    cards.push({
+      id: `w_${idx}`,
+      pairId: idx,
+      type: 'word',
+      text: entry.word,
+      pos: entry.pos || '',
+      matched: false
+    });
+    cards.push({
+      id: `t_${idx}`,
+      pairId: idx,
+      type: 'trans',
+      text: tr,
+      pos: '',
+      matched: false
+    });
+  });
+
+  const shuffledCards = shuffleArray(cards);
+
+  matchSession = {
+    level: level,
+    cards: shuffledCards,
+    pairsCount: selected.length,
+    matchedPairs: 0,
+    firstSelected: null,
+    locked: false,
+    startTime: Date.now(),
+    elapsedSeconds: 0,
+    combo: 0,
+    bestCombo: 0
+  };
+
+  clearInterval(matchTimerInterval);
+  matchTimerInterval = setInterval(updateMatchTimer, 1000);
+
+  renderMatchGrid();
+  updateMatchTopBar();
+  const winScreen = document.getElementById('matchWinScreen');
+  if(winScreen) winScreen.hidden = true;
+  const grid = document.getElementById('matchGrid');
+  if(grid) grid.hidden = false;
+
+  overlay.classList.add('show');
+}
+
+function closeWordMatch(){
+  clearInterval(matchTimerInterval);
+  matchTimerInterval = null;
+  matchSession = null;
+  const overlay = document.getElementById('matchOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function updateMatchTimer(){
+  if(!matchSession) return;
+  matchSession.elapsedSeconds = Math.floor((Date.now() - matchSession.startTime) / 1000);
+  const mm = String(Math.floor(matchSession.elapsedSeconds / 60)).padStart(2, '0');
+  const ss = String(matchSession.elapsedSeconds % 60).padStart(2, '0');
+  const el = document.getElementById('matchTimer');
+  if(el) el.textContent = `⏱️ ${mm}:${ss}`;
+}
+
+function updateMatchTopBar(){
+  if(!matchSession) return;
+  const scoreEl = document.getElementById('matchScore');
+  if(scoreEl) scoreEl.textContent = t('match.score', { n: matchSession.matchedPairs, total: matchSession.pairsCount });
+  const comboEl = document.getElementById('matchCombo');
+  if(comboEl) comboEl.textContent = t('match.combo', { n: matchSession.combo });
+}
+
+function renderMatchGrid(){
+  const grid = document.getElementById('matchGrid');
+  if(!grid || !matchSession) return;
+
+  grid.innerHTML = matchSession.cards.map((card, i) => `
+    <button type="button" class="match-card-btn${card.matched ? ' matched' : ''}" data-match-idx="${i}">
+      <span class="match-card-lang-tag">${card.type === 'word' ? 'EN' : currentLang.toUpperCase()}</span>
+      <span>${esc(card.text)}</span>
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('[data-match-idx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.getAttribute('data-match-idx'));
+      onMatchCardClick(idx);
+    });
+  });
+}
+
+function onMatchCardClick(idx){
+  if(!matchSession || matchSession.locked) return;
+  const cards = matchSession.cards;
+  const card = cards[idx];
+  if(!card || card.matched) return;
+
+  const grid = document.getElementById('matchGrid');
+  const btns = grid ? grid.querySelectorAll('.match-card-btn') : [];
+  const currentBtn = btns[idx];
+
+  if(matchSession.firstSelected === null){
+    matchSession.firstSelected = idx;
+    if(currentBtn) currentBtn.classList.add('selected');
+    return;
+  }
+
+  if(matchSession.firstSelected === idx){
+    matchSession.firstSelected = null;
+    if(currentBtn) currentBtn.classList.remove('selected');
+    return;
+  }
+
+  const firstIdx = matchSession.firstSelected;
+  const firstCard = cards[firstIdx];
+  const firstBtn = btns[firstIdx];
+  if(currentBtn) currentBtn.classList.add('selected');
+
+  const isMatch = (firstCard.pairId === card.pairId && firstCard.type !== card.type);
+
+  if(isMatch){
+    firstCard.matched = true;
+    card.matched = true;
+    matchSession.matchedPairs++;
+    matchSession.combo++;
+    matchSession.bestCombo = Math.max(matchSession.bestCombo, matchSession.combo);
+    matchSession.firstSelected = null;
+
+    if(firstBtn){
+      firstBtn.classList.remove('selected');
+      firstBtn.classList.add('matched');
+    }
+    if(currentBtn){
+      currentBtn.classList.remove('selected');
+      currentBtn.classList.add('matched');
+    }
+
+    playMatchSuccessSound();
+    updateMatchTopBar();
+
+    if(matchSession.matchedPairs === matchSession.pairsCount){
+      finishWordMatch();
+    }
+  } else {
+    matchSession.locked = true;
+    matchSession.combo = 0;
+    updateMatchTopBar();
+    playMatchErrorSound();
+
+    if(firstBtn) firstBtn.classList.add('mismatch');
+    if(currentBtn) currentBtn.classList.add('mismatch');
+
+    setTimeout(() => {
+      if(firstBtn) firstBtn.classList.remove('selected', 'mismatch');
+      if(currentBtn) currentBtn.classList.remove('selected', 'mismatch');
+      matchSession.firstSelected = null;
+      matchSession.locked = false;
+    }, 550);
+  }
+}
+
+function finishWordMatch(){
+  clearInterval(matchTimerInterval);
+  const totalSeconds = matchSession.elapsedSeconds;
+  const mm = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+  const ss = String(totalSeconds % 60).padStart(2, '0');
+  const timeStr = `${mm}:${ss}`;
+
+  if(!state.ui.records) state.ui.records = { timeAttackBest: 0, matchBestTime: null, matchBestCombo: 0 };
+  if(state.ui.records.matchBestTime === null || totalSeconds < state.ui.records.matchBestTime){
+    state.ui.records.matchBestTime = totalSeconds;
+  }
+  state.ui.records.matchBestCombo = Math.max(state.ui.records.matchBestCombo || 0, matchSession.bestCombo);
+
+  incrementDailyProgress(matchSession.pairsCount);
+  triggerCelebration();
+
+  const grid = document.getElementById('matchGrid');
+  if(grid) grid.hidden = true;
+  const win = document.getElementById('matchWinScreen');
+  if(win){
+    win.hidden = false;
+    win.innerHTML = `
+      <div class="match-win-title">${esc(t('match.completed'))}</div>
+      <div class="match-win-stats">
+        <p>${esc(t('match.time', { time: timeStr }))} &nbsp;|&nbsp; ${esc(t('match.combo', { n: matchSession.bestCombo }))}</p>
+      </div>
+      <button type="button" class="tool-btn primary" id="btnMatchPlayAgain">${esc(t('match.playAgain'))}</button>
+    `;
+    const playAgainBtn = document.getElementById('btnMatchPlayAgain');
+    if(playAgainBtn) playAgainBtn.addEventListener('click', () => openWordMatch(matchSession.level));
+  }
+}
+
+// ---------- Visual Learning Analytics & CEFR Radar ----------
+
+function openAnalyticsModal(){
+  const overlay = document.getElementById('analyticsOverlay');
+  const body = document.getElementById('analyticsBody');
+  if(!overlay || !body) return;
+
+  const totalWords = WORDS.length;
+  const knownTotal = countStatus('k');
+  const overallPct = totalWords ? Math.round(knownTotal / totalWords * 100) : 0;
+
+  const levelStats = {};
+  LEVEL_ORDER.forEach(lvl => {
+    const words = wordsOfLevel(lvl);
+    let k = 0, u = 0;
+    words.forEach(w => {
+      const e = getEntry(w);
+      const id = e ? e.id : w;
+      const m = state.marks[id] || (e ? state.marks[e.word] : null);
+      if(m && m.s === 'k') k++;
+      else if(m && m.s === 'u') u++;
+    });
+    const pct = words.length ? Math.round(k / words.length * 100) : 0;
+    levelStats[lvl] = { total: words.length, known: k, unknown: u, pct: pct };
+  });
+
+  const cx = 150, cy = 150, r = 100;
+  const gridPolys = [0.25, 0.5, 0.75, 1.0].map(scale => {
+    const pts = LEVEL_ORDER.map((lvl, i) => {
+      const angle = (i * 72 - 90) * Math.PI / 180;
+      const x = cx + r * scale * Math.cos(angle);
+      const y = cy + r * scale * Math.sin(angle);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="rgba(216,205,178,0.7)" stroke-width="1" />`;
+  }).join('');
+
+  const axes = LEVEL_ORDER.map((lvl, i) => {
+    const angle = (i * 72 - 90) * Math.PI / 180;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    const lx = cx + (r + 20) * Math.cos(angle);
+    const ly = cy + (r + 20) * Math.sin(angle) + 4;
+    return `
+      <line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(216,205,178,0.7)" stroke-width="1" />
+      <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-family="var(--font-mono)" font-size="12" font-weight="800" fill="var(--ink-text)">${LEVEL_LABELS[lvl]}</text>
+    `;
+  }).join('');
+
+  const userPts = LEVEL_ORDER.map((lvl, i) => {
+    const scale = Math.max(0.08, levelStats[lvl].pct / 100);
+    const angle = (i * 72 - 90) * Math.PI / 180;
+    const x = cx + r * scale * Math.cos(angle);
+    const y = cy + r * scale * Math.sin(angle);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+
+  const radarSvg = `
+    <svg class="analytics-radar-svg" viewBox="0 0 300 300">
+      ${gridPolys}
+      ${axes}
+      <polygon points="${userPts}" fill="rgba(217, 164, 65, 0.35)" stroke="#d9a441" stroke-width="2.5" />
+      ${LEVEL_ORDER.map((lvl, i) => {
+        const scale = Math.max(0.08, levelStats[lvl].pct / 100);
+        const angle = (i * 72 - 90) * Math.PI / 180;
+        const x = cx + r * scale * Math.cos(angle);
+        const y = cy + r * scale * Math.sin(angle);
+        return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="#d9a441" stroke="#fff" stroke-width="1.5" />`;
+      }).join('')}
+    </svg>
+  `;
+
+  const srsBoxes = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  Object.keys(state.srs || {}).forEach(k => {
+    const b = state.srs[k].box;
+    if(b >= 1 && b <= 5) srsBoxes[b]++;
+  });
+
+  const records = state.ui.records || {};
+  const timeAttackBest = records.timeAttackBest || (state.ui.quizStreak ? state.ui.quizStreak.n : 0);
+  const bestStreak = (state.ui.habit && state.ui.habit.bestStreak) ? state.ui.habit.bestStreak : (state.ui.habit ? state.ui.habit.streak : 0);
+
+  body.innerHTML = `
+    <div class="analytics-hero-card">
+      <div class="analytics-hero-left">
+        <h4>${esc(t('analytics.totalMastery'))}</h4>
+        <p>${esc(t('analytics.wordsMastered', { n: knownTotal, total: totalWords, pct: overallPct }))}</p>
+      </div>
+      <div class="analytics-pct-badge">${overallPct}%</div>
+    </div>
+
+    <div>
+      <h4 class="analytics-section-title">🎯 ${esc(t('analytics.cefrDistribution'))}</h4>
+      <div class="analytics-radar-wrap">
+        ${radarSvg}
+      </div>
+      <div class="cefr-bars-container" style="margin-top:14px;">
+        ${LEVEL_ORDER.map(lvl => `
+          <div class="cefr-bar-row">
+            <span class="cefr-bar-label ${lvl}">${LEVEL_LABELS[lvl]}</span>
+            <div class="cefr-bar-track">
+              <div class="cefr-bar-fill ${lvl}" style="width:${levelStats[lvl].pct}%"></div>
+            </div>
+            <span class="cefr-bar-stats">${levelStats[lvl].known}/${levelStats[lvl].total} (${levelStats[lvl].pct}%)</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div>
+      <h4 class="analytics-section-title">📦 ${esc(t('analytics.srsDistribution'))}</h4>
+      <div class="srs-boxes-grid">
+        ${[1, 2, 3, 4, 5].map(b => `
+          <div class="srs-box-tile">
+            <span class="srs-box-name">Box ${b}</span>
+            <span class="srs-box-count">${srsBoxes[b]}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div>
+      <h4 class="analytics-section-title">🏆 ${esc(t('analytics.highScores'))}</h4>
+      <div class="records-grid">
+        <div class="record-tile">
+          <span class="record-label">${esc(t('analytics.timeAttackRecord', { score: timeAttackBest }))}</span>
+          <span class="record-val">${timeAttackBest} words</span>
+        </div>
+        <div class="record-tile">
+          <span class="record-label">${esc(t('analytics.bestStreak', { days: bestStreak }))}</span>
+          <span class="record-val">${bestStreak} days 🔥</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  overlay.classList.add('show');
+}
+
+function closeAnalyticsModal(){
+  const overlay = document.getElementById('analyticsOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
 function openQuizModal(){
   lastFocused = document.activeElement;
   quizSession = null;
@@ -4401,6 +5167,7 @@ function renderQuizStart(){
         <label class="quiz-radio"><input type="radio" name="quizMode" value="standard"${(!s.mode || s.mode === 'standard') ? ' checked' : ''}>${esc(t('quiz.mode.standard'))}</label>
         <label class="quiz-radio"><input type="radio" name="quizMode" value="timeAttack"${s.mode === 'timeAttack' ? ' checked' : ''}>${esc(t('quiz.mode.timeAttack'))}</label>
         <label class="quiz-radio"><input type="radio" name="quizMode" value="listening"${s.mode === 'listening' ? ' checked' : ''}>${esc(t('quiz.mode.listening'))}</label>
+        <label class="quiz-radio"><input type="radio" name="quizMode" value="spelling"${s.mode === 'spelling' ? ' checked' : ''}>${esc(t('quiz.mode.spelling'))}</label>
       </div>
     </div>
 
@@ -4565,7 +5332,11 @@ function renderQuizQuestion(keep){
   </div>`;
 
   const area = document.getElementById('quizQuestionArea');
-  renderMcQuestion(area, item);
+  if(quizSession && quizSession.mode === 'spelling'){
+    renderSpellingQuestion(area, item);
+  } else {
+    renderMcQuestion(area, item);
+  }
 }
 
 function renderMcQuestion(area, item){
@@ -4650,6 +5421,128 @@ function renderMcQuestion(area, item){
   area.querySelectorAll('[data-opt]').forEach(btn => {
     btn.addEventListener('click', () => selectMcOption(Number(btn.getAttribute('data-opt'))));
   });
+}
+
+function renderSpellingQuestion(area, item){
+  const entry = getEntry(item.word);
+  const displayWord = entry ? entry.word : String(item.word);
+  const pos = (entry && entry.pos) ? entry.pos : '';
+  const ipa = (entry && entry.ipa) ? entry.ipa : '';
+  const meaning = answerFor(entry || displayWord).trim();
+  const example = (entry && entry.example) ? entry.example : '';
+
+  let clozeSentence = '';
+  if(example){
+    const escWord = escapeRegExp(displayWord);
+    const forms = formsFor(displayWord);
+    let pattern = escWord;
+    if(forms && forms.length){
+      pattern = [displayWord].concat(forms.map(f => f.f)).sort((a,b) => b.length - a.length).map(escapeRegExp).join('|');
+    }
+    const re = new RegExp('\\b(' + pattern + ')\\b', 'gi');
+    clozeSentence = esc(example).replace(re, '<span class="quiz-cloze-blank">______</span>');
+  }
+
+  area.innerHTML = `
+    <div class="quiz-spelling-wrap">
+      <div class="quiz-spelling-lead">${esc(t('quiz.spelling.prompt'))}</div>
+      <button type="button" class="quiz-spelling-audio-btn" id="btnQuizSpellingAudio" title="${esc(t('quiz.listenAgain'))}" aria-label="${esc(t('quiz.listenAgain'))}">
+        🔊
+      </button>
+      <div class="quiz-spelling-meaning">
+        <span>${esc(meaning)}</span>
+        ${pos ? `<span class="quiz-question-pos" style="margin-inline-start:8px;">${esc(pos)}</span>` : ''}
+      </div>
+      ${clozeSentence ? `<div class="quiz-spelling-cloze">"${clozeSentence}"</div>` : ''}
+      <div class="quiz-spelling-input-row">
+        <input type="text" id="quizSpellingInput" class="quiz-spelling-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="${esc(t('quiz.spelling.placeholder'))}">
+        <button type="button" class="tool-btn primary" id="btnQuizSpellingCheck">${esc(t('quiz.spelling.check'))}</button>
+      </div>
+      <div id="quizSpellingHintArea" hidden></div>
+      <div class="quiz-spelling-actions">
+        <button type="button" class="tool-btn" id="btnQuizSpellingHint">${esc(t('quiz.spelling.showHint'))}</button>
+        <button type="button" class="tool-btn" id="btnQuizSpellingGiveUp">${esc(t('quiz.spelling.giveUp'))}</button>
+      </div>
+    </div>
+  `;
+
+  const playWordAudio = () => {
+    const audioBtn = document.getElementById('btnQuizSpellingAudio');
+    if(entry && (entry.audio_uk || entry.audio_us)){
+      const src = (state.ui.speechAcc === 'us' && entry.audio_us) ? entry.audio_us : (entry.audio_uk || entry.audio_us);
+      playAudio(src, audioBtn);
+    } else {
+      speakEnglishText(displayWord);
+    }
+  };
+
+  const audioBtn = document.getElementById('btnQuizSpellingAudio');
+  if(audioBtn) audioBtn.addEventListener('click', playWordAudio);
+  setTimeout(playWordAudio, 180);
+
+  const input = document.getElementById('quizSpellingInput');
+  const checkBtn = document.getElementById('btnQuizSpellingCheck');
+  const hintBtn = document.getElementById('btnQuizSpellingHint');
+  const giveUpBtn = document.getElementById('btnQuizSpellingGiveUp');
+  const hintArea = document.getElementById('quizSpellingHintArea');
+
+  if(input) setTimeout(() => { try { input.focus(); } catch(e){} }, 100);
+
+  let hintCount = 0;
+  if(hintBtn && hintArea){
+    hintBtn.addEventListener('click', () => {
+      hintCount++;
+      hintArea.hidden = false;
+      if(ipa && hintCount === 1){
+        hintArea.innerHTML = `<span class="quiz-spelling-hint-text">IPA: /${esc(ipa)}/ (${displayWord.length} letters)</span>`;
+      } else {
+        const revealed = displayWord.slice(0, Math.min(hintCount, displayWord.length - 1));
+        const mask = revealed + '•'.repeat(Math.max(0, displayWord.length - revealed.length));
+        hintArea.innerHTML = `<span class="quiz-spelling-hint-text">Hint: ${esc(mask)}</span>`;
+      }
+      if(input) input.focus();
+    });
+  }
+
+  const doSubmit = () => {
+    if(!input || item.answered) return;
+    const typed = input.value.trim().toLowerCase();
+    const target = displayWord.trim().toLowerCase();
+    if(!typed) return;
+
+    if(typed === target){
+      input.classList.remove('shake-error');
+      input.style.borderColor = '#3a8a4f';
+      input.style.background = 'rgba(58, 138, 79, 0.15)';
+      playTone(587.33, 'triangle', 0.15, 0.1);
+      answerQuestion(true, { spelling: true });
+    } else {
+      input.classList.remove('shake-error');
+      void input.offsetWidth;
+      input.classList.add('shake-error');
+      playTone(220, 'sawtooth', 0.18, 0.08);
+      showToast(t('quiz.spelling.incorrect'));
+      input.focus();
+    }
+  };
+
+  if(checkBtn) checkBtn.addEventListener('click', doSubmit);
+  if(input){
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        doSubmit();
+      }
+    });
+  }
+
+  if(giveUpBtn){
+    giveUpBtn.addEventListener('click', () => {
+      if(item.answered) return;
+      if(input) input.value = displayWord;
+      answerQuestion(false, { spelling: true });
+    });
+  }
 }
 
 function selectMcOption(i){
@@ -4740,6 +5633,8 @@ function answerQuestion(passed, info){
     }
   }
 
+  incrementDailyProgress(1);
+
   if(info && info.timeAttack){
     return;
   }
@@ -4769,8 +5664,9 @@ function renderQuizFeedback(passed, info){
   const isListening = quizSession && quizSession.mode === 'listening';
   const entry = getEntry(item.word);
   const displayWord = entry ? entry.word : String(item.word);
+  const wordRevealedLabel = t('quiz.wordRevealed');
   const revealedHtml = isListening
-    ? `<div class="quiz-revealed-banner"><span>${esc(t('quiz.wordRevealed'))}:</span> <strong>${esc(displayWord)}</strong></div>`
+    ? `<div class="quiz-revealed-banner"><span>${esc(wordRevealedLabel)}${wordRevealedLabel.endsWith(':') || wordRevealedLabel.endsWith('：') ? '' : ':'}</span> <strong>${esc(displayWord)}</strong></div>`
     : '';
 
   area.innerHTML = `<div class="quiz-feedback ${passed ? 'ok' : 'no'}">
@@ -4778,7 +5674,7 @@ function renderQuizFeedback(passed, info){
     ${revealedHtml}
     <p><span class="quiz-correct">${esc(correctText)}</span></p>
     ${extraLines.join('')}
-    <label class="quiz-sentence-prompt" for="quizSentenceInput">${esc(t('quiz.personalSentence.prompt', { word: item.word }))}</label>
+    <label class="quiz-sentence-prompt" for="quizSentenceInput">${esc(t('quiz.personalSentence.prompt', { word: displayWord }))}</label>
     <textarea id="quizSentenceInput" class="quiz-personal-sentence" rows="2" dir="ltr" lang="en" placeholder="${esc(t('quiz.personalSentence.placeholder'))}"></textarea>
     <div class="quiz-actions">
       <button type="button" class="tool-btn primary" id="quizSaveSentence" disabled>${esc(t('quiz.personalSentence.save'))}</button>
@@ -5132,7 +6028,7 @@ function moveTutorial(direction){
   renderTutorialStep();
 }
 
-let currentWhatsNewTab = 'tab-update13';
+let currentWhatsNewTab = 'tab-update14';
 
 function isWhatsNewOpen(){
   const el = document.getElementById('whatsNewOverlay');
@@ -5142,7 +6038,7 @@ function isWhatsNewOpen(){
 function openWhatsNew(tab){
   const overlay = document.getElementById('whatsNewOverlay');
   if(!overlay) return;
-  renderWhatsNewContent(tab || 'tab-update13');
+  renderWhatsNewContent(tab || 'tab-update14');
   overlay.classList.add('show');
   requestAnimationFrame(() => {
     const btn = document.getElementById('closeWhatsNew');
@@ -5166,43 +6062,48 @@ function renderWhatsNewContent(activeTab){
 
   const isAr = (currentLang === 'ar');
 
-  if(currentWhatsNewTab === 'tab-update13'){
+  if(currentWhatsNewTab === 'tab-update14'){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
-          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.3' : 'Oxford 5000 - Update 1.3'}</span>
+          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.4' : 'Oxford 5000 - Update 1.4'}</span>
           <span class="wn-tag">${isAr ? 'أحدث إصدار' : 'Latest Release'}</span>
         </div>
-        <p class="wn-release-meta">${isAr ? 'تجربة تفاعلية ثورية تجمع بين سرعة الاستحضار، مهارة السمع، والاستكشاف الشامل للمفردات.' : 'A major interactive update featuring Time Attack, Listening Quiz, and Advanced Explorer.'}</p>
+        <p class="wn-release-meta">${isAr ? 'إصدار ثوري يقدم عادات الدراسة اليومية، التحكم بسرعة الصوت، نمط اختبار الإملاء والكتابة، لعبة مطابقة الكلمات، والتحليلات البصرية الشاملة.' : 'A milestone release introducing daily study habit streaks, audio speed controls, interactive spelling quiz, rapid word match game, and visual learning analytics.'}</p>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">⚡</span> <span>${isAr ? 'مود سباق الوقت (Time Attack)' : 'Time Attack Mode'}</span></div>
-          <p>${isAr ? 'تحدٍ حماسي مع مؤقت زمني يبدأ بـ 30 ثانية؛ كل إجابة صحيحة تمنحك +2 ثانية إضافية لمواصلة السباق، بينما الإجابة الخاطئة تصدر صوت مواء قطة لطيف وتلويناً أحمر تحذيرياً مع الانتقال الفوري للسؤال التالي.' : 'Fast-paced quiz mode starting at 30s. Each correct answer adds +2s; mistakes trigger a gentle cat meow and instant continuation.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">🔥</span> <span>${isAr ? '1. عادات الدراسة اليومية وعداد السلسلة والاحتفال' : '1. Daily Study Habit, Goals & Streak Counter'}</span></div>
+          <p>${isAr ? 'تتبع ذكي ومستمر لأيام دراستك المتتالية 🔥، مع إمكانية تحديد هدفك اليومي (10 أو 20 أو 50 أو 100 بطاقة)، وشريط تقدم بصري مع احتفال جزيئات نارية عند إنجاز الهدف.' : 'Track consecutive study days with glowing fire streak badges 🔥, custom daily targets (10, 20, 50, 100 cards), and celebratory confetti animations upon completion.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? 'اختبار الاستماع الصوتي فقط (Listening Only)' : 'Audio Listening-Only Quiz'}</span></div>
-          <p>${isAr ? 'نمط جديد كلياً يعتمد على الأذن والسمع؛ تستمع لنطق الكلمة إما باللكنة البريطانية أو الأمريكية دون رؤية النص الإنجليزي، ثم تختار معناها من بين 4 خيارات. بمجرد الإجابة ينكشف النص مع النطق والرموز الصوتية.' : 'Listen to UK/US native audio without seeing the English word, and choose its meaning. The word is revealed with full IPA upon answering.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? '2. التحكم المتقدم بالنطق الصوتي وسرعة التشغيل' : '2. Audio Speed Control & Auto-Pronounce'}</span></div>
+          <p>${isAr ? 'مفتاح سريع للتبديل بين سرعات النطق (1.0x / 0.8x / 0.6x) للاستماع الدقيق للحروف والأصوات الصعبة، مع خيار النطق الصوتي التلقائي عند الانتقال للبطاقة التالية.' : 'Clean playback speed selector (1.0x, 0.8x, 0.6x) for clear phonetic articulation, plus optional auto-pronounce on advancing to the next card.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🔍</span> <span>${isAr ? 'مستكشف الكلمات المتقدم والبحث الذكي' : 'Word Explorer & Smart Search'}</span></div>
-          <p>${isAr ? 'تحفة فنية في تصفح والبحث عن الكلمات تضم 8 أنماط للترتيب (أبجدياً، حسب المستوى A1-C1، الكلمات المستحقة للمراجعة، غير المعروفة، والأهمية)، مع فلاتر سريعة للأفعال والأسماء والصفات وبطاقات غنية تنقلك للكلمة فوراً.' : 'Comprehensive vocabulary explorer with 8 sort modes, filters for CEFR levels and parts of speech, and instant jump to any flashcard.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">✍️</span> <span>${isAr ? '3. نمط اختبار الإملاء والكتابة التفاعلي' : '3. Interactive Spelling & Writing Quiz'}</span></div>
+          <p>${isAr ? 'نمط اختبار رابع يركز على الاسترجاع النشط: استمع للنطق الصوتي واكتب الكلمة الإنجليزية مع فحص فوري، وتلميحات IPA، وكشف الأحرف.' : 'A dedicated active recall writing mode: listen to native audio, view definition and cloze context, then type the word with instant feedback and IPA hints.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">✏️</span> <span>${isAr ? 'محرر الكلمات والترجمة والمثال المخصص' : 'Custom Word & Sentence Editor'}</span></div>
-          <p>${isAr ? 'إمكانية تعديل الترجمة، جملة المثال، ترجمة المثال، وصيغ الكلمة بنفسك، مع حفظ تعديلاتك وتشفيرها ودمجها تلقائياً مع نظام المزامنة السريعة لحمايتها من الضياع.' : 'Edit translations, examples, and forms directly. Your custom edits persist and sync seamlessly without account login.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">🧩</span> <span>${isAr ? '4. تحدي مطابقة الكلمات السريع (لعبة الأزواج)' : '4. Fast-Paced Word Match Challenge'}</span></div>
+          <p>${isAr ? 'لعبة تفاعلية ممتعة: طابق بين الكلمات الإنجليزية ومعانيها عبر لمس البطاقات لتفريغ اللوحة ضد العداد الزمني مع مؤثرات صوتية وبصرية متناسقة.' : 'An engaging rapid-fire mini-game: tap matching English words and translations to clear the board against a timer with combo multiplier streaks.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">✨</span> <span>${isAr ? 'تظليل نصوص ذهبي وتوهج بصري فاخر' : 'Golden Highlight & Interactive Glow'}</span></div>
-          <p>${isAr ? 'تنسيق أنيق جداً عند تحديد ونسخ أي نص بلمسات ذهبية عصرية، مع تفاعلية ديناميكية عند النقر وتوهج ناعم للبطاقات وخلفية جمالية انسيابية مريحة للعين.' : 'Custom selection styling with warm gold highlights, glowing button interactions, and a modernized fluid background.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">📊</span> <span>${isAr ? '5. إحصائيات التعلم ورادار مستويات CEFR' : '5. Visual Learning Analytics & CEFR Radar'}</span></div>
+          <p>${isAr ? 'نافذة تحليلات بيانية شاملة تتضمن مخطط رادار خماسي الأضلاع لمستويات الإطار الأوروبي (A1-C1)، وتوزيع نظام لايتنر للتكرار المتباعد، وأرقامك القياسية.' : 'Visual radar polygon chart tracking mastery across CEFR levels (A1-C1), spaced repetition box distributions, and personal best high scores.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? 'توسيط الأيقونات وضبط شريط الدعم والتواصل' : 'Centered Social Icons & Polished Layout'}</span></div>
-          <p>${isAr ? 'توسيط هندسي دقيق لأيقونات التواصل الاجتماعي في الفوتر (GitHub, X, LinkedIn) وتنسيق شريط الدعم والروابط لتوفير الراحة التامة على مختلف مقاسات الشاشات.' : 'Pixel-perfect centering for social and project links with balanced responsive footer spacing.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">📥</span> <span>${isAr ? '6. تصدير مباشر بضغطة زر إلى برنامج Anki' : '6. One-Click Export to Anki (TSV)'}</span></div>
+          <p>${isAr ? 'تصدير الكلمات غير المعروفة أو المستحقة للمراجعة كحزمة متوافقة 100% مع تطبيق Anki العالمي بترميز UTF-8 وبكافة الحقول التفصيلية.' : 'Export unknown or due words formatted with tabs and UTF-8 BOM for instant, seamless import into Anki decks with full metadata.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">📱</span> <span>${isAr ? '7. دعم التثبيت الكامل كتطبيق PWA دون إنترنت' : '7. PWA Offline Installation & Service Worker'}</span></div>
+          <p>${isAr ? 'إمكانية تثبيت التطبيق على سطح المكتب أو الشاشة الرئيسية للهاتف عبر ملف Manifest وService Worker ليعمل بسرعة فائقة وبدون أي اتصال بالإنترنت.' : 'Install Oxford 5000 on desktop or mobile home screens as a standalone Progressive Web App with offline service worker caching.'}</p>
         </div>
       </div>
     `;
@@ -5254,7 +6155,7 @@ function renderWhatsNewContent(activeTab){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
-          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.3' : 'Full Changelog Archive (1.0 - 1.3)'}</span>
+          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.4' : 'Full Changelog Archive (1.0 - 1.4)'}</span>
         </div>
         <p class="wn-release-meta">${isAr ? 'سجل تاريخي يوثق تطور تطبيق Oxford 5000 منذ إطلاقه الأول وحتى أحدث إصدار.' : 'Historical log of Oxford 5000 releases from inception to the latest version.'}</p>
 
@@ -5316,6 +6217,7 @@ function openSettings(){
   const progress = document.getElementById('settingsProgress');
   const largeControls = document.getElementById('settingsLargeControls');
   const motion = document.getElementById('settingsMotion');
+  const autoPronounce = document.getElementById('settingsAutoPronounce');
   if(scale) scale.value = String(p.fontScale);
   if(scaleValue) scaleValue.textContent = p.fontScale + '%';
   if(compact) compact.checked = p.compactCards;
@@ -5326,6 +6228,7 @@ function openSettings(){
   if(progress) progress.checked = p.showProgress;
   if(largeControls) largeControls.checked = p.largeControls;
   if(motion) motion.checked = p.reducedMotion;
+  if(autoPronounce) autoPronounce.checked = p.autoPronounce === true;
   overlay.classList.add('show');
 }
 
@@ -5357,6 +6260,7 @@ function wireSettings(){
   const progress = document.getElementById('settingsProgress');
   const largeControls = document.getElementById('settingsLargeControls');
   const motion = document.getElementById('settingsMotion');
+  const autoPronounce = document.getElementById('settingsAutoPronounce');
   if(scale) scale.addEventListener('input', () => {
     state.ui.preferences.fontScale = Math.max(90, Math.min(120, Number(scale.value) || 100));
     const value = document.getElementById('settingsFontScaleValue');
@@ -5371,6 +6275,7 @@ function wireSettings(){
   if(progress) progress.addEventListener('change', () => { state.ui.preferences.showProgress = progress.checked; savePreferences(); });
   if(largeControls) largeControls.addEventListener('change', () => { state.ui.preferences.largeControls = largeControls.checked; savePreferences(); });
   if(motion) motion.addEventListener('change', () => { state.ui.preferences.reducedMotion = motion.checked; savePreferences(); });
+  if(autoPronounce) autoPronounce.addEventListener('change', () => { state.ui.preferences.autoPronounce = autoPronounce.checked; savePreferences(); });
 }
 
 function submitFeedback(){
@@ -5436,7 +6341,7 @@ function wireEvents(){
   const startOnboarding = document.getElementById('startOnboarding');
   if(startOnboarding) startOnboarding.addEventListener('click', closeOnboarding);
   const whatsNewBadge = document.getElementById('whatsNewBadge');
-  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update13'));
+  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update14'));
   const closeWhatsNewBtn = document.getElementById('closeWhatsNew');
   if(closeWhatsNewBtn) closeWhatsNewBtn.addEventListener('click', closeWhatsNew);
   const whatsNewOverlayEl = document.getElementById('whatsNewOverlay');
@@ -5528,6 +6433,75 @@ function wireEvents(){
       if(e.target.id === 'editWordOverlay') closeEditWordModal();
     });
   }
+
+  // Audio speed button
+  const btnSpeed = document.getElementById('btnAudioSpeed');
+  if(btnSpeed) btnSpeed.addEventListener('click', cycleAudioSpeed);
+
+  // Habit modal
+  const openHabitBtn = document.getElementById('openHabit');
+  if(openHabitBtn) openHabitBtn.addEventListener('click', openHabitModal);
+  const closeHabitBtn = document.getElementById('closeHabit');
+  if(closeHabitBtn) closeHabitBtn.addEventListener('click', closeHabitModal);
+  const habitOverlayEl = document.getElementById('habitOverlay');
+  if(habitOverlayEl){
+    habitOverlayEl.addEventListener('click', (e) => {
+      if(e.target === habitOverlayEl) closeHabitModal();
+    });
+  }
+  document.querySelectorAll('.habit-target-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const g = Number(btn.getAttribute('data-goal'));
+      if(g && state.ui && state.ui.habit){
+        state.ui.habit.goal = g;
+        scheduleSave();
+        renderHabitDisplay();
+      }
+    });
+  });
+
+  // Word match challenge
+  const btnMatch = document.getElementById('btnMatch');
+  if(btnMatch) btnMatch.addEventListener('click', () => openWordMatch());
+  const closeMatchBtn = document.getElementById('closeMatch');
+  if(closeMatchBtn) closeMatchBtn.addEventListener('click', closeWordMatch);
+  const matchOverlayEl = document.getElementById('matchOverlay');
+  if(matchOverlayEl){
+    matchOverlayEl.addEventListener('click', (e) => {
+      if(e.target === matchOverlayEl) closeWordMatch();
+    });
+  }
+
+  // Visual learning analytics
+  const btnAnalytics = document.getElementById('btnAnalytics');
+  if(btnAnalytics) btnAnalytics.addEventListener('click', openAnalyticsModal);
+  const closeAnalyticsBtn = document.getElementById('closeAnalytics');
+  if(closeAnalyticsBtn) closeAnalyticsBtn.addEventListener('click', closeAnalyticsModal);
+  const analyticsOverlayEl = document.getElementById('analyticsOverlay');
+  if(analyticsOverlayEl){
+    analyticsOverlayEl.addEventListener('click', (e) => {
+      if(e.target === analyticsOverlayEl) closeAnalyticsModal();
+    });
+  }
+
+  // Anki Export
+  const btnExportAnki = document.getElementById('btnExportAnki');
+  if(btnExportAnki) btnExportAnki.addEventListener('click', () => exportToAnki('unknown'));
+
+  // Settings
+  const openSettingsBtn = document.getElementById('openSettings');
+  if(openSettingsBtn) openSettingsBtn.addEventListener('click', openSettings);
+  const closeSettingsBtn = document.getElementById('closeSettings');
+  if(closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
+  const btnResetSettings = document.getElementById('btnResetSettings');
+  if(btnResetSettings) btnResetSettings.addEventListener('click', resetPreferences);
+  const settingsOverlayEl = document.getElementById('settingsOverlay');
+  if(settingsOverlayEl){
+    settingsOverlayEl.addEventListener('click', (e) => {
+      if(e.target === settingsOverlayEl) closeSettings();
+    });
+  }
+  wireSettings();
 }
 
 document.addEventListener('keydown', (e) => {
@@ -5539,6 +6513,30 @@ document.addEventListener('keydown', (e) => {
   if(e.key === 'Escape' && isEditWordOpen()){
     e.preventDefault();
     closeEditWordModal();
+    return;
+  }
+  const habitModal = document.getElementById('habitOverlay');
+  if(e.key === 'Escape' && habitModal && habitModal.classList.contains('show')){
+    e.preventDefault();
+    closeHabitModal();
+    return;
+  }
+  const analyticsModal = document.getElementById('analyticsOverlay');
+  if(e.key === 'Escape' && analyticsModal && analyticsModal.classList.contains('show')){
+    e.preventDefault();
+    closeAnalyticsModal();
+    return;
+  }
+  const matchModal = document.getElementById('matchOverlay');
+  if(e.key === 'Escape' && matchModal && matchModal.classList.contains('show')){
+    e.preventDefault();
+    closeWordMatch();
+    return;
+  }
+  const settingsModal = document.getElementById('settingsOverlay');
+  if(e.key === 'Escape' && settingsModal && settingsModal.classList.contains('show')){
+    e.preventDefault();
+    closeSettings();
     return;
   }
   const tutorial = document.getElementById('tutorialOverlay');
@@ -6093,7 +7091,7 @@ async function selfTest(){
   const goodNote = {};
   goodNote[WORDS[1]] = { v: 'sample-note', t: now };
   const baseImport = { app: 'oxford5000', v: 3, deviceId: 'dev-test', marks: goodMark, notes: goodNote };
-  const cloneBase = () => JSON.parse(JSON.stringify(baseImport));
+  const cloneBase = () => structuredClone(baseImport);
 
   console.assert(validateImport(baseImport, WORDS, now).ok, 'import: valid file accepted');
 
@@ -6429,6 +7427,18 @@ async function selfTest(){
   const mainCenter = (mainRect.left + mainRect.right) / 2;
   console.assert(Math.abs(deckCenter - mainCenter) < 2, 'layout: deck is centered');
 
+  // 33. Update 1.4 features:
+  console.assert(!!document.getElementById('openHabit'), 'habit: habit counter pill present');
+  console.assert(!!document.getElementById('habitOverlay'), 'habit: habit overlay modal present');
+  console.assert(!!document.getElementById('btnAudioSpeed'), 'audio: audio playback speed button present');
+  console.assert(!!document.getElementById('btnMatch'), 'match: word match button present');
+  console.assert(!!document.getElementById('matchOverlay'), 'match: word match overlay present');
+  console.assert(!!document.getElementById('btnAnalytics'), 'analytics: learning analytics button present');
+  console.assert(!!document.getElementById('analyticsOverlay'), 'analytics: analytics overlay present');
+  console.assert(!!document.getElementById('btnExportAnki'), 'anki: export to Anki button present');
+  console.assert(!!document.getElementById('openSettings'), 'settings: preferences modal button present');
+  console.assert(!!document.querySelector('link[rel="manifest"]'), 'pwa: manifest link present');
+
   console.log('SELFTEST PASS');
 }
 
@@ -6484,4 +7494,10 @@ if(location.hash !== '#selftest') applyHashSync();
 
 if(location.hash === '#selftest'){
   selfTest();
+}
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http') && location.hash !== '#selftest'){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
 }

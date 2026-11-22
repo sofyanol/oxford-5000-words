@@ -20,12 +20,27 @@
 
 **A fast, private, distraction-free educational application built to master high-frequency English vocabulary through scientifically structured spaced repetition (SRS), authentic dual UK/US native audio, and active listening challenges.**
 
-[🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New in 1.3**](#-whats-new-in-update-13) • [🎯 **Features**](#-features-at-a-glance) • [🌐 **12 Languages**](#-supported-languages-12-locales) • [☕ **Support Project**](#-support-the-project)
+[🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New in 1.4**](#-whats-new-in-update-14) • [🎯 **Features**](#-features-at-a-glance) • [🌐 **12 Languages**](#-supported-languages-12-locales) • [☕ **Support Project**](#-support-the-project)
 
 <hr>
 </div>
 
-## 🌟 What's New in Update 1.3
+## 🌟 What's New in Update 1.4
+
+Update 1.4 introduces powerful new learning habits, audio controls, an interactive spelling quiz, memory mini-game, visual learning analytics, and full PWA installation:
+
+* 🔥 **Daily Study Habit, Goals & Streak Counter**: Track daily study streaks in `localStorage`, set daily card targets (10, 20, 50, or 100), and enjoy a joyful confetti celebration when reaching your daily goal.
+* 🎚️ **Audio Playback Speed & Auto-Pronounce**: Toggle audio speeds (`1.0x`, `0.8x`, `0.6x`) on pronunciation buttons for clear slow articulation, plus an optional Auto-Pronounce on card navigation preference.
+* ✍️ **Interactive Spelling & Writing Quiz Mode**: Test active recall by listening to audio, reading contextual cloze sentences, and typing the missing word with phonetic IPA hints.
+* 🧩 **Fast-Paced Word Match Challenge**: An engaging memory-match mini-game against a 45s timer with Web Audio sound effects, combo multipliers, and celebration animations.
+* 📊 **Visual Learning Analytics & CEFR Radar**: Track vocabulary mastery balance with an interactive SVG pentagon radar chart, CEFR level breakdown (A1-C1), Leitner SRS distribution, and high scores.
+* 📇 **One-Click Export to Anki (TSV)**: Export Unknown words, Due reviews, or custom sets into Anki-ready TSV files with standard import headers and UTF-8 BOM.
+* 📱 **Progressive Web App (PWA) Offline Support**: Installable on desktop and mobile home screens with `manifest.webmanifest` and cache-first `sw.js` for 100% offline access.
+* ⚡ **Core Fixes & Polished UI**: Fixed Unknown words export sort exceptions, instant visual undo rollback, Listening Quiz token sanitization, and 12-language localization updates.
+
+---
+
+### Previous Highlights (Update 1.3)
 
 Update 1.3 focuses on deeper interactivity, active auditory training, dynamic speed challenges, and comprehensive vocabulary exploration:
 
@@ -191,8 +206,8 @@ oxford5000-app/
 ├─ dist/                     Generated release files (single-file distribution)
 ├─ publish/                  Publishing deployment files
 ├─ docs/                     Architecture, data guidelines, and changelogs
-├─ ALL_UPDATES_CHANGELOG.md  Master historical changelog from 1.0 to 1.3
-└─ RELEASE_NOTES_v1.3.md     Dedicated 1.3 release notes
+├─ ALL_UPDATES_CHANGELOG.md  Master historical changelog from 1.0 to 1.4
+└─ RELEASE_NOTES_v1.4.md     Dedicated 1.4 release notes
 ```
 
 <hr>
