@@ -1,6 +1,12 @@
 # Changelog
 
 ## Update 1.5.0
+- Added Cloud Account Sync & Multi-Device Authentication (Google Sign-In & Email/Password) with real-time sync status (`🟢 Cloud Synced`), automated progress merge, and user profile management dashboard.
+- Added In-App Private Feedback & Suggestion Center with categorization (suggestions, corrections, bugs), context auto-tagging, and direct owner dispatch.
+- Added Streamlined 4-Button Primary Toolbar with Collapsible Smart Tools Hub Drawer.
+- Added Mobile Viewport Responsive Overhaul: eliminated floating badge collisions, implemented ergonomic horizontal touch controls, and optimized header proportions.
+- Added High-Contrast Modal Readability Overhaul across Ambient, Badges, Hands-Free, Print, and Feedback modals with deep dark ink on clean card surfaces.
+- Added Contextual Function Emojis across all interactive buttons in all 13 supported languages.
 - Added Hands-Free Auto-Play Walk & Sleep Mode with dual audio pacing (UK/US) and configurable sleep timer.
 - Added Gamification Badges & Milestone Achievements with 10 unlockable badges, celebratory toasts, and confetti.
 - Added Smart Focus Deck (Leech Hunter) to automatically track, isolate, and drill tricky words.

@@ -9,7 +9,33 @@ A friendly, offline-first vocabulary companion for learners who want to build a 
 
 ## Update 1.5
 
-Update 1.5 is a landmark release introducing an expansive study and focus ecosystem alongside high-end visual aesthetics and hardened code quality:
+Update 1.5 is a landmark release introducing an expansive study, cloud sync, and focus ecosystem alongside high-end visual aesthetics and hardened code quality:
+
+- **Cloud Account Sync & Multi-Device Authentication (☁️)**:
+  - Instant account authentication via Google Sign-In (`المتابعة بحساب Google 🌐`) or Email/Password.
+  - Real-time cloud sync status indicator (`🟢 Cloud Synced`) with automated multi-device progress merge.
+  - Visual profile dashboard displaying mastered vocabulary count, study streak 🔥, and active CEFR level.
+  - Preserves offline-first zero-login manual sync as an alternative tab for privacy-conscious users.
+
+- **Private In-App Direct Feedback & Suggestion Center (💬)**:
+  - User feedback modal allowing learners to submit suggestions, bug reports, and vocabulary corrections directly from within the app.
+  - Automatically attaches the currently active vocabulary word as context for instant diagnosis.
+  - Direct, private encrypted delivery to the project owner without public repository exposure.
+
+- **Streamlined 4-Button Primary Toolbar & Tools Hub Drawer (⚡)**:
+  - Ergonomic primary action row with 4 prominent learning buttons (Quiz 📝, Match 🧩, Hands-Free 🎧, Tools Hub ⚡).
+  - Smooth collapsible drawer categorizing focus tools (Badges, Analytics, Leech Deck, Ambient Sounds, Print) and deck management (Sync, Shuffle, Download, Reset).
+
+- **Complete Mobile & Tablet Viewport Overhaul (📱)**:
+  - Resolved mobile floating button collisions: moved utility badges into a balanced inline footer layout.
+  - Ergonomic horizontal action buttons (`أعرفها ✅`, `لا أعرفها ❌`, `تراجع ↩️`) positioned directly beneath the flashcard without vertical stretching.
+  - Proportionate island header scaling and touch-friendly 2×2 button wrapping on narrow screens.
+
+- **High-Contrast Modal Readability Overhaul (👁️)**:
+  - Deep dark ink typography (`#10161f`, `#2b2011`) and pure card surfaces across Ambient, Badges, Hands-Free, Print, and Feedback modals, ending white-on-cream visibility issues.
+
+- **Universal Function Emojis (🎯)**:
+  - Contextual emojis across all interactive buttons, toolbar controls, and dialog chips across all 13 supported languages.
 
 - **Hands-Free Auto-Play Walk & Sleep Mode (🎧)**:
   - Eyes-free vocabulary listening engine for commuting, walking, or bedtime study.

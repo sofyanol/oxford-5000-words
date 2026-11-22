@@ -34,7 +34,7 @@
 <meta name="theme-color" content="#0c1017">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310161f'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='25' font-weight='700' fill='%23d9a441' text-anchor='middle'%3EO5%3C/text%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'; manifest-src 'self' data:;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://accounts.google.com https://apis.google.com https://www.gstatic.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev https://formsubmit.co https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; base-uri 'none'; form-action 'none'; manifest-src 'self' data:;">
 <title>Oxford 5000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -442,7 +442,93 @@
       <button class="review-close" id="closeSync" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
     <div class="sync-body">
-      <section class="sync-section sync-quick">
+      <div class="sync-tabs-bar">
+        <button type="button" class="sync-tab-btn active" id="tabBtnCloudSync" data-i18n="sync.tab.cloud">☁️ مزامنة سحابية (حساب)</button>
+        <button type="button" class="sync-tab-btn" id="tabBtnManualSync" data-i18n="sync.tab.manual">🔗 مزامنة يدوية (بدون حساب)</button>
+      </div>
+
+      <!-- TAB 1: CLOUD ACCOUNT SYNC (DEFAULT) -->
+      <div class="sync-tab-content active" id="syncTabCloud">
+        <!-- Logged Out View -->
+        <div class="cloud-auth-box" id="cloudAuthLoggedOut">
+          <div class="cloud-hero-icon">☁️</div>
+          <h4 class="cloud-auth-title" data-i18n="sync.cloud.title">المزامنة السحابية الفورية ☁️</h4>
+          <p class="cloud-auth-desc" data-i18n="sync.cloud.desc">احفظ تقدمك وكلماتك تلقائياً وسجل دخولك من أي جهاز لمتابعة دراستك بسلاسة وبأمان تام.</p>
+
+          <button type="button" class="google-auth-btn" id="btnGoogleSignIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span data-i18n="sync.cloud.google">المتابعة بحساب Google 🌐</span>
+          </button>
+
+          <div class="cloud-divider">
+            <span data-i18n="sync.cloud.or">أو باستخدام البريد الإلكتروني</span>
+          </div>
+
+          <div class="cloud-form-fields">
+            <input type="email" id="cloudEmail" class="cloud-input" data-i18n-placeholder="sync.cloud.emailPlaceholder" placeholder="بريدك الإلكتروني (name@example.com)" autocomplete="email">
+            <input type="password" id="cloudPassword" class="cloud-input" data-i18n-placeholder="sync.cloud.passwordPlaceholder" placeholder="كلمة المرور" autocomplete="current-password">
+          </div>
+
+          <div class="cloud-auth-actions">
+            <button type="button" class="tool-btn primary" id="btnCloudSignIn" data-i18n="sync.cloud.login">تسجيل الدخول 🔑</button>
+            <button type="button" class="tool-btn" id="btnCloudSignUp" data-i18n="sync.cloud.register">إنشاء حساب جديد ✨</button>
+          </div>
+          
+          <button type="button" class="cloud-forgot-btn" id="btnCloudForgot" data-i18n="sync.cloud.forgot">نسيت كلمة المرور؟ ❓</button>
+
+          <div class="cloud-status-msg" id="cloudAuthStatus" role="status"></div>
+        </div>
+
+        <!-- Logged In View -->
+        <div class="cloud-profile-box" id="cloudAuthLoggedIn" hidden>
+          <div class="cloud-profile-header">
+            <div class="cloud-avatar" id="cloudUserAvatar">👤</div>
+            <div class="cloud-profile-info">
+              <h4 class="cloud-user-name" id="cloudUserName">المستخدم</h4>
+              <p class="cloud-user-email" id="cloudUserEmail">user@example.com</p>
+              <span class="cloud-sync-badge" id="cloudSyncBadge">
+                <span class="pulse-dot"></span>
+                <span data-i18n="sync.cloud.synced">سحابي متزامن 🟢</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="cloud-stats-grid">
+            <div class="cloud-stat-card">
+              <span class="cloud-stat-val" id="cloudStatWords">0</span>
+              <span class="cloud-stat-lbl">كلمة متزامنة</span>
+            </div>
+            <div class="cloud-stat-card">
+              <span class="cloud-stat-val" id="cloudStatStreak">0 🔥</span>
+              <span class="cloud-stat-lbl">أيام الحماسة</span>
+            </div>
+            <div class="cloud-stat-card">
+              <span class="cloud-stat-val" id="cloudStatLevel">All</span>
+              <span class="cloud-stat-lbl">المستوى النشط</span>
+            </div>
+          </div>
+
+          <p class="cloud-last-sync" id="cloudLastSyncLine">
+            <span data-i18n="sync.cloud.lastSync">آخر مزامنة سحابية:</span> <b id="cloudLastSyncTime">الآن</b>
+          </p>
+
+          <div class="cloud-actions-row">
+            <button type="button" class="tool-btn primary" id="btnForceCloudSync" data-i18n="sync.cloud.syncNow">مزامنة الآن 🔄</button>
+            <button type="button" class="tool-btn danger-tool" id="btnCloudSignOut" data-i18n="sync.cloud.logout">تسجيل الخروج 🚪</button>
+          </div>
+
+          <div class="cloud-status-msg" id="cloudSyncStatus" role="status"></div>
+        </div>
+      </div>
+
+      <!-- TAB 2: MANUAL ZERO-LOGIN SYNC -->
+      <div class="sync-tab-content" id="syncTabManual" hidden>
+        <section class="sync-section sync-quick">
         <h4 data-i18n="sync.quick.heading"></h4>
         <p class="sync-note" data-i18n="sync.quick.explain"></p>
         <div class="sync-actions">
@@ -511,6 +597,7 @@
         <div class="sync-status" id="tgStatus" role="status"></div>
         <p class="sync-note" id="lastSyncLine"></p>
       </details>
+      </div><!-- /syncTabManual -->
     </div>
   </div>
 </div>

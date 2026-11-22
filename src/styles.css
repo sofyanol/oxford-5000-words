@@ -2046,6 +2046,302 @@
   }
 
   .sync-panel{ max-width: 640px; }
+  .sync-tabs-bar {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0 16px;
+    background: rgba(31, 111, 109, 0.08);
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid rgba(31, 111, 109, 0.2);
+  }
+  .sync-tab-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #4a3e2a;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .sync-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: #10161f;
+  }
+  .sync-tab-btn.active {
+    background: #ffffff;
+    color: #1f6f6d;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    font-weight: 800;
+    border: 1px solid rgba(31, 111, 109, 0.25);
+  }
+  .sync-tab-content[hidden],
+  .cloud-auth-box[hidden],
+  .cloud-profile-box[hidden] {
+    display: none !important;
+  }
+
+  .cloud-auth-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 14px 10px 20px;
+  }
+  .cloud-hero-icon {
+    font-size: 42px;
+    margin-bottom: -4px;
+    filter: drop-shadow(0 4px 12px rgba(31, 111, 109, 0.3));
+    animation: floatCloud 3s ease-in-out infinite alternate;
+  }
+  @keyframes floatCloud {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+  }
+  .cloud-auth-title {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: #10161f;
+  }
+  .cloud-auth-desc {
+    margin: 0;
+    font-size: 13px;
+    color: #3d3420;
+    line-height: 1.7;
+    max-width: 480px;
+  }
+  .google-auth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+    padding: 12px 20px;
+    background: #ffffff !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .google-auth-btn:hover {
+    background: #f9fafb !important;
+    border-color: #9ca3af !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+  .cloud-divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 360px;
+    margin: 4px 0;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .cloud-divider::before, .cloud-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(31, 111, 109, 0.2);
+  }
+  .cloud-divider span {
+    padding: 0 10px;
+  }
+  .cloud-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+  }
+  .cloud-input {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(31, 111, 109, 0.3);
+    background: #ffffff;
+    color: #10161f;
+    font: inherit;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+  }
+  .cloud-input:focus {
+    outline: none;
+    border-color: #1f6f6d;
+    box-shadow: 0 0 0 3px rgba(31, 111, 109, 0.15);
+  }
+  .cloud-auth-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 360px;
+  }
+  .cloud-auth-actions .tool-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 10px;
+  }
+  .cloud-forgot-btn {
+    background: none;
+    border: none;
+    color: #1f6f6d;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+  }
+  .cloud-forgot-btn:hover {
+    color: #164f4d;
+  }
+  .cloud-status-msg {
+    min-height: 22px;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.6;
+    max-width: 380px;
+  }
+
+  /* Profile box when logged in */
+  .cloud-profile-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid rgba(217, 164, 65, 0.35);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  }
+  .cloud-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cloud-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1f6f6d, #2ecc71);
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    font-weight: 800;
+    box-shadow: 0 4px 10px rgba(31, 111, 109, 0.25);
+  }
+  .cloud-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .cloud-user-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: #10161f;
+  }
+  .cloud-user-email {
+    margin: 0;
+    font-size: 12.5px;
+    color: #4b5563;
+  }
+  .cloud-sync-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #1f6f6d;
+    background: rgba(31, 111, 109, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    width: fit-content;
+    margin-top: 2px;
+  }
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2ecc71;
+    display: inline-block;
+    box-shadow: 0 0 0 rgba(46, 204, 113, 0.4);
+    animation: pulseGlow 1.8s infinite;
+  }
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+  }
+  .cloud-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .cloud-stat-card {
+    background: rgba(246, 241, 228, 0.5);
+    border: 1px solid rgba(217, 164, 65, 0.25);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cloud-stat-val {
+    font-size: 16px;
+    font-weight: 800;
+    color: #10161f;
+  }
+  .cloud-stat-lbl {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+  }
+  .cloud-last-sync {
+    margin: 0;
+    font-size: 12px;
+    color: #4b5563;
+    text-align: center;
+  }
+  .cloud-actions-row {
+    display: flex;
+    gap: 10px;
+  }
+  .cloud-actions-row .tool-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+  .danger-tool {
+    background: rgba(184, 84, 63, 0.1) !important;
+    border-color: rgba(184, 84, 63, 0.3) !important;
+    color: var(--brick-deep) !important;
+  }
+  .danger-tool:hover {
+    background: rgba(184, 84, 63, 0.2) !important;
+  }
   .review-panel .tool-btn{
     background: rgba(34,27,16,.05);
     border: 1px solid rgba(34,27,16,.18);
@@ -2396,23 +2692,32 @@
     .tool-btn{ min-height:42px; padding:9px 11px; flex:1 1 auto; min-width:0; }
     .card{ padding: 20px 14px 14px; }
     .sent-text{ font-size: 15.5px; }
-    .side-tools{ inset-inline-start:4px; top:auto; bottom:8px; transform:none; flex-direction:row; gap:4px; }
-    .side-tool{ writing-mode:horizontal-tb; font-size:9px; padding:5px 7px; border-radius:6px; box-shadow:0 3px 10px rgba(0,0,0,.12); }
-    .coffee-support, .whats-new-floating-badge{
-      bottom: 8px;
-      min-height: 32px;
-      padding: 3px;
-      padding-inline-start: 4px;
-      padding-inline-end: 10px;
-      font-size: 10.5px;
+    .side-tools {
+      position: static !important;
+      transform: none !important;
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      margin: 16px auto 8px !important;
+      z-index: 10 !important;
     }
-    .coffee-support{ inset-inline-end: 8px; }
-    .whats-new-floating-badge{ inset-inline-start: 8px; }
-    .coffee-cup, .whats-new-icon-circle{ width: 24px; height: 24px; flex: 0 0 24px; }
-    .coffee-cup svg, .whats-new-icon-circle svg{ width: 12px; height: 12px; }
-    /* equalize bottom bar items */
-    .side-tools, .coffee-support, .whats-new-floating-badge{ bottom:8px; }
-    .side-tools{ z-index:91; }
+    .side-tool {
+      writing-mode: horizontal-tb !important;
+      font-size: 11px !important;
+      padding: 7px 12px !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12) !important;
+    }
+    .coffee-support, .whats-new-floating-badge {
+      position: static !important;
+      margin: 8px auto !important;
+      display: inline-flex !important;
+      min-height: 34px !important;
+      padding: 4px 12px !important;
+      font-size: 11px !important;
+      z-index: 10 !important;
+    }
     #tutorialOverlay{ align-items:flex-end; padding:8px; }
     #tutorialOverlay .tutorial-panel{ max-width:none; width:100%; max-height:48vh; }
     #tutorialOverlay .tutorial-intro{ display:none; }
@@ -2420,9 +2725,7 @@
   }
 
   @media (max-width:380px){
-    .coffee-support span[data-i18n]{ display:none; }
-    .coffee-support{ padding:3px; gap:0; max-width:30px; border-radius:50%; }
-    .side-tool{ font-size:8.5px; padding:4px 6px; }
+    .side-tool{ font-size:9.5px !important; padding:5px 8px !important; }
   }
 
   /* Interactive micro-animations & tactile glow */
@@ -4128,14 +4431,39 @@
     .example-card { padding: 10px 12px; margin-top: 10px; border-radius: 14px; }
     .sent-text { font-size: 14.5px; line-height: 1.45; }
     .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      width: 100%;
-      padding: 0 4px;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 20px !important;
+      width: 100% !important;
+      margin: 14px auto 16px !important;
+      padding: 0 !important;
     }
-    .ctrl-btn { min-height: 52px; font-size: 14px; }
-    #btnUndo { grid-column: span 2; min-height: 40px; }
+    .ctrl-btn {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 5px !important;
+      background: none !important;
+      border: none !important;
+      cursor: pointer !important;
+    }
+    .circle {
+      width: 56px !important;
+      height: 56px !important;
+      font-size: 22px !important;
+    }
+    .circle.undo {
+      width: 44px !important;
+      height: 44px !important;
+      font-size: 17px !important;
+    }
+    .ctrl-btn .label {
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+    }
+    #btnUndo { grid-column: auto !important; }
     .primary-grid.four-col {
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
