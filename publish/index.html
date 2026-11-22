@@ -13763,6 +13763,26 @@ function renderWhatsNewContent(activeTab){
           <div class="wn-card-head"><span class="wn-card-icon">📱</span> <span>${isAr ? '7. دعم التثبيت الكامل كتطبيق PWA دون إنترنت' : '7. PWA Offline Installation & Service Worker'}</span></div>
           <p>${isAr ? 'إمكانية تثبيت التطبيق على سطح المكتب أو الشاشة الرئيسية للهاتف عبر ملف Manifest وService Worker ليعمل بسرعة فائقة وبدون أي اتصال بالإنترنت.' : 'Install Oxford 5000 on desktop or mobile home screens as a standalone Progressive Web App with offline service worker caching.'}</p>
         </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">📌</span> <span>${isAr ? '8. تثبيت الشريط العلوي أثناء التمرير (Sticky Header)' : '8. Persistent Sticky Top Navigation Bar'}</span></div>
+          <p>${isAr ? 'تثبيت شريط الرأس ومستويات CEFR ومؤشر الشعلة وشريط التقدم في أعلى الشاشة بخلفية زجاجية معتمة تمنع التداخل أثناء النزول لأسفل الصفحة.' : 'Pinned unified top navigation bar with frosted glass backdrop blur, keeping stats, levels, and progress fixed on scroll.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🔍</span> <span>${isAr ? '9. زر البحث بجوار البطاقة وتنظيم الملاحظة' : '9. Deck-Side Search Companion'}</span></div>
+          <p>${isAr ? 'نقل زر بحث الكلمات بجانب بطاقة الكلمات مباشرة مع اختصار [/] لسهولة وسرعة الوصول، مع ضبط موضع الملاحظة لتكون واضحة تماماً.' : 'Convenient search button placed directly beside the card deck with [/] shortcut, plus cleared notice positioning.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎛️</span> <span>${isAr ? '10. تنسيق المربعات السفلية في شبكة متناسقة' : '10. Beautiful Two-Tier Action Toolbar'}</span></div>
+          <p>${isAr ? 'إعادة ترتيب أزرار ومربعات شريط الأدوات السفلي في شبكة ثنائية متوازنة تفصل أنماط التعلم عن أدوات إدارة البطاقات والمزامنة.' : 'Reorganized bottom action tools into a balanced, symmetrical two-tier grid separating learning modes from deck utilities.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">✨</span> <span>${isAr ? '11. مؤشرات تمرير عصرية ومنزلق تحكم ذهبي' : '11. Luxury Custom Scrollbars & Golden Slider'}</span></div>
+          <p>${isAr ? 'استبدال مؤشرات التمرير الافتراضية بمؤشرات كبسولية ذهبية ناعمة للبطاقة والنوافذ، مع منزلق ذهبي فخم لمقياس حجم الخط في الإعدادات.' : 'Replaced generic OS scrollbars with ultra-slim luxury pill scrollbars and added a brand-consistent golden range slider in settings.'}</p>
+        </div>
       </div>
     `;
   } else if(currentWhatsNewTab === 'tab-guide'){
@@ -13816,6 +13836,11 @@ function renderWhatsNewContent(activeTab){
           <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.4' : 'Full Changelog Archive (1.0 - 1.4)'}</span>
         </div>
         <p class="wn-release-meta">${isAr ? 'سجل تاريخي يوثق تطور تطبيق Oxford 5000 منذ إطلاقه الأول وحتى أحدث إصدار.' : 'Historical log of Oxford 5000 releases from inception to the latest version.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🌟</span> <span>Update 1.4 - ${isAr ? 'العادات اليومية وسرعة الصوت ومطابقة الكلمات والتحليلات وتثبيت الشريط' : 'Daily Habits, Audio Controls, Word Match, Analytics & Sticky Header'}</span> <span class="wn-tag">v1.4.0</span></div>
+          <p>${isAr ? 'إضافة سلسلة الدراسة اليومية، التحكم بسرعة الصوت، نمط اختبار الإملاء، لعبة مطابقة الكلمات، رادار مستويات CEFR، تصدير أنكي، دعم PWA للتثبيت، تثبيت الشريط العلوي، زر البحث بجانب البطاقة، وتنسيق شريط الأدوات السفلي.' : 'Added daily habit streaks, audio playback speed toggle, spelling quiz, memory word match game, CEFR analytics radar, Anki export, PWA offline install, sticky top bar, deck-side search, and balanced action toolbar.'}</p>
+        </div>
 
         <div class="wn-card">
           <div class="wn-card-head"><span class="wn-card-icon">🚀</span> <span>Update 1.3 - ${isAr ? 'قفزة التفاعل والسرعة والاستكشاف' : 'Interactivity, Speed & Listening'}</span> <span class="wn-tag">v1.3.0</span></div>
