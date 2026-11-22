@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 180" width="100%" height="100%" fill="none">
+  <defs>
+    <filter id="boxShadow" x="-10%" y="-10%" width="125%" height="135%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.2" />
+    </filter>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+
+  <!-- Box 1 -->
+  <g transform="translate(10, 20)" filter="url(#boxShadow)">
+    <rect width="155" height="130" rx="14" fill="url(#boxGrad)" stroke="#ef4444" stroke-width="1.5" />
+    <rect x="14" y="14" width="32" height="20" rx="6" fill="#7f1d1d" />
+    <text x="30" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#fca5a5" text-anchor="middle">BOX 1</text>
+    <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" fill="#ffffff">Day 1</text>
+    <text x="14" y="82" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">Immediate Recall</text>
+    <text x="14" y="112" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#ef4444">New Words</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <path d="M175 85 L195 85 M190 79 L196 85 L190 91" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Box 2 -->
+  <g transform="translate(205, 20)" filter="url(#boxShadow)">
+    <rect width="155" height="130" rx="14" fill="url(#boxGrad)" stroke="#f97316" stroke-width="1.5" />
+    <rect x="14" y="14" width="32" height="20" rx="6" fill="#7c2d12" />
+    <text x="30" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#fdba74" text-anchor="middle">BOX 2</text>
+    <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" fill="#ffffff">Day 2</text>
+    <text x="14" y="82" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">Short Interval</text>
+    <text x="14" y="112" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#f97316">Reinforcement</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <path d="M370 85 L390 85 M385 79 L391 85 L385 91" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Box 3 -->
+  <g transform="translate(400, 20)" filter="url(#boxShadow)">
+    <rect width="155" height="130" rx="14" fill="url(#boxGrad)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="14" y="14" width="32" height="20" rx="6" fill="#78350f" />
+    <text x="30" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#fde68a" text-anchor="middle">BOX 3</text>
+    <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" fill="#ffffff">Day 4</text>
+    <text x="14" y="82" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">Medium Interval</text>
+    <text x="14" y="112" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#f59e0b">Consolidation</text>
+  </g>
+
+  <!-- Arrow 3 -->
+  <path d="M565 85 L585 85 M580 79 L586 85 L580 91" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Box 4 -->
+  <g transform="translate(595, 20)" filter="url(#boxShadow)">
+    <rect width="155" height="130" rx="14" fill="url(#boxGrad)" stroke="#3b82f6" stroke-width="1.5" />
+    <rect x="14" y="14" width="32" height="20" rx="6" fill="#1e3a8a" />
+    <text x="30" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#93c5fd" text-anchor="middle">BOX 4</text>
+    <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" fill="#ffffff">Day 7</text>
+    <text x="14" y="82" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">Long Interval</text>
+    <text x="14" y="112" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#38bdf8">Deep Memory</text>
+  </g>
+
+  <!-- Arrow 4 -->
+  <path d="M760 85 L780 85 M775 79 L781 85 L775 91" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Box 5 -->
+  <g transform="translate(790, 20)" filter="url(#boxShadow)">
+    <rect width="120" height="130" rx="14" fill="url(#boxGrad)" stroke="#10b981" stroke-width="2" />
+    <rect x="14" y="14" width="32" height="20" rx="6" fill="#064e3b" />
+    <text x="30" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#6ee7b7" text-anchor="middle">BOX 5</text>
+    <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" fill="#10b981">Day 14+</text>
+    <text x="14" y="82" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="500" fill="#a7f3d0">Permanent</text>
+    <text x="14" y="112" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="800" fill="#34d399">MASTERED 👑</text>
+  </g>
+</svg>

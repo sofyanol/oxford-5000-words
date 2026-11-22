@@ -22,10 +22,20 @@
 
 [🔗 **Open Live App**](https://sofyanol.github.io/oxford-5000-words/) • [✨ **What's New in 1.4**](#-whats-new-in-update-14) • [🎯 **Features**](#-features-at-a-glance) • [🌐 **12 Languages**](#-supported-languages-12-locales) • [☕ **Support Project**](#-support-the-project)
 
+<br><br>
+
+<p align="center">
+  <img src="docs/assets/hero-showcase.svg" alt="Oxford 5000 Interactive Vocabulary Flashcard Showcase" width="100%">
+</p>
+
 <hr>
 </div>
 
 ## 🌟 What's New in Update 1.4
+
+<p align="center">
+  <img src="docs/assets/quiz-modes.svg" alt="Four Interactive Quiz Modes in Oxford 5000" width="100%">
+</p>
 
 Update 1.4 introduces powerful new learning habits, audio controls, an interactive spelling quiz, memory mini-game, visual learning analytics, and full PWA installation:
 
@@ -87,6 +97,10 @@ Update 1.3 focuses on deeper interactivity, active auditory training, dynamic sp
 <hr>
 
 ## 🎯 Features at a Glance
+
+<p align="center">
+  <img src="docs/assets/srs-pipeline.svg" alt="Leitner Spaced Repetition System 5-Box Flow" width="100%">
+</p>
 
 | Feature | Description |
 | :--- | :--- |
