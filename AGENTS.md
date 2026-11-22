@@ -2,6 +2,7 @@
 
 ## 1. Core Mandates Established by the Owner
 
+- **Autonomous Release Trigger ("اطلق التحديث" / "انشر التحديث")**: The project owner does not write code or technical commands. Whenever the user asks to release or publish the update (e.g., "اطلق التحديث", "انشر التحديث", "publish update"), the agent MUST automatically run `python tools/publish_and_bump.py --publish`. This single command tests, tags, and pushes the release to GitHub master/main, archives the current version in `0- update/`, renames the folder, and automatically prepares all files for the next version without user intervention.
 - **100% English Language Policy**: All repository-facing assets (README, source code comments, markdown docs, commit messages, PRs, issues) MUST be written in 100% English. Never use Arabic in repository code comments or documentation. (Arabic is provided only as a dynamic in-app translation for end users).
 - **Standalone Offline-First Architecture**: Single standalone HTML build with no server, zero tracking, and no external npm/Node dependencies. User state resides solely in `localStorage`.
 - **Dataset & Audio Coverage**: 5,325 verified English words across CEFR levels A1-C1 with 10,460 native MP3 recordings (5,230 UK + 5,230 US) located in `audio/`.
