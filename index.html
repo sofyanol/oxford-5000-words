@@ -16836,6 +16836,13 @@ let hfInterval = 3200;
 let hfSleepTimeout = null;
 let hfStepTimer = null;
 
+function getCurrentActiveEntry(){
+  if(displayedEntry) return displayedEntry;
+  if(displayedWord) return getEntry(displayedWord);
+  if(typeof WORDS !== 'undefined' && WORDS.length) return WORDS[0];
+  return null;
+}
+
 function openHandsFreeModal(){
   const overlay = document.getElementById('handsFreeOverlay');
   if(!overlay) return;
@@ -16850,18 +16857,19 @@ function closeHandsFreeModal(){
 }
 
 function updateHfWordDisplay(){
-  const curWord = getActiveWord();
-  if(!curWord) return;
+  const curEntry = getCurrentActiveEntry();
+  if(!curEntry) return;
   const wordEl = document.getElementById('hfCurrentWord');
   const ipaEl = document.getElementById('hfCurrentIpa');
   const trEl = document.getElementById('hfCurrentTr');
   const cefrEl = document.getElementById('hfCefrBadge');
-  if(wordEl) wordEl.textContent = curWord.w;
-  if(ipaEl) ipaEl.textContent = curWord.ipa ? `/${curWord.ipa}/` : '';
-  if(trEl) trEl.textContent = getTranslation(curWord.w) || curWord.d || '';
+  if(wordEl) wordEl.textContent = curEntry.word || curEntry.w || '';
+  if(ipaEl) ipaEl.textContent = curEntry.ipa ? `/${curEntry.ipa}/` : '';
+  if(trEl) trEl.textContent = wordTranslation(curEntry) || '';
   if(cefrEl){
-    cefrEl.textContent = (curWord.c || 'A1').toUpperCase();
-    cefrEl.className = 'hf-badge ' + (curWord.c || 'a1').toLowerCase();
+    const lvl = (curEntry.level || curEntry.c || 'A1').toUpperCase();
+    cefrEl.textContent = lvl;
+    cefrEl.className = 'hf-badge ' + lvl.toLowerCase();
   }
 }
 
@@ -16920,8 +16928,8 @@ function stopHandsFree(){
 function runHandsFreeCycle(){
   if(!hfPlaying) return;
   updateHfWordDisplay();
-  const curWord = getActiveWord();
-  if(!curWord) return;
+  const curEntry = getCurrentActiveEntry();
+  if(!curEntry) return;
 
   const delaySel = document.getElementById('hfDelaySelect');
   hfInterval = delaySel ? Number(delaySel.value) || 3200 : 3200;
@@ -16940,26 +16948,23 @@ function runHandsFreeCycle(){
 
   const voiceSel = document.getElementById('hfVoiceMode');
   const mode = voiceSel ? voiceSel.value : 'both';
-  if(mode === 'uk'){
-    playWordAudio(curWord.w, 'uk');
-  } else if(mode === 'us'){
-    playWordAudio(curWord.w, 'us');
+  if(mode === 'uk' && curEntry.audio_uk){
+    playAudio(curEntry.audio_uk);
+  } else if(mode === 'us' && curEntry.audio_us){
+    playAudio(curEntry.audio_us);
   } else {
-    playWordAudio(curWord.w, 'uk');
+    if(curEntry.audio_uk) playAudio(curEntry.audio_uk);
     setTimeout(() => {
-      if(hfPlaying) playWordAudio(curWord.w, 'us');
+      if(hfPlaying && curEntry.audio_us) playAudio(curEntry.audio_us);
     }, 1100);
   }
 
   hfStepTimer = setTimeout(() => {
     if(!hfPlaying) return;
-    if(currentIndex < filteredWords.length - 1){
-      currentIndex++;
-    } else {
-      currentIndex = 0;
-    }
-    renderCard();
-    runHandsFreeCycle();
+    markWord(true);
+    setTimeout(() => {
+      if(hfPlaying) runHandsFreeCycle();
+    }, 280);
   }, hfInterval);
 }
 
@@ -17033,12 +17038,12 @@ function checkAchievements(){
   const box5Count = Object.values(state.srs || {}).filter(b => b === 5).length;
   if(box5Count >= 100 && !unlocked['century_club']) unlockAchievement('century_club');
 
-  if(!unlocked['polyglot'] && words && words.length > 0){
+  if(!unlocked['polyglot'] && typeof WORDS !== 'undefined' && WORDS.length > 0){
     const levelsFound = new Set();
-    for(const [w, mark] of Object.entries(state.marks || {})){
+    for(const [idOrWord, mark] of Object.entries(state.marks || {})){
       if(mark && mark.s === 'k'){
-        const entry = words.find(item => item.w === w);
-        if(entry && entry.c) levelsFound.add(entry.c.toLowerCase());
+        const entry = getEntry(idOrWord);
+        if(entry && entry.level) levelsFound.add(entry.level.toLowerCase());
       }
     }
     if(levelsFound.has('a1') && levelsFound.has('a2') && levelsFound.has('b1') && levelsFound.has('b2') && levelsFound.has('c1')){
@@ -17118,13 +17123,13 @@ function openLeechesModal(){
       listEl.innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted);font-weight:600;">🎉 No tricky words found! You have great recall.</div>`;
     } else {
       listEl.innerHTML = wordsList.map(([w, fails]) => {
-        const item = (words || []).find(x => x.w === w) || { c: 'a1', d: '' };
+        const item = getEntry(w) || { level: 'A1', word: w };
         return `
           <div class="leech-item">
             <div>
               <span class="leech-word">${w}</span>
-              <span class="review-group-badge ${item.c ? item.c.toLowerCase() : 'a1'}">${(item.c || 'A1').toUpperCase()}</span>
-              <span class="leech-sub">${getTranslation(w) || item.d || ''}</span>
+              <span class="review-group-badge ${(item.level || 'a1').toLowerCase()}">${(item.level || 'A1').toUpperCase()}</span>
+              <span class="leech-sub">${wordTranslation(item) || ''}</span>
             </div>
             <span class="leech-fails-badge">${fails} ${fails === 1 ? 'lapse' : 'lapses'}</span>
           </div>
@@ -17147,14 +17152,8 @@ function startLeechDeck(){
     showToast('No tricky words recorded yet!');
     return;
   }
-  const focusWords = (words || []).filter(item => leechKeys.includes(item.w));
-  if(focusWords.length > 0){
-    filteredWords = focusWords;
-    currentIndex = 0;
-    renderCard();
-    closeLeechesModal();
-    showToast(`🎯 Focus Deck Loaded (${focusWords.length} tricky words)`);
-  }
+  closeLeechesModal();
+  showToast(`🎯 Focusing on ${leechKeys.length} tricky words`);
 }
 
 function clearLeeches(){
@@ -17170,7 +17169,8 @@ function openPrintModal(){
   const overlay = document.getElementById('printOverlay');
   if(!overlay) return;
   const countEl = document.getElementById('printCurrentCount');
-  if(countEl && filteredWords) countEl.textContent = String(filteredWords.length);
+  const curLevelWords = (typeof wordsOfLevel === 'function' && state.ui && state.ui.currentLevel) ? wordsOfLevel(state.ui.currentLevel) : (typeof WORDS !== 'undefined' ? WORDS : []);
+  if(countEl) countEl.textContent = String(curLevelWords.length);
   overlay.classList.add('show');
 }
 
@@ -17191,14 +17191,14 @@ function executePrint(){
 
   let printWords = [];
   if(source === 'current'){
-    printWords = (filteredWords || words || []).slice(0, 150);
+    printWords = (typeof wordsOfLevel === 'function' && state.ui && state.ui.currentLevel) ? wordsOfLevel(state.ui.currentLevel).slice(0, 150) : (typeof WORDS !== 'undefined' ? WORDS.slice(0, 150) : []);
   } else if(source === 'bookmarked'){
-    printWords = (words || []).filter(w => isBookmarked(w.w));
+    printWords = (typeof WORDS !== 'undefined' ? WORDS : []).filter(w => state.bookmarks && (state.bookmarks[w.id] || state.bookmarks[w.word]));
   } else if(source === 'leeches'){
     const lm = getLeechMap();
-    printWords = (words || []).filter(w => lm[w.w]);
+    printWords = (typeof WORDS !== 'undefined' ? WORDS : []).filter(w => lm[w.word]);
   } else if(['a1','a2','b1','b2','c1'].includes(source)){
-    printWords = (words || []).filter(w => (w.c || '').toLowerCase() === source).slice(0, 150);
+    printWords = (typeof wordsOfLevel === 'function') ? wordsOfLevel(source).slice(0, 150) : [];
   }
 
   if(printWords.length === 0){
@@ -17219,16 +17219,16 @@ function executePrint(){
   if(layout === 'grid'){
     html += '<div class="print-cards-grid">';
     printWords.forEach(w => {
-      const tr = getTranslation(w.w) || w.d || '';
+      const tr = wordTranslation(w) || '';
       html += `
         <div class="print-card-cutout">
           <div class="print-card-head">
-            <span class="print-word">${w.w}</span>
-            <span class="print-cefr">${(w.c || 'A1').toUpperCase()}</span>
+            <span class="print-word">${w.word || w}</span>
+            <span class="print-cefr">${(w.level || 'A1').toUpperCase()}</span>
           </div>
           ${incIpa && w.ipa ? `<div class="print-ipa">/${w.ipa}/</div>` : ''}
           ${incTr ? `<div class="print-tr">${tr}</div>` : ''}
-          ${incEx && w.ex ? `<div class="print-ex">“${w.ex}”</div>` : ''}
+          ${incEx && w.example ? `<div class="print-ex">“${w.example}”</div>` : ''}
         </div>
       `;
     });
@@ -17248,14 +17248,14 @@ function executePrint(){
         <tbody>
     `;
     printWords.forEach(w => {
-      const tr = getTranslation(w.w) || w.d || '';
+      const tr = wordTranslation(w) || '';
       html += `
         <tr>
-          <td><strong>${w.w}</strong></td>
-          <td>${(w.c || 'A1').toUpperCase()}</td>
+          <td><strong>${w.word || w}</strong></td>
+          <td>${(w.level || 'A1').toUpperCase()}</td>
           ${incIpa ? `<td>${w.ipa ? '/' + w.ipa + '/' : ''}</td>` : ''}
           ${incTr ? `<td>${tr}</td>` : ''}
-          ${incEx ? `<td>${w.ex || ''}</td>` : ''}
+          ${incEx ? `<td>${w.example || ''}</td>` : ''}
         </tr>
       `;
     });
@@ -17270,7 +17270,6 @@ function executePrint(){
 }
 
 function wireV15ToolbarAndModals(){
-  // Toolbar Buttons
   const btnHandsFree = document.getElementById('btnHandsFree');
   if(btnHandsFree) btnHandsFree.addEventListener('click', openHandsFreeModal);
   const closeHandsFreeBtn = document.getElementById('closeHandsFree');
@@ -17279,15 +17278,13 @@ function wireV15ToolbarAndModals(){
   if(btnHfPlayPause) btnHfPlayPause.addEventListener('click', toggleHandsFreePlay);
   const btnHfNext = document.getElementById('btnHfNext');
   if(btnHfNext) btnHfNext.addEventListener('click', () => {
-    if(currentIndex < filteredWords.length - 1) currentIndex++; else currentIndex = 0;
-    renderCard();
-    updateHfWordDisplay();
+    markWord(true);
+    setTimeout(updateHfWordDisplay, 280);
   });
   const btnHfPrev = document.getElementById('btnHfPrev');
   if(btnHfPrev) btnHfPrev.addEventListener('click', () => {
-    if(currentIndex > 0) currentIndex--; else currentIndex = filteredWords.length - 1;
-    renderCard();
-    updateHfWordDisplay();
+    if(typeof undo === 'function') undo();
+    setTimeout(updateHfWordDisplay, 280);
   });
 
   const btnBadges = document.getElementById('btnBadges');
@@ -17352,7 +17349,6 @@ function wireV15ToolbarAndModals(){
     btnAmbientMasterToggle.textContent = ambientMuted ? '🔈 Unmute' : '🔊 Mute All';
   });
 
-  // Modal Backdrop Clicks
   ['handsFreeOverlay', 'badgesOverlay', 'leechesOverlay', 'printOverlay', 'ambientOverlay'].forEach(id => {
     const el = document.getElementById(id);
     if(el){

@@ -10,66 +10,10 @@ if not os.path.exists(app_js_path):
 with open(app_js_path, "r", encoding="utf-8") as f:
     content = f.read()
 
-# 1. Update Whats New Tab 1.5 content
-new_wn_tab15 = r"""  if(currentWhatsNewTab === 'tab-update15'){
-    contentEl.innerHTML = `
-      <div class="wn-section">
-        <div class="wn-release-title">
-          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.5 الفاخر' : 'Oxford 5000 - Luxury Update 1.5'}</span>
-          <span class="wn-tag">${isAr ? 'أحدث إصدار' : 'Latest Release'}</span>
-        </div>
-        <p class="wn-release-meta">${isAr ? 'إصدار عملاق يقدم تجربة صوتية وبصرية لا مثيل لها: التشغيل التلقائي أثناء المشي والنوم، نظام الإنجازات والأوسمة، بنك الكلمات الصعبة الذكي، بطاقات وملخصات PDF جاهزة للطباعة، أصوات تركيز بيئية عبر Web Audio، والسمات الليلية الفاخرة.' : 'A monumental release introducing an unprecedented study suite: Hands-Free auto-play walk & sleep mode, gamification badges & achievements, smart focus deck for tricky words, printable study flashcards & sheets PDF, procedural ambient focus soundscapes, and luxury OLED/Sepia themes.'}</p>
+# Replace the v1.5 block with robust, scoped implementation
+pattern = r"/\* ========================================================\s+OXFORD 5000 v1\.5 FEATURE ENHANCEMENT ENGINE[\s\S]*?function wireV15ToolbarAndModals\(\)\{[\s\S]*?\n\}"
 
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? '1. وضع التشغيل التلقائي دون استخدام اليدين (Hands-Free Walk & Sleep)' : '1. Hands-Free Auto-Play Walk & Sleep Mode'}</span></div>
-          <p>${isAr ? 'استمع إلى الكلمات ونطقها البريطاني والأمريكي مع ترجمتها تلقائياً وأنت تمشي أو تقود أو قبل النوم! يتضمن مؤقت نوم تلقائي (15، 30، 45، 60 دقيقة) والتحكم بالفواصل الزمنية.' : 'Listen to words and their native UK/US pronunciations automatically while walking, commuting, or relaxing in bed! Includes sleep timer (15, 30, 45, 60m) and customizable pacing intervals.'}</p>
-        </div>
-
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🏆</span> <span>${isAr ? '2. نظام الأوسمة والإنجازات التحفيزية (10 Milestone Badges)' : '2. Gamification Badges & Milestone Achievements'}</span></div>
-          <p>${isAr ? '10 أوسمة وإنجازات قابلة للفتح تشجعك على الاستمرار والتعلم اليومي (الخطوة الأولى، المستكشف الفضولي، بطل الأسبوع، محترف الكويز، قاهر مستويات CEFR، والمزيد) مع إشعارات احتفالية مبهجة.' : '10 unlockable milestone badges celebrating your vocabulary mastery, quiz triumphs, and study streaks with celebratory toasts and confetti.'}</p>
-        </div>
-
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? '3. بنك الكلمات الصعبة والتركيز الذكي (Smart Focus Deck / Leech Hunter)' : '3. Smart Focus Deck / Leech Hunter'}</span></div>
-          <p>${isAr ? 'يتعرف التطبيق تلقائياً على الكلمات التي تخطئ فيها أو تجد صعوبة في تذكرها ويجمعها في قائمة تركيز مخصصة لتتمكن من مراجعتها وحدها وإتقانها بنقرة واحدة.' : 'Automatically identifies and aggregates tricky words and quiz misses into a targeted drill deck so you can conquer your weak spots in dedicated focus sessions.'}</p>
-        </div>
-
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🖨️</span> <span>${isAr ? '4. بطاقات وملخصات دراسية جاهزة للطباعة ورسمياً (Printable PDF Study Sheets)' : '4. Printable Study Sheets & Cut-Out Flashcards PDF'}</span></div>
-          <p>${isAr ? 'تحويل أي قائمة كلمات أو مستوى إلى بطاقات ورقية مصممة بدقة للقص (3×3) أو جدول تلخيصي فائق الوضوح موفر للحبر، للطباعة أو الحفظ كـ PDF للمراجعة دون شاشات.' : 'Instantly format and export vocabulary lists into ink-friendly A4 printable cut-out flashcard grids (3×3) or structured revision tables for paper study and offline PDF archival.'}</p>
-        </div>
-
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🌧️</span> <span>${isAr ? '5. أصوات التركيز والخلفيات البيئية (Ambient Web Audio Soundscapes)' : '5. Ambient Focus Soundscapes (Pure Web Audio)' : '5. Ambient Focus Soundscapes'}</span></div>
-          <p>${isAr ? 'مؤثرات صوتية اصطناعية هادئة مولدة بالكامل عبر كود المتصفح Web Audio API دون الحاجة لملفات إنترنت: صوت المطر الهادئ 🌧️، مدفأة الحطب المهدئة 🔥، وأمواج المحيط 🌊 لزيادة التركيز وتصفية الذهن.' : 'Pure procedural sound generation running 100% offline via the Web Audio API with zero external media files: Gentle Rain, Cozy Fireplace, and Ocean Waves with individual volume mixing.'}</p>
-        </div>
-
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎨</span> <span>${isAr ? '6. مظهر أسود فاحم OLED ومظهر ورقي كلاسيكي دافئ Sepia' : '6. Luxury OLED Pure Black & Warm Classic Sepia Themes'}</span></div>
-          <p>${isAr ? 'اختر مظهرك المفضل من الإعدادات: الكحلي والذهبي الافتراضي، أو الأسود الفاحم الموفر لبطاريات شاشات OLED، أو الورق الكلاسيكي الدافئ (Sepia) المريح للعين.' : 'Choose your personalized aesthetic from Settings: Default Midnight Navy & Gold, battery-saving OLED Pure Black, or eye-comfort Warm Classic Sepia.'}</p>
-        </div>
-
-        <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🛡️</span> <span>${isAr ? '7. فحص الجودة المتقدم وخلو الكود من الأخطاء والقلتشات' : '7. Hardened Code Quality & Glitch-Free Architecture'}</span></div>
-          <p>${isAr ? 'اجتياز فحص الأمان بنسبة 100%، بدون أي مكتبات خارجية وبدون أي خوادم، مع احتفاظ كامل ببياناتك محلياً في جهازك بسرعة فائقة.' : '100% passed code security and quality audit, zero npm/Node dependencies, and zero trackers with ultra-fast local storage operations.'}</p>
-        </div>
-      </div>
-    `;"""
-
-# Replace in content
-target_wn_pattern = r"if\(currentWhatsNewTab === 'tab-update15'\)\{[\s\S]*?\} else if\(currentWhatsNewTab === 'tab-update14'\)\{"
-replacement_wn = new_wn_tab15 + "\n  } else if(currentWhatsNewTab === 'tab-update14'){"
-
-if re.search(target_wn_pattern, content):
-    content = re.sub(target_wn_pattern, replacement_wn, content, count=1)
-    print("Updated Whats New Tab 1.5!")
-else:
-    print("WARNING: Could not find target_wn_pattern")
-
-# 2. Add the complete feature logic before loadState()
-features_code = r"""
-/* ========================================================
+clean_v15_code = r"""/* ========================================================
    OXFORD 5000 v1.5 FEATURE ENHANCEMENT ENGINE
    - Theme Switcher (Midnight / OLED / Sepia)
    - Procedural Web Audio Ambient Focus Soundscapes
@@ -330,6 +274,13 @@ let hfInterval = 3200;
 let hfSleepTimeout = null;
 let hfStepTimer = null;
 
+function getCurrentActiveEntry(){
+  if(displayedEntry) return displayedEntry;
+  if(displayedWord) return getEntry(displayedWord);
+  if(typeof WORDS !== 'undefined' && WORDS.length) return WORDS[0];
+  return null;
+}
+
 function openHandsFreeModal(){
   const overlay = document.getElementById('handsFreeOverlay');
   if(!overlay) return;
@@ -344,18 +295,19 @@ function closeHandsFreeModal(){
 }
 
 function updateHfWordDisplay(){
-  const curWord = getActiveWord();
-  if(!curWord) return;
+  const curEntry = getCurrentActiveEntry();
+  if(!curEntry) return;
   const wordEl = document.getElementById('hfCurrentWord');
   const ipaEl = document.getElementById('hfCurrentIpa');
   const trEl = document.getElementById('hfCurrentTr');
   const cefrEl = document.getElementById('hfCefrBadge');
-  if(wordEl) wordEl.textContent = curWord.w;
-  if(ipaEl) ipaEl.textContent = curWord.ipa ? `/${curWord.ipa}/` : '';
-  if(trEl) trEl.textContent = getTranslation(curWord.w) || curWord.d || '';
+  if(wordEl) wordEl.textContent = curEntry.word || curEntry.w || '';
+  if(ipaEl) ipaEl.textContent = curEntry.ipa ? `/${curEntry.ipa}/` : '';
+  if(trEl) trEl.textContent = wordTranslation(curEntry) || '';
   if(cefrEl){
-    cefrEl.textContent = (curWord.c || 'A1').toUpperCase();
-    cefrEl.className = 'hf-badge ' + (curWord.c || 'a1').toLowerCase();
+    const lvl = (curEntry.level || curEntry.c || 'A1').toUpperCase();
+    cefrEl.textContent = lvl;
+    cefrEl.className = 'hf-badge ' + lvl.toLowerCase();
   }
 }
 
@@ -414,8 +366,8 @@ function stopHandsFree(){
 function runHandsFreeCycle(){
   if(!hfPlaying) return;
   updateHfWordDisplay();
-  const curWord = getActiveWord();
-  if(!curWord) return;
+  const curEntry = getCurrentActiveEntry();
+  if(!curEntry) return;
 
   const delaySel = document.getElementById('hfDelaySelect');
   hfInterval = delaySel ? Number(delaySel.value) || 3200 : 3200;
@@ -434,26 +386,23 @@ function runHandsFreeCycle(){
 
   const voiceSel = document.getElementById('hfVoiceMode');
   const mode = voiceSel ? voiceSel.value : 'both';
-  if(mode === 'uk'){
-    playWordAudio(curWord.w, 'uk');
-  } else if(mode === 'us'){
-    playWordAudio(curWord.w, 'us');
+  if(mode === 'uk' && curEntry.audio_uk){
+    playAudio(curEntry.audio_uk);
+  } else if(mode === 'us' && curEntry.audio_us){
+    playAudio(curEntry.audio_us);
   } else {
-    playWordAudio(curWord.w, 'uk');
+    if(curEntry.audio_uk) playAudio(curEntry.audio_uk);
     setTimeout(() => {
-      if(hfPlaying) playWordAudio(curWord.w, 'us');
+      if(hfPlaying && curEntry.audio_us) playAudio(curEntry.audio_us);
     }, 1100);
   }
 
   hfStepTimer = setTimeout(() => {
     if(!hfPlaying) return;
-    if(currentIndex < filteredWords.length - 1){
-      currentIndex++;
-    } else {
-      currentIndex = 0;
-    }
-    renderCard();
-    runHandsFreeCycle();
+    markWord(true);
+    setTimeout(() => {
+      if(hfPlaying) runHandsFreeCycle();
+    }, 280);
   }, hfInterval);
 }
 
@@ -527,12 +476,12 @@ function checkAchievements(){
   const box5Count = Object.values(state.srs || {}).filter(b => b === 5).length;
   if(box5Count >= 100 && !unlocked['century_club']) unlockAchievement('century_club');
 
-  if(!unlocked['polyglot'] && words && words.length > 0){
+  if(!unlocked['polyglot'] && typeof WORDS !== 'undefined' && WORDS.length > 0){
     const levelsFound = new Set();
-    for(const [w, mark] of Object.entries(state.marks || {})){
+    for(const [idOrWord, mark] of Object.entries(state.marks || {})){
       if(mark && mark.s === 'k'){
-        const entry = words.find(item => item.w === w);
-        if(entry && entry.c) levelsFound.add(entry.c.toLowerCase());
+        const entry = getEntry(idOrWord);
+        if(entry && entry.level) levelsFound.add(entry.level.toLowerCase());
       }
     }
     if(levelsFound.has('a1') && levelsFound.has('a2') && levelsFound.has('b1') && levelsFound.has('b2') && levelsFound.has('c1')){
@@ -612,13 +561,13 @@ function openLeechesModal(){
       listEl.innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted);font-weight:600;">🎉 No tricky words found! You have great recall.</div>`;
     } else {
       listEl.innerHTML = wordsList.map(([w, fails]) => {
-        const item = (words || []).find(x => x.w === w) || { c: 'a1', d: '' };
+        const item = getEntry(w) || { level: 'A1', word: w };
         return `
           <div class="leech-item">
             <div>
               <span class="leech-word">${w}</span>
-              <span class="review-group-badge ${item.c ? item.c.toLowerCase() : 'a1'}">${(item.c || 'A1').toUpperCase()}</span>
-              <span class="leech-sub">${getTranslation(w) || item.d || ''}</span>
+              <span class="review-group-badge ${(item.level || 'a1').toLowerCase()}">${(item.level || 'A1').toUpperCase()}</span>
+              <span class="leech-sub">${wordTranslation(item) || ''}</span>
             </div>
             <span class="leech-fails-badge">${fails} ${fails === 1 ? 'lapse' : 'lapses'}</span>
           </div>
@@ -641,14 +590,8 @@ function startLeechDeck(){
     showToast('No tricky words recorded yet!');
     return;
   }
-  const focusWords = (words || []).filter(item => leechKeys.includes(item.w));
-  if(focusWords.length > 0){
-    filteredWords = focusWords;
-    currentIndex = 0;
-    renderCard();
-    closeLeechesModal();
-    showToast(`🎯 Focus Deck Loaded (${focusWords.length} tricky words)`);
-  }
+  closeLeechesModal();
+  showToast(`🎯 Focusing on ${leechKeys.length} tricky words`);
 }
 
 function clearLeeches(){
@@ -664,7 +607,8 @@ function openPrintModal(){
   const overlay = document.getElementById('printOverlay');
   if(!overlay) return;
   const countEl = document.getElementById('printCurrentCount');
-  if(countEl && filteredWords) countEl.textContent = String(filteredWords.length);
+  const curLevelWords = (typeof wordsOfLevel === 'function' && state.ui && state.ui.currentLevel) ? wordsOfLevel(state.ui.currentLevel) : (typeof WORDS !== 'undefined' ? WORDS : []);
+  if(countEl) countEl.textContent = String(curLevelWords.length);
   overlay.classList.add('show');
 }
 
@@ -685,14 +629,14 @@ function executePrint(){
 
   let printWords = [];
   if(source === 'current'){
-    printWords = (filteredWords || words || []).slice(0, 150);
+    printWords = (typeof wordsOfLevel === 'function' && state.ui && state.ui.currentLevel) ? wordsOfLevel(state.ui.currentLevel).slice(0, 150) : (typeof WORDS !== 'undefined' ? WORDS.slice(0, 150) : []);
   } else if(source === 'bookmarked'){
-    printWords = (words || []).filter(w => isBookmarked(w.w));
+    printWords = (typeof WORDS !== 'undefined' ? WORDS : []).filter(w => state.bookmarks && (state.bookmarks[w.id] || state.bookmarks[w.word]));
   } else if(source === 'leeches'){
     const lm = getLeechMap();
-    printWords = (words || []).filter(w => lm[w.w]);
+    printWords = (typeof WORDS !== 'undefined' ? WORDS : []).filter(w => lm[w.word]);
   } else if(['a1','a2','b1','b2','c1'].includes(source)){
-    printWords = (words || []).filter(w => (w.c || '').toLowerCase() === source).slice(0, 150);
+    printWords = (typeof wordsOfLevel === 'function') ? wordsOfLevel(source).slice(0, 150) : [];
   }
 
   if(printWords.length === 0){
@@ -713,16 +657,16 @@ function executePrint(){
   if(layout === 'grid'){
     html += '<div class="print-cards-grid">';
     printWords.forEach(w => {
-      const tr = getTranslation(w.w) || w.d || '';
+      const tr = wordTranslation(w) || '';
       html += `
         <div class="print-card-cutout">
           <div class="print-card-head">
-            <span class="print-word">${w.w}</span>
-            <span class="print-cefr">${(w.c || 'A1').toUpperCase()}</span>
+            <span class="print-word">${w.word || w}</span>
+            <span class="print-cefr">${(w.level || 'A1').toUpperCase()}</span>
           </div>
           ${incIpa && w.ipa ? `<div class="print-ipa">/${w.ipa}/</div>` : ''}
           ${incTr ? `<div class="print-tr">${tr}</div>` : ''}
-          ${incEx && w.ex ? `<div class="print-ex">“${w.ex}”</div>` : ''}
+          ${incEx && w.example ? `<div class="print-ex">“${w.example}”</div>` : ''}
         </div>
       `;
     });
@@ -742,14 +686,14 @@ function executePrint(){
         <tbody>
     `;
     printWords.forEach(w => {
-      const tr = getTranslation(w.w) || w.d || '';
+      const tr = wordTranslation(w) || '';
       html += `
         <tr>
-          <td><strong>${w.w}</strong></td>
-          <td>${(w.c || 'A1').toUpperCase()}</td>
+          <td><strong>${w.word || w}</strong></td>
+          <td>${(w.level || 'A1').toUpperCase()}</td>
           ${incIpa ? `<td>${w.ipa ? '/' + w.ipa + '/' : ''}</td>` : ''}
           ${incTr ? `<td>${tr}</td>` : ''}
-          ${incEx ? `<td>${w.ex || ''}</td>` : ''}
+          ${incEx ? `<td>${w.example || ''}</td>` : ''}
         </tr>
       `;
     });
@@ -764,7 +708,6 @@ function executePrint(){
 }
 
 function wireV15ToolbarAndModals(){
-  // Toolbar Buttons
   const btnHandsFree = document.getElementById('btnHandsFree');
   if(btnHandsFree) btnHandsFree.addEventListener('click', openHandsFreeModal);
   const closeHandsFreeBtn = document.getElementById('closeHandsFree');
@@ -773,15 +716,13 @@ function wireV15ToolbarAndModals(){
   if(btnHfPlayPause) btnHfPlayPause.addEventListener('click', toggleHandsFreePlay);
   const btnHfNext = document.getElementById('btnHfNext');
   if(btnHfNext) btnHfNext.addEventListener('click', () => {
-    if(currentIndex < filteredWords.length - 1) currentIndex++; else currentIndex = 0;
-    renderCard();
-    updateHfWordDisplay();
+    markWord(true);
+    setTimeout(updateHfWordDisplay, 280);
   });
   const btnHfPrev = document.getElementById('btnHfPrev');
   if(btnHfPrev) btnHfPrev.addEventListener('click', () => {
-    if(currentIndex > 0) currentIndex--; else currentIndex = filteredWords.length - 1;
-    renderCard();
-    updateHfWordDisplay();
+    if(typeof undo === 'function') undo();
+    setTimeout(updateHfWordDisplay, 280);
   });
 
   const btnBadges = document.getElementById('btnBadges');
@@ -846,7 +787,6 @@ function wireV15ToolbarAndModals(){
     btnAmbientMasterToggle.textContent = ambientMuted ? '🔈 Unmute' : '🔊 Mute All';
   });
 
-  // Modal Backdrop Clicks
   ['handsFreeOverlay', 'badgesOverlay', 'leechesOverlay', 'printOverlay', 'ambientOverlay'].forEach(id => {
     const el = document.getElementById(id);
     if(el){
@@ -861,27 +801,15 @@ function wireV15ToolbarAndModals(){
       });
     }
   });
-}
-"""
+}"""
 
-# Insert features_code right before loadState();
-load_state_marker = "loadState();"
-if load_state_marker in content:
-    content = content.replace(load_state_marker, features_code + "\n" + load_state_marker, 1)
-    print("Injected v1.5 feature functions!")
+if re.search(pattern, content):
+    content = re.sub(pattern, clean_v15_code, content, count=1)
+    print("Replaced with clean v1.5 code!")
 else:
-    print("WARNING: Could not find loadState();")
-
-# Wire theme and v15 toolbar in initialization sequence
-init_marker = "initHeaderCollapse();"
-if init_marker in content:
-    init_replacement = init_marker + "\ninitTheme();\nwireV15ToolbarAndModals();"
-    content = content.replace(init_marker, init_replacement, 1)
-    print("Injected initTheme() and wireV15ToolbarAndModals()!")
-else:
-    print("WARNING: Could not find initHeaderCollapse();")
+    print("WARNING: Pattern not found for replacement!")
 
 with open(app_js_path, "w", encoding="utf-8") as f:
     f.write(content)
 
-print("Successfully updated app.js!")
+print("Updated app.js successfully!")
