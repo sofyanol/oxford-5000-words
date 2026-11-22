@@ -8,6 +8,10 @@
 - Added Visual Learning Analytics with SVG CEFR Pentagon Radar chart and Leitner SRS distribution.
 - Added One-Click Export to Anki (TSV format with UTF-8 BOM and standard Anki import headers).
 - Added Progressive Web App (PWA) manifest (`manifest.webmanifest`) and offline Service Worker (`sw.js`).
+- Added persistent Sticky Top Navigation Bar (`#topNavBar`) with frosted glass backdrop blur.
+- Moved Word Search button (`#btnSearch`) directly beside the deck and cleared notice overlap.
+- Reorganized bottom toolbar into a symmetrical Two-Tier Action Grid.
+- Modernized universal custom scrollbars and added brand-consistent golden range slider.
 - Fixed Unknown words export runtime exception and enhanced visual undo synchronization.
 - Updated 12-language localization dictionary across all newly added features.
 

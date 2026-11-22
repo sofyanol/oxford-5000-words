@@ -36,6 +36,8 @@ Update 1.4 introduces powerful new learning habits, audio controls, an interacti
 * 📊 **Visual Learning Analytics & CEFR Radar**: Track vocabulary mastery balance with an interactive SVG pentagon radar chart, CEFR level breakdown (A1-C1), Leitner SRS distribution, and high scores.
 * 📇 **One-Click Export to Anki (TSV)**: Export Unknown words, Due reviews, or custom sets into Anki-ready TSV files with standard import headers and UTF-8 BOM.
 * 📱 **Progressive Web App (PWA) Offline Support**: Installable on desktop and mobile home screens with `manifest.webmanifest` and cache-first `sw.js` for 100% offline access.
+* 📌 **Sticky Top Bar & Balanced Action Grid**: Unified header stays persistent on scroll with blurred backdrop filter; bottom toolbar organized into a balanced 2-tier grid with deck-side search companion.
+* 🎨 **Luxury Scrollbars & Golden Slider**: Custom slim 5px/6px pill scrollbars across the card, modals, and lists, plus a brand-consistent golden range slider in settings.
 * ⚡ **Core Fixes & Polished UI**: Fixed Unknown words export sort exceptions, instant visual undo rollback, Listening Quiz token sanitization, and 12-language localization updates.
 
 ---

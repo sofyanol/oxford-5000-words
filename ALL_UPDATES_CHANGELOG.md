@@ -41,6 +41,23 @@ Update 1.4 is a major feature expansion and stability release bringing daily stu
 - **Progressive Web App (PWA) Offline Manifest & Service Worker**:
   - `manifest.webmanifest` and cache-first `sw.js` allowing full home-screen installation and offline access.
 
+- **Persistent Sticky Top Navigation Bar**:
+  - Pinned the unified header, stats counters, language switcher, CEFR level buttons, and progress track at `top: 0` (`position: sticky`).
+  - Frosted glass backdrop filter (`backdrop-filter: blur(16px)`) prevents visual interference when scrolling down.
+
+- **Deck-Side Search Companion & Notice Clearance**:
+  - Moved the **Word Search button** (`#btnSearch`) directly alongside the flashcard deck with a sleek frosted glass pill, gold border, and `[/]` shortcut.
+  - Resolved examples advisory notice (`#examplesNotice`) position to ensure clean clearance without overlap beneath the sticky header.
+
+- **Beautifully Arranged Two-Tier Action Toolbar**:
+  - Reorganized the bottom tool buttons into a symmetrical 2-tier grid:
+    - Tier 1 (Learning & Mini-Games): `اختبرني` (Quiz), `مطابقة الكلمات 🧩` (Word Match), `الإحصائيات 📊` (Learning Analytics).
+    - Tier 2 (Deck Utilities): `مزامنة` (Sync), `ترتيب عشوائي` (Shuffle), `البدء من جديد` (Reset), `تحميل الكلمات` (Download Unknown).
+
+- **Universal Luxury Scrollbars & Brand-Consistent Golden Range Slider**:
+  - Custom ultra-slim 5px/6px pill scrollbars across the flashcard, modals, and lists, eliminating default OS scrollbar arrows and gray borders.
+  - Replaced native sliders in Settings with a brand-consistent golden accent slider (`#settingsFontScale`).
+
 - **Resilient Unknown Words Export & File Generation**:
   - Resolved critical `TypeError: a.localeCompare is not a function` when clicking "Download unknown words" (`#btnDownloadUnknown`).
   - Correctly extracts headwords and definitions instead of numeric IDs.
