@@ -88,10 +88,18 @@ oxford5000-app/
 └── tools/                   Quality audit and dataset verification utilities
 ```
 
-### Standard Modification Protocol:
+### Standard Modification & Release Protocol:
 1. Edit source files in `src/` or data in `data/`.
 2. Run `python build/build.py` to regenerate `dist/` and `publish/`.
 3. Copy `publish/index.html` to root `index.html`.
-4. Run self-test: `dist/oxford5000-flashcards-final.html#selftest` -> `SELFTEST PASS`.
+4. Run self-test: `python tools/verify_selftest.py` -> `SELFTEST PASS`.
 5. Keep commit messages concise, descriptive, and in 100% English.
 6. Push to both `master` and `main`: `git push origin master; git push origin master:main`.
+
+### Automated Release & Next Version Transition:
+When an update is ready to be published to GitHub and transitioned to the next development version:
+```powershell
+# Publishes current release tag, pushes to master/main, archives snapshot to '0- update/',
+# renames folder to next version, updates all internal files, re-compiles, and commits:
+python tools/publish_and_bump.py --publish
+```
