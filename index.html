@@ -455,7 +455,8 @@ The browser developer console will output SELFTEST PASS upon successful verifica
   }
 
   /* Collapsed state styling on .top-nav-bar */
-  .top-nav-bar.is-collapsed{
+  .top-nav-bar.is-collapsed,
+  html.header-init-collapsed .top-nav-bar{
     padding: 6px 14px 6px;
     max-width: 520px;
     border-radius: 999px;
@@ -463,13 +464,16 @@ The browser developer console will output SELFTEST PASS upon successful verifica
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(217, 164, 65, 0.22);
     cursor: pointer;
   }
-  .top-nav-bar.is-collapsed .header-main-content{
+  .top-nav-bar.is-collapsed .header-main-content,
+  html.header-init-collapsed .top-nav-bar .header-main-content{
     display: none;
   }
-  .top-nav-bar.is-collapsed .header-collapsed-strip{
+  .top-nav-bar.is-collapsed .header-collapsed-strip,
+  html.header-init-collapsed .top-nav-bar .header-collapsed-strip{
     display: flex;
   }
-  .top-nav-bar.is-collapsed .progress-track{
+  .top-nav-bar.is-collapsed .progress-track,
+  html.header-init-collapsed .top-nav-bar .progress-track{
     margin-bottom: 2px;
     height: 4px;
     max-width: 480px;
@@ -849,8 +853,7 @@ The browser developer console will output SELFTEST PASS upon successful verifica
     height: 660px;
     margin-top: 6px;
     flex: 0 0 auto;
-    contain: layout;
-    filter: drop-shadow(0 20px 38px rgba(0, 0, 0, 0.45));
+    contain: layout style;
   }
 
   .ghost-card{
@@ -882,7 +885,20 @@ The browser developer console will output SELFTEST PASS upon successful verifica
     scrollbar-width:thin;
     scrollbar-color: rgba(185, 130, 43, 0.4) transparent;
     transition: transform .38s cubic-bezier(.2,.7,.3,1), opacity .3s ease, box-shadow .3s ease;
-    will-change: auto;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    touch-action: pan-y;
+  }
+  .card.is-dragging{
+    transition: none !important;
+    cursor: grabbing;
+    will-change: transform;
+    box-shadow: 0 16px 36px -8px rgba(0,0,0,0.45), 0 0 0 1px rgba(217,164,65,0.35);
+  }
+  .card.is-dragging .swipe-badge{
+    transition: none !important;
   }
   .card::-webkit-scrollbar {
     width: 6px;
@@ -908,8 +924,8 @@ The browser developer console will output SELFTEST PASS upon successful verifica
   }
   .card:active{ will-change: transform; }
 
-  .card.leave-left{ transform: translate(-120%, 6%) rotate(-14deg); opacity:0; }
-  .card.leave-right{ transform: translate(120%, 6%) rotate(14deg); opacity:0; }
+  .card.leave-left{ transform: translate3d(-120%, 6%, 0) rotate(-14deg); opacity:0; }
+  .card.leave-right{ transform: translate3d(120%, 6%, 0) rotate(14deg); opacity:0; }
   .card.enter{ animation: pop-in .36s cubic-bezier(.22,.68,.35,1.04); }
   @keyframes pop-in{
     0%{ transform: translateY(18px) scale(.95); opacity:0; }
@@ -4747,6 +4763,15 @@ The browser developer console will output SELFTEST PASS upon successful verifica
   }
 
 </style>
+<script>
+  try {
+    var isMob = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    var savedMob = localStorage.getItem(isMob ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed');
+    if (isMob ? (savedMob !== '0') : (savedMob === '1')) {
+      document.documentElement.classList.add('header-init-collapsed');
+    }
+  } catch(e) {}
+</script>
 </head>
 <body>
 
@@ -12760,7 +12785,12 @@ function render(){
   if(input) input.value = noteText(entry ? entry.id : word) || noteText(word);
 
   const card = document.getElementById('card');
-  if(card) card.className = 'card enter';
+  if(card){
+    card.className = 'card enter';
+    card.style.transform = '';
+    card.style.transition = '';
+    card.style.opacity = '';
+  }
 
   const bk = document.getElementById('badgeKnow');
   const bu = document.getElementById('badgeUnknow');
@@ -15000,62 +15030,90 @@ function maybeAutoSync(){
 
 let dragActive = false;
 let dragStartX = 0;
-let dragCurrentX = 0;
+let dragCurrentDx = 0;
+let dragRafId = 0;
+let cachedDragCard = null;
+let cachedDragKnowBadge = null;
+let cachedDragUnknowBadge = null;
+
+function applyDragTransform(){
+  dragRafId = 0;
+  if(!dragActive || !cachedDragCard) return;
+  const dx = dragCurrentDx;
+  cachedDragCard.style.transform = `translate3d(${dx}px, 0, 0) rotate(${dx * 0.045}deg)`;
+
+  if(cachedDragKnowBadge && cachedDragUnknowBadge){
+    if(dx < -15){
+      cachedDragKnowBadge.style.opacity = Math.min(1, (-dx - 15) / 80);
+      cachedDragUnknowBadge.style.opacity = '0';
+    } else if(dx > 15){
+      cachedDragUnknowBadge.style.opacity = Math.min(1, (dx - 15) / 80);
+      cachedDragKnowBadge.style.opacity = '0';
+    } else {
+      cachedDragKnowBadge.style.opacity = '0';
+      cachedDragUnknowBadge.style.opacity = '0';
+    }
+  }
+}
 
 function onDragStart(x){
   const card = document.getElementById('card');
-  if(!card) return;
+  if(!card || cardLocked) return;
+  cachedDragCard = card;
+  cachedDragKnowBadge = document.getElementById('badgeKnow');
+  cachedDragUnknowBadge = document.getElementById('badgeUnknow');
   dragActive = true;
   dragStartX = x;
-  dragCurrentX = x;
-  card.style.transition = 'none';
+  dragCurrentDx = 0;
+  cachedDragCard.classList.add('is-dragging');
+  cachedDragCard.style.transition = 'none';
 }
 
 function onDragMove(x){
   if(!dragActive) return;
-  const card = document.getElementById('card');
-  if(!card) return;
-
-  dragCurrentX = x;
-  const dx = dragCurrentX - dragStartX;
-  card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
-
-  const bk = document.getElementById('badgeKnow');
-  const bu = document.getElementById('badgeUnknow');
-  if(!bk || !bu) return;
-
-  if(dx < -20){
-    bk.style.opacity = Math.min(1, -dx / 100);
-    bu.style.opacity = 0;
-  } else if(dx > 20){
-    bu.style.opacity = Math.min(1, dx / 100);
-    bk.style.opacity = 0;
-  } else {
-    bk.style.opacity = 0;
-    bu.style.opacity = 0;
+  dragCurrentDx = x - dragStartX;
+  if(!dragRafId){
+    dragRafId = requestAnimationFrame(applyDragTransform);
   }
 }
 
 function onDragEnd(){
   if(!dragActive) return;
+  if(dragRafId){
+    cancelAnimationFrame(dragRafId);
+    dragRafId = 0;
+  }
   dragActive = false;
 
-  const card = document.getElementById('card');
-  if(card){
-    card.style.transition = '';
-    card.style.transform = '';
-  }
+  const card = cachedDragCard || document.getElementById('card');
+  const bk = cachedDragKnowBadge || document.getElementById('badgeKnow');
+  const bu = cachedDragUnknowBadge || document.getElementById('badgeUnknow');
+  const dx = dragCurrentDx;
 
-  const dx = dragCurrentX - dragStartX;
-  if(dx < -90){
+  if(!card) return;
+  card.classList.remove('is-dragging');
+
+  if(dx < -80){
+    card.style.transition = 'transform .22s cubic-bezier(.2,.7,.3,1), opacity .22s ease';
+    card.style.transform = 'translate3d(-120%, 4%, 0) rotate(-14deg)';
+    card.style.opacity = '0';
     markWord(true);
-  } else if(dx > 90){
+  } else if(dx > 80){
+    card.style.transition = 'transform .22s cubic-bezier(.2,.7,.3,1), opacity .22s ease';
+    card.style.transform = 'translate3d(120%, 4%, 0) rotate(14deg)';
+    card.style.opacity = '0';
     markWord(false);
   } else {
-    const bk = document.getElementById('badgeKnow');
-    const bu = document.getElementById('badgeUnknow');
-    if(bk) bk.style.opacity = 0;
-    if(bu) bu.style.opacity = 0;
+    card.style.transition = 'transform .24s cubic-bezier(.175, .885, .32, 1.15), opacity .2s ease';
+    card.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+    if(bk) bk.style.opacity = '0';
+    if(bu) bu.style.opacity = '0';
+    setTimeout(() => {
+      if(card && !dragActive){
+        card.style.transition = '';
+        card.style.transform = '';
+      }
+    }, 250);
   }
 }
 
@@ -17115,15 +17173,56 @@ function wireEvents(){
   const card = document.getElementById('card');
   if(card){
     card.addEventListener('mousedown', (e) => {
+      if(e.button !== 0) return;
       if(e.target.closest('.translation-input') || e.target.closest('.the-word') || e.target.closest('.example-card') || e.target.closest('.forms-bar') || e.target.closest('.legend') || e.target.closest('.card-edit-btn') || e.target.closest('.sent-edit-btn')) return;
       onDragStart(e.clientX);
     });
+
+    let touchOriginX = 0;
+    let touchOriginY = 0;
+    let touchMode = null;
+
     card.addEventListener('touchstart', (e) => {
+      if(e.touches.length !== 1) return;
       if(e.target.closest('.translation-input') || e.target.closest('.the-word') || e.target.closest('.example-card') || e.target.closest('.forms-bar') || e.target.closest('.legend') || e.target.closest('.card-edit-btn') || e.target.closest('.sent-edit-btn')) return;
-      onDragStart(e.touches[0].clientX);
+      touchOriginX = e.touches[0].clientX;
+      touchOriginY = e.touches[0].clientY;
+      touchMode = null;
     }, { passive: true });
-    card.addEventListener('touchmove', (e) => onDragMove(e.touches[0].clientX), { passive: true });
-    card.addEventListener('touchend', onDragEnd);
+
+    card.addEventListener('touchmove', (e) => {
+      if(e.touches.length !== 1) return;
+      const curX = e.touches[0].clientX;
+      const curY = e.touches[0].clientY;
+      const diffX = curX - touchOriginX;
+      const diffY = curY - touchOriginY;
+
+      if(touchMode === null){
+        const absX = Math.abs(diffX);
+        const absY = Math.abs(diffY);
+        if(absY > absX && absY > 7){
+          touchMode = 'vertical';
+        } else if(absX > absY && absX > 7){
+          touchMode = 'horizontal';
+          onDragStart(touchOriginX);
+        }
+      }
+
+      if(touchMode === 'horizontal'){
+        if(e.cancelable) e.preventDefault();
+        onDragMove(curX);
+      }
+    }, { passive: false });
+
+    card.addEventListener('touchend', () => {
+      touchMode = null;
+      onDragEnd();
+    });
+
+    card.addEventListener('touchcancel', () => {
+      touchMode = null;
+      onDragEnd();
+    });
   }
 
   const btnEditCard = document.getElementById('btnEditCard');
@@ -17375,8 +17474,18 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-window.addEventListener('mousemove', (e) => onDragMove(e.clientX));
+window.addEventListener('mousemove', (e) => {
+  if(dragActive) onDragMove(e.clientX);
+});
 window.addEventListener('mouseup', onDragEnd);
+window.addEventListener('touchmove', (e) => {
+  if(dragActive && e.touches.length === 1){
+    if(e.cancelable) e.preventDefault();
+    onDragMove(e.touches[0].clientX);
+  }
+}, { passive: false });
+window.addEventListener('touchend', onDragEnd);
+window.addEventListener('touchcancel', onDragEnd);
 
 window.addEventListener('storage', (e) => {
   if(e.key !== STORAGE_KEY || !e.newValue) return;
@@ -18232,8 +18341,11 @@ function toggleHeaderCollapse(force){
   if(!bar) return;
   const isCollapsed = (typeof force === 'boolean') ? force : !bar.classList.contains('is-collapsed');
   bar.classList.toggle('is-collapsed', isCollapsed);
+  document.documentElement.classList.toggle('header-init-collapsed', isCollapsed);
   try {
-    localStorage.setItem('oxford_header_collapsed', isCollapsed ? '1' : '0');
+    const isMobile = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    const storageKey = isMobile ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed';
+    localStorage.setItem(storageKey, isCollapsed ? '1' : '0');
   } catch(_){}
   updateCollapsedStrip();
 }
@@ -18260,9 +18372,15 @@ function initHeaderCollapse(){
     });
   }
   try {
-    if(localStorage.getItem('oxford_header_collapsed') === '1'){
-      const bar = document.getElementById('topNavBar');
-      if(bar) bar.classList.add('is-collapsed');
+    const isMobile = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    const storageKey = isMobile ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed';
+    const saved = localStorage.getItem(storageKey);
+    // On mobile devices, default to collapsed unless user explicitly clicked expand
+    const shouldCollapse = isMobile ? (saved !== '0') : (saved === '1');
+    const bar = document.getElementById('topNavBar');
+    if(bar){
+      bar.classList.toggle('is-collapsed', shouldCollapse);
+      document.documentElement.classList.toggle('header-init-collapsed', shouldCollapse);
     }
   } catch(_){}
   updateCollapsedStrip();
