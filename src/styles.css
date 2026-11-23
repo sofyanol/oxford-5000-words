@@ -712,8 +712,7 @@
     height: 660px;
     margin-top: 6px;
     flex: 0 0 auto;
-    contain: layout;
-    filter: drop-shadow(0 20px 38px rgba(0, 0, 0, 0.45));
+    contain: layout style;
   }
 
   .ghost-card{
@@ -745,7 +744,20 @@
     scrollbar-width:thin;
     scrollbar-color: rgba(185, 130, 43, 0.4) transparent;
     transition: transform .38s cubic-bezier(.2,.7,.3,1), opacity .3s ease, box-shadow .3s ease;
-    will-change: auto;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    touch-action: pan-y;
+  }
+  .card.is-dragging{
+    transition: none !important;
+    cursor: grabbing;
+    will-change: transform;
+    box-shadow: 0 16px 36px -8px rgba(0,0,0,0.45), 0 0 0 1px rgba(217,164,65,0.35);
+  }
+  .card.is-dragging .swipe-badge{
+    transition: none !important;
   }
   .card::-webkit-scrollbar {
     width: 6px;
@@ -771,8 +783,8 @@
   }
   .card:active{ will-change: transform; }
 
-  .card.leave-left{ transform: translate(-120%, 6%) rotate(-14deg); opacity:0; }
-  .card.leave-right{ transform: translate(120%, 6%) rotate(14deg); opacity:0; }
+  .card.leave-left{ transform: translate3d(-120%, 6%, 0) rotate(-14deg); opacity:0; }
+  .card.leave-right{ transform: translate3d(120%, 6%, 0) rotate(14deg); opacity:0; }
   .card.enter{ animation: pop-in .36s cubic-bezier(.22,.68,.35,1.04); }
   @keyframes pop-in{
     0%{ transform: translateY(18px) scale(.95); opacity:0; }
