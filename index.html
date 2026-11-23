@@ -13920,8 +13920,9 @@ async function syncWithCloudDocument(uid){
       if(remoteData && remoteData.state){
         state = mergeStates(state, remoteData.state);
         saveState();
+        buildLevelBar();
+        render();
         refreshOpenModals();
-        renderStats();
       }
     }
 
