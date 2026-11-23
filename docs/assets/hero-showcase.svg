@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 580" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Ambient Background Glows -->
+    <filter id="ambientGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="60" result="blur" />
+    </filter>
+    
+    <!-- Realistic 3D Soft Shadow for Card -->
+    <filter id="card3DShadow" x="-15%" y="-15%" width="130%" height="135%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#000000" flood-opacity="0.38" />
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#d97706" flood-opacity="0.22" />
+    </filter>
+
+    <!-- Floating Interactive Element Shadow -->
+    <filter id="floatGlow" x="-25%" y="-25%" width="150%" height="160%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.35" />
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#ffffff" flood-opacity="0.1" />
+    </filter>
+
+    <filter id="emeraldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#10b981" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+
+    <filter id="roseGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#f43f5e" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+
+    <!-- Gradients -->
+    <radialGradient id="meshAmber" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="meshCyan" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="meshPurple" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Card Background Gradient (Warm Luxury Light Aesthetic) -->
+    <linearGradient id="luxuryCardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#fefdfa" />
+      <stop offset="100%" stop-color="#f9f5ea" />
+    </linearGradient>
+
+    <!-- Card Border Gradient -->
+    <linearGradient id="cardBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.6" />
+      <stop offset="40%" stop-color="#e2e8f0" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.5" />
+    </linearGradient>
+
+    <!-- Button & Pill Gradients -->
+    <linearGradient id="btnKnow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="btnReview" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e" />
+      <stop offset="100%" stop-color="#be123c" />
+    </linearGradient>
+    <linearGradient id="darkGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.94" />
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.96" />
+    </linearGradient>
+  </defs>
+
+  <!-- Atmospheric Ambient Light Backing (Blends seamlessly with GitHub dark/light mode) -->
+  <g opacity="0.85">
+    <circle cx="280" cy="240" r="220" fill="url(#meshAmber)" filter="url(#ambientGlow)" />
+    <circle cx="700" cy="220" r="200" fill="url(#meshCyan)" filter="url(#ambientGlow)" />
+    <circle cx="500" cy="480" r="180" fill="url(#meshPurple)" filter="url(#ambientGlow)" />
+  </g>
+
+  <!-- Central Luxury Vocabulary Flashcard -->
+  <g transform="translate(250, 48)" filter="url(#card3DShadow)">
+    <!-- Base Card Frame -->
+    <rect width="480" height="428" rx="28" fill="url(#luxuryCardGrad)" stroke="url(#cardBorder)" stroke-width="2" />
+
+    <!-- Top Status Bar -->
+    <g transform="translate(26, 24)">
+      <!-- CEFR Badge Pill -->
+      <rect width="48" height="28" rx="9" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2" />
+      <text x="24" y="19" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="900" fill="#b45309" text-anchor="middle">B2</text>
+      
+      <!-- Progress Pill -->
+      <g transform="translate(324, 0)">
+        <rect width="104" height="28" rx="9" fill="#f1f5f9" stroke="#e2e8f0" />
+        <circle cx="16" cy="14" r="4" fill="#10b981" />
+        <text x="58" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#475569" text-anchor="middle">1,428 / 5,325</text>
+      </g>
+    </g>
+
+    <!-- Headword & Pronunciation Section -->
+    <text x="240" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="40" font-weight="900" fill="#0f172a" text-anchor="middle" letter-spacing="-0.8">acceptable</text>
+    
+    <!-- Audio Speed & Native Accent Pills -->
+    <g transform="translate(100, 134)">
+      <!-- 1.0x Speed Selector -->
+      <rect x="0" y="0" width="52" height="32" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+      <text x="26" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#475569" text-anchor="middle">1.0x</text>
+
+      <!-- US Audio Pill with Waveform -->
+      <g transform="translate(62, 0)">
+        <rect width="104" height="32" rx="10" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.2" />
+        <!-- Speaker Icon -->
+        <path d="M14 12 L18 12 L22 8 L22 24 L18 20 L14 20 Z" fill="#0284c7" />
+        <!-- Sound Waves -->
+        <path d="M25 13 Q27 16 25 19 M28 10 Q31 16 28 22" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" fill="none" />
+        <text x="64" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#0369a1">US</text>
+      </g>
+
+      <!-- UK Audio Pill with Waveform -->
+      <g transform="translate(176, 0)">
+        <rect width="104" height="32" rx="10" fill="#ecfdf5" stroke="#34d399" stroke-width="1.2" />
+        <path d="M14 12 L18 12 L22 8 L22 24 L18 20 L14 20 Z" fill="#059669" />
+        <path d="M25 13 Q27 16 25 19 M28 10 Q31 16 28 22" stroke="#059669" stroke-width="1.8" stroke-linecap="round" fill="none" />
+        <text x="64" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#047857">UK</text>
+      </g>
+    </g>
+
+    <!-- Grammar Tag & Dynamic Translation -->
+    <g transform="translate(142, 182)">
+      <!-- POS Tag -->
+      <rect x="0" y="0" width="62" height="26" rx="8" fill="#f1f5f9" stroke="#cbd5e1" />
+      <text x="31" y="17" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#475569" text-anchor="middle">adjective</text>
+      
+      <!-- Multi-language Translation Pill -->
+      <rect x="72" y="0" width="124" height="26" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2" />
+      <text x="134" y="17" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="900" fill="#92400e" text-anchor="middle">مقبول • Aceptable</text>
+    </g>
+
+    <!-- Contextual Example Sentence Box -->
+    <g transform="translate(24, 226)">
+      <rect width="432" height="96" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
+      <rect x="18" y="14" width="76" height="18" rx="5" fill="#f1f5f9" />
+      <text x="56" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" fill="#64748b" text-anchor="middle" letter-spacing="0.5">CONTEXT</text>
+      <text x="18" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="500" fill="#1e293b">Let's find a solution that is <tspan font-weight="900" fill="#d97706" text-decoration="underline">acceptable</tspan> to everyone.</text>
+      <text x="18" y="81" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="500" fill="#64748b">دعونا نجد حلاً يكون مقبولاً للجميع.</text>
+    </g>
+
+    <!-- Word Inflections / Forms -->
+    <g transform="translate(24, 338)">
+      <rect width="432" height="66" rx="14" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2" />
+      <text x="18" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#94a3b8" letter-spacing="0.5">FORMS &amp; COMPARATIVES</text>
+      <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#334155">Comparative: <tspan font-weight="800" fill="#0f172a">more acceptable</tspan> • Superlative: <tspan font-weight="800" fill="#0f172a">most acceptable</tspan></text>
+    </g>
+  </g>
+
+  <!-- Left Action Button: "I KNOW IT" (Floating Ergonomic Action) -->
+  <g transform="translate(75, 230)" filter="url(#emeraldGlow)">
+    <circle cx="55" cy="55" r="46" fill="url(#btnKnow)" stroke="#ffffff" stroke-width="3" />
+    <path d="M40 56 L50 66 L70 44" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Glass Badge -->
+    <g transform="translate(-10, 114)">
+      <rect width="130" height="34" rx="10" fill="url(#darkGlass)" stroke="#10b981" stroke-width="1.5" />
+      <text x="65" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="900" fill="#34d399" text-anchor="middle" letter-spacing="0.5">I KNOW IT ✓</text>
+    </g>
+  </g>
+
+  <!-- Right Action Button: "STILL LEARNING" (Floating Ergonomic Action) -->
+  <g transform="translate(795, 230)" filter="url(#roseGlow)">
+    <circle cx="55" cy="55" r="46" fill="url(#btnReview)" stroke="#ffffff" stroke-width="3" />
+    <path d="M42 42 L68 68 M68 42 L42 68" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+    <!-- Glass Badge -->
+    <g transform="translate(-15, 114)">
+      <rect width="140" height="34" rx="10" fill="url(#darkGlass)" stroke="#f43f5e" stroke-width="1.5" />
+      <text x="70" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="900" fill="#fb7185" text-anchor="middle" letter-spacing="0.5">STILL LEARNING ✕</text>
+    </g>
+  </g>
+
+  <!-- Top Floating Badge: Daily Streak Counter -->
+  <g transform="translate(740, 26)" filter="url(#floatGlow)">
+    <rect width="190" height="52" rx="16" fill="url(#darkGlass)" stroke="#f59e0b" stroke-width="1.8" />
+    <circle cx="30" cy="26" r="16" fill="#78350f" fill-opacity="0.6" />
+    <text x="30" y="33" font-size="20" text-anchor="middle">🔥</text>
+    <text x="60" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#fbbf24" letter-spacing="0.5">DAILY STREAK</text>
+    <text x="60" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="900" fill="#ffffff">14 Days Active</text>
+  </g>
+
+  <!-- Top Floating Badge: CEFR Complete Framework -->
+  <g transform="translate(48, 26)" filter="url(#floatGlow)">
+    <rect width="220" height="52" rx="16" fill="url(#darkGlass)" stroke="#38bdf8" stroke-width="1.8" />
+    <circle cx="30" cy="26" r="16" fill="#0c4a6e" fill-opacity="0.6" />
+    <text x="30" y="33" font-size="18" text-anchor="middle">🎓</text>
+    <text x="60" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#7dd3fc" letter-spacing="0.5">CEFR FRAMEWORK</text>
+    <text x="60" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#ffffff">A1 • A2 • B1 • B2 • C1</text>
+  </g>
+
+  <!-- Bottom Floating Badges: Architecture Features -->
+  <g transform="translate(150, 498)" filter="url(#floatGlow)">
+    <!-- Quiz Badge -->
+    <g transform="translate(0, 0)">
+      <rect width="155" height="48" rx="14" fill="url(#darkGlass)" stroke="#a855f7" stroke-width="1.5" />
+      <circle cx="26" cy="24" r="14" fill="#581c87" />
+      <text x="26" y="30" font-size="15" text-anchor="middle">🎯</text>
+      <text x="50" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#e9d5ff">4 Quiz Modes</text>
+    </g>
+
+    <!-- Word Match Badge -->
+    <g transform="translate(170, 0)">
+      <rect width="165" height="48" rx="14" fill="url(#darkGlass)" stroke="#10b981" stroke-width="1.5" />
+      <circle cx="26" cy="24" r="14" fill="#064e3b" />
+      <text x="26" y="30" font-size="15" text-anchor="middle">🧩</text>
+      <text x="50" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#a7f3d0">Word Match Game</text>
+    </g>
+
+    <!-- Audio Badge -->
+    <g transform="translate(350, 0)">
+      <rect width="165" height="48" rx="14" fill="url(#darkGlass)" stroke="#0ea5e9" stroke-width="1.5" />
+      <circle cx="26" cy="24" r="14" fill="#082f49" />
+      <text x="26" y="30" font-size="15" text-anchor="middle">🔊</text>
+      <text x="50" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#bae6fd">10,460 MP3 Audio</text>
+    </g>
+
+    <!-- Offline Badge -->
+    <g transform="translate(530, 0)">
+      <rect width="150" height="48" rx="14" fill="url(#darkGlass)" stroke="#f59e0b" stroke-width="1.5" />
+      <circle cx="26" cy="24" r="14" fill="#451a03" />
+      <text x="26" y="30" font-size="15" text-anchor="middle">⚡</text>
+      <text x="50" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#fde68a">100% Offline</text>
+    </g>
+  </g>
+</svg>

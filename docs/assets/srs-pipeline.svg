@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 190" width="100%" height="100%" fill="none">
+  <defs>
+    <filter id="podShadow" x="-15%" y="-15%" width="130%" height="135%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.3" />
+      <feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="#ffffff" flood-opacity="0.08" />
+    </filter>
+    <linearGradient id="podBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+
+  <!-- Stage 1 -->
+  <g transform="translate(10, 18)" filter="url(#podShadow)">
+    <rect width="160" height="145" rx="18" fill="url(#podBg)" stroke="#f43f5e" stroke-width="1.5" />
+    <rect x="16" y="0" width="128" height="3" rx="1.5" fill="#f43f5e" />
+    <rect x="14" y="14" width="46" height="20" rx="6" fill="#881337" />
+    <text x="37" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="900" fill="#fda4af" text-anchor="middle">STAGE 1</text>
+    <text x="14" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="#ffffff">Day 1</text>
+    <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Immediate Recall</text>
+    
+    <g transform="translate(14, 104)">
+      <rect width="84" height="24" rx="6" fill="#4c0519" stroke="#be123c" />
+      <text x="42" y="16" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#f43f5e" text-anchor="middle">New Words</text>
+    </g>
+  </g>
+
+  <!-- Connector 1 -->
+  <g transform="translate(178, 90)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="3 3" />
+    <polygon points="20,-4 26,0 20,4" fill="#f59e0b" />
+  </g>
+
+  <!-- Stage 2 -->
+  <g transform="translate(212, 18)" filter="url(#podShadow)">
+    <rect width="160" height="145" rx="18" fill="url(#podBg)" stroke="#fb923c" stroke-width="1.5" />
+    <rect x="16" y="0" width="128" height="3" rx="1.5" fill="#fb923c" />
+    <rect x="14" y="14" width="46" height="20" rx="6" fill="#7c2d12" />
+    <text x="37" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="900" fill="#fed7aa" text-anchor="middle">STAGE 2</text>
+    <text x="14" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="#ffffff">Day 2</text>
+    <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Short Interval</text>
+    
+    <g transform="translate(14, 104)">
+      <rect width="96" height="24" rx="6" fill="#431407" stroke="#c2410c" />
+      <text x="48" y="16" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#fb923c" text-anchor="middle">Reinforce 40%</text>
+    </g>
+  </g>
+
+  <!-- Connector 2 -->
+  <g transform="translate(380, 90)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="3 3" />
+    <polygon points="20,-4 26,0 20,4" fill="#f59e0b" />
+  </g>
+
+  <!-- Stage 3 -->
+  <g transform="translate(414, 18)" filter="url(#podShadow)">
+    <rect width="160" height="145" rx="18" fill="url(#podBg)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="16" y="0" width="128" height="3" rx="1.5" fill="#f59e0b" />
+    <rect x="14" y="14" width="46" height="20" rx="6" fill="#78350f" />
+    <text x="37" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="900" fill="#fde68a" text-anchor="middle">STAGE 3</text>
+    <text x="14" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="#ffffff">Day 4</text>
+    <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Medium Interval</text>
+    
+    <g transform="translate(14, 104)">
+      <rect width="96" height="24" rx="6" fill="#451a03" stroke="#b45309" />
+      <text x="48" y="16" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#f59e0b" text-anchor="middle">Solidify 70%</text>
+    </g>
+  </g>
+
+  <!-- Connector 3 -->
+  <g transform="translate(582, 90)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="3 3" />
+    <polygon points="20,-4 26,0 20,4" fill="#38bdf8" />
+  </g>
+
+  <!-- Stage 4 -->
+  <g transform="translate(616, 18)" filter="url(#podShadow)">
+    <rect width="160" height="145" rx="18" fill="url(#podBg)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="16" y="0" width="128" height="3" rx="1.5" fill="#38bdf8" />
+    <rect x="14" y="14" width="46" height="20" rx="6" fill="#0c4a6e" />
+    <text x="37" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="900" fill="#bae6fd" text-anchor="middle">STAGE 4</text>
+    <text x="14" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="#ffffff">Day 7</text>
+    <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Long Interval</text>
+    
+    <g transform="translate(14, 104)">
+      <rect width="96" height="24" rx="6" fill="#082f49" stroke="#0284c7" />
+      <text x="48" y="16" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="800" fill="#38bdf8" text-anchor="middle">Deep Recall</text>
+    </g>
+  </g>
+
+  <!-- Connector 4 -->
+  <g transform="translate(784, 90)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#10b981" stroke-width="2.5" stroke-dasharray="3 3" />
+    <polygon points="20,-4 26,0 20,4" fill="#10b981" />
+  </g>
+
+  <!-- Stage 5: Mastered -->
+  <g transform="translate(818, 18)" filter="url(#podShadow)">
+    <rect width="112" height="145" rx="18" fill="url(#podBg)" stroke="#10b981" stroke-width="2" />
+    <rect x="12" y="0" width="88" height="3" rx="1.5" fill="#10b981" />
+    <rect x="12" y="14" width="46" height="20" rx="6" fill="#064e3b" />
+    <text x="35" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="900" fill="#a7f3d0" text-anchor="middle">STAGE 5</text>
+    <text x="12" y="66" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="17" font-weight="900" fill="#34d399">Day 14+</text>
+    <text x="12" y="86" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" fill="#6ee7b7">Permanent</text>
+    
+    <g transform="translate(12, 104)">
+      <rect width="86" height="24" rx="6" fill="#064e3b" stroke="#10b981" />
+      <text x="43" y="16" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="900" fill="#34d399" text-anchor="middle">👑 Mastered</text>
+    </g>
+  </g>
+</svg>
