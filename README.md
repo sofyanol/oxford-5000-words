@@ -31,16 +31,32 @@
 <hr>
 </div>
 
-## 🌟 What's New in Update 1.4 & 1.5 Roadmap
+## 🌟 What's New in Update 1.5
 
-### ⚡ Update 1.5 (In Development)
-* 🛡️ **SonarQube Integration**: Static code analysis, vulnerability scanning, and syntax/glitch prevention.
-* 📦 **Upgraded PWA Cache**: Synchronized cache management for `oxford5000-v1.5.0`.
-* 🌐 **Updated 12-Language In-App Notes**: Multi-language "What's New in 1.5" guidance across all supported languages.
+<p align="center">
+  <img src="docs/assets/hero-showcase.svg" alt="Oxford 5000 Interactive Vocabulary Flashcard Showcase" width="100%">
+</p>
+
+Update 1.5 is a monumental milestone introducing secure multi-device cloud accounts, hands-free audio study, milestone badges, printable study sets, and atmospheric soundscapes:
+
+* ☁️ **Cloud Account Sync & Multi-Device Authentication (Headline Feature)**:
+  * **Seamless Google Sign-In & Email Authentication**: Sign in with one tap via Google (`Continue with Google`) or personal email/password to seamlessly back up and synchronize all your study progress, mastered vocabulary, and daily streak counts across mobile and desktop.
+  * **Zero-Knowledge Privacy & Permanent Encryption**: Built with Google Firebase & Cloud Firestore security rules guaranteeing that every learner can only access their own private progress document.
+  * **Realtime Cloud Indicator**: Live status badge (`🟢 Cloud Synced`) with automatic background synchronization upon answering cards.
+  * **Alternative Zero-Login Manual Mode**: Preserves offline-first manual link sync and compact OX6 export codes for privacy-focused learners.
+
+* 🎧 **Hands-Free Auto-Play Walk & Sleep Mode**: Eyes-free vocabulary listening engine for commuting, walking, or bedtime study with dual native pronunciations (UK/US), customizable pacing intervals (2.0s, 3.2s, 5.0s), and configurable sleep timer (15, 30, 45, 60 minutes).
+* 🏆 **Gamification Badges & Milestone Achievements**: 10 distinct unlockable milestones celebrating study streaks, CEFR completion, quiz victories, and speed race achievements with celebratory confetti toasts.
+* 🎯 **Smart Focus Deck (Leech Hunter)**: Automatically detects tricky vocabulary based on review lapses and missed quiz questions, enabling isolated one-click targeted focus drills.
+* 🖨️ **Printable Study Sheets & Flashcards PDF**: Ink-friendly A4 print engine producing 3×3 cut-out flashcard grids with dashed cutting guides or structured vocabulary review tables.
+* 🌧️ **Procedural Ambient Focus Soundscapes**: Pure Web Audio API soundscapes (Gentle Rain, Cozy Fireplace, Ocean Waves) running 100% offline with zero external audio dependencies.
+* 📱 **Mobile Performance & Ergonomics**: Smooth 60fps rendering, elimination of floating button overlap, and tactile pill synchronization button.
+* 💬 **In-App Private Feedback & Suggestion Center**: Submit vocabulary corrections, suggestions, or bug reports directly from inside the app with automatic card context tagging.
+* 🎨 **Luxury OLED Pure Black & Sepia Themes**: True battery-saving OLED black (`#000000`) and eye-comfort warm classic sepia theme customizer in Settings.
 
 ---
 
-### 🚀 Update 1.4 Milestone Features (Released)
+### 🚀 Update 1.4 Milestone Features (Archive)
 Update 1.4 introduces powerful new learning habits, audio controls, an interactive spelling quiz, memory mini-game, visual learning analytics, and full PWA installation:
 
 * 🔥 **Daily Study Habit, Goals & Streak Counter**: Track daily study streaks in `localStorage`, set daily card targets (10, 20, 50, or 100), and enjoy a joyful confetti celebration when reaching your daily goal.

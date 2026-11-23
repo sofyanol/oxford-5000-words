@@ -163,19 +163,20 @@ def main():
     archive_dir = root_dir / "0- update"
     archive_dir.mkdir(exist_ok=True)
     snapshot_dest = archive_dir / f"oxford5000-app {curr_v} coding"
+    snapshot_short = archive_dir / f"oxford5000-app {curr_v}"
     
-    if not snapshot_dest.exists():
-        print(f"  Archiving snapshot to: {snapshot_dest.name}")
-        # Copy directory excluding audio and .git to keep archive fast and lightweight
-        shutil.copytree(
-            project_dir,
-            snapshot_dest,
-            ignore=shutil.ignore_patterns(".git", "audio", "__pycache__", "*.tmp", ".tmp_*"),
-            dirs_exist_ok=True
-        )
-        print(f"  [ARCHIVED] Snapshot saved to {snapshot_dest}")
-    else:
-        print(f"  [NOTE] Archive snapshot {snapshot_dest.name} already exists.")
+    for snap in [snapshot_dest, snapshot_short]:
+        if not snap.exists():
+            print(f"  Archiving snapshot to: {snap.name}")
+            shutil.copytree(
+                project_dir,
+                snap,
+                ignore=shutil.ignore_patterns(".git", "audio", "__pycache__", "*.tmp", ".tmp_*"),
+                dirs_exist_ok=True
+            )
+            print(f"  [ARCHIVED] Snapshot saved to {snap}")
+        else:
+            print(f"  [NOTE] Archive snapshot {snap.name} already exists.")
 
     # PHASE 3: Rename project directory to next version
     print(f"\n--- PHASE 3: Renaming Directory to v{next_v} ---")
@@ -281,6 +282,12 @@ def main():
     if publish_index.is_file():
         shutil.copy2(publish_index, root_dir / "index.html")
         print("  [SYNCED] Root index.html updated from publish/index.html")
+
+    for f_name in ["GEMINI.md", "AGENTS.md", "ALL_UPDATES_CHANGELOG.md"]:
+        f_path = project_dir / f_name
+        if f_path.is_file():
+            shutil.copy2(f_path, root_dir / f_name)
+            print(f"  [SYNCED] Root {f_name} updated from project")
 
     # PHASE 6: Commit and Push Version Bump to Git
     if not args.skip_git:
