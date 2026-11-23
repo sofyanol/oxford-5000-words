@@ -455,7 +455,8 @@ The browser developer console will output SELFTEST PASS upon successful verifica
   }
 
   /* Collapsed state styling on .top-nav-bar */
-  .top-nav-bar.is-collapsed{
+  .top-nav-bar.is-collapsed,
+  html.header-init-collapsed .top-nav-bar{
     padding: 6px 14px 6px;
     max-width: 520px;
     border-radius: 999px;
@@ -463,13 +464,16 @@ The browser developer console will output SELFTEST PASS upon successful verifica
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(217, 164, 65, 0.22);
     cursor: pointer;
   }
-  .top-nav-bar.is-collapsed .header-main-content{
+  .top-nav-bar.is-collapsed .header-main-content,
+  html.header-init-collapsed .top-nav-bar .header-main-content{
     display: none;
   }
-  .top-nav-bar.is-collapsed .header-collapsed-strip{
+  .top-nav-bar.is-collapsed .header-collapsed-strip,
+  html.header-init-collapsed .top-nav-bar .header-collapsed-strip{
     display: flex;
   }
-  .top-nav-bar.is-collapsed .progress-track{
+  .top-nav-bar.is-collapsed .progress-track,
+  html.header-init-collapsed .top-nav-bar .progress-track{
     margin-bottom: 2px;
     height: 4px;
     max-width: 480px;
@@ -4759,6 +4763,15 @@ The browser developer console will output SELFTEST PASS upon successful verifica
   }
 
 </style>
+<script>
+  try {
+    var isMob = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    var savedMob = localStorage.getItem(isMob ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed');
+    if (isMob ? (savedMob !== '0') : (savedMob === '1')) {
+      document.documentElement.classList.add('header-init-collapsed');
+    }
+  } catch(e) {}
+</script>
 </head>
 <body>
 
@@ -18328,8 +18341,11 @@ function toggleHeaderCollapse(force){
   if(!bar) return;
   const isCollapsed = (typeof force === 'boolean') ? force : !bar.classList.contains('is-collapsed');
   bar.classList.toggle('is-collapsed', isCollapsed);
+  document.documentElement.classList.toggle('header-init-collapsed', isCollapsed);
   try {
-    localStorage.setItem('oxford_header_collapsed', isCollapsed ? '1' : '0');
+    const isMobile = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    const storageKey = isMobile ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed';
+    localStorage.setItem(storageKey, isCollapsed ? '1' : '0');
   } catch(_){}
   updateCollapsedStrip();
 }
@@ -18356,9 +18372,15 @@ function initHeaderCollapse(){
     });
   }
   try {
-    if(localStorage.getItem('oxford_header_collapsed') === '1'){
-      const bar = document.getElementById('topNavBar');
-      if(bar) bar.classList.add('is-collapsed');
+    const isMobile = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    const storageKey = isMobile ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed';
+    const saved = localStorage.getItem(storageKey);
+    // On mobile devices, default to collapsed unless user explicitly clicked expand
+    const shouldCollapse = isMobile ? (saved !== '0') : (saved === '1');
+    const bar = document.getElementById('topNavBar');
+    if(bar){
+      bar.classList.toggle('is-collapsed', shouldCollapse);
+      document.documentElement.classList.toggle('header-init-collapsed', shouldCollapse);
     }
   } catch(_){}
   updateCollapsedStrip();

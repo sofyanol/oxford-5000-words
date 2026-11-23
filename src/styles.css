@@ -318,7 +318,8 @@
   }
 
   /* Collapsed state styling on .top-nav-bar */
-  .top-nav-bar.is-collapsed{
+  .top-nav-bar.is-collapsed,
+  html.header-init-collapsed .top-nav-bar{
     padding: 6px 14px 6px;
     max-width: 520px;
     border-radius: 999px;
@@ -326,13 +327,16 @@
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(217, 164, 65, 0.22);
     cursor: pointer;
   }
-  .top-nav-bar.is-collapsed .header-main-content{
+  .top-nav-bar.is-collapsed .header-main-content,
+  html.header-init-collapsed .top-nav-bar .header-main-content{
     display: none;
   }
-  .top-nav-bar.is-collapsed .header-collapsed-strip{
+  .top-nav-bar.is-collapsed .header-collapsed-strip,
+  html.header-init-collapsed .top-nav-bar .header-collapsed-strip{
     display: flex;
   }
-  .top-nav-bar.is-collapsed .progress-track{
+  .top-nav-bar.is-collapsed .progress-track,
+  html.header-init-collapsed .top-nav-bar .progress-track{
     margin-bottom: 2px;
     height: 4px;
     max-width: 480px;

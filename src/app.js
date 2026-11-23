@@ -8331,8 +8331,11 @@ function toggleHeaderCollapse(force){
   if(!bar) return;
   const isCollapsed = (typeof force === 'boolean') ? force : !bar.classList.contains('is-collapsed');
   bar.classList.toggle('is-collapsed', isCollapsed);
+  document.documentElement.classList.toggle('header-init-collapsed', isCollapsed);
   try {
-    localStorage.setItem('oxford_header_collapsed', isCollapsed ? '1' : '0');
+    const isMobile = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    const storageKey = isMobile ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed';
+    localStorage.setItem(storageKey, isCollapsed ? '1' : '0');
   } catch(_){}
   updateCollapsedStrip();
 }
@@ -8359,9 +8362,15 @@ function initHeaderCollapse(){
     });
   }
   try {
-    if(localStorage.getItem('oxford_header_collapsed') === '1'){
-      const bar = document.getElementById('topNavBar');
-      if(bar) bar.classList.add('is-collapsed');
+    const isMobile = (window.innerWidth <= 768) || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    const storageKey = isMobile ? 'oxford_header_collapsed_mobile' : 'oxford_header_collapsed';
+    const saved = localStorage.getItem(storageKey);
+    // On mobile devices, default to collapsed unless user explicitly clicked expand
+    const shouldCollapse = isMobile ? (saved !== '0') : (saved === '1');
+    const bar = document.getElementById('topNavBar');
+    if(bar){
+      bar.classList.toggle('is-collapsed', shouldCollapse);
+      document.documentElement.classList.toggle('header-init-collapsed', shouldCollapse);
     }
   } catch(_){}
   updateCollapsedStrip();
