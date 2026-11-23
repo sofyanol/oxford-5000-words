@@ -9,7 +9,9 @@ Update 1.5.0 is a milestone release delivering **Cloud Account Sync & Multi-Devi
 
 ### 1. ☁️ Cloud Account Sync & Multi-Device Authentication (Headline Feature)
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sofyanol/oxford-5000-words/master/docs/assets/auth-sync-showcase.svg" alt="Oxford 5000 Cloud Account Sync and Multi-Device Authentication" width="100%">
+  <a href="https://sofyanol.github.io/oxford-5000-words/" title="Open Oxford 5000 Live Web App">
+    <img src="https://raw.githubusercontent.com/sofyanol/oxford-5000-words/master/docs/assets/auth-sync-showcase.svg" alt="Oxford 5000 Cloud Account Sync and Multi-Device Authentication" width="100%">
+  </a>
 </p>
 
 - **Seamless Google Sign-In & Email Authentication**: Sign in with one tap via Google (`Continue with Google`) or personal email/password to seamlessly back up and synchronize all your study progress, mastered vocabulary, and daily streak counts across mobile and desktop.

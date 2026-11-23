@@ -25,7 +25,9 @@
 <br><br>
 
 <p align="center">
-  <img src="docs/assets/hero-showcase.svg" alt="Oxford 5000 Interactive Vocabulary Flashcard Showcase" width="100%">
+  <a href="https://sofyanol.github.io/oxford-5000-words/" title="Open Oxford 5000 Live Web App">
+    <img src="docs/assets/hero-showcase.svg" alt="Oxford 5000 Interactive Vocabulary Flashcard Showcase" width="100%">
+  </a>
 </p>
 
 <hr>
@@ -34,15 +36,14 @@
 ## 🌟 What's New in Update 1.5
 
 <p align="center">
-  <img src="docs/assets/hero-showcase.svg" alt="Oxford 5000 Interactive Vocabulary Flashcard Showcase" width="100%">
+  <a href="https://sofyanol.github.io/oxford-5000-words/" title="Open Oxford 5000 Live Web App">
+    <img src="docs/assets/auth-sync-showcase.svg" alt="Oxford 5000 Cloud Account Sync and Multi-Device Authentication" width="100%">
+  </a>
 </p>
 
 Update 1.5 is a monumental milestone introducing secure multi-device cloud accounts, hands-free audio study, milestone badges, printable study sets, and atmospheric soundscapes:
 
 * ☁️ **Cloud Account Sync & Multi-Device Authentication (Headline Feature)**:
-  <p align="center">
-    <img src="docs/assets/auth-sync-showcase.svg" alt="Oxford 5000 Cloud Account Sync and Multi-Device Authentication" width="100%">
-  </p>
   * **Seamless Google Sign-In & Email Authentication**: Sign in with one tap via Google (`Continue with Google`) or personal email/password to seamlessly back up and synchronize all your study progress, mastered vocabulary, and daily streak counts across mobile and desktop.
   * **Zero-Knowledge Privacy & Permanent Encryption**: Built with Google Firebase & Cloud Firestore security rules guaranteeing that every learner can only access their own private progress document.
   * **Realtime Cloud Indicator**: Live status badge (`🟢 Cloud Synced`) with automatic background synchronization upon answering cards.
@@ -57,72 +58,14 @@ Update 1.5 is a monumental milestone introducing secure multi-device cloud accou
 * 💬 **In-App Private Feedback & Suggestion Center**: Submit vocabulary corrections, suggestions, or bug reports directly from inside the app with automatic card context tagging.
 * 🎨 **Luxury OLED Pure Black & Sepia Themes**: True battery-saving OLED black (`#000000`) and eye-comfort warm classic sepia theme customizer in Settings.
 
----
-
-### 🚀 Update 1.4 Milestone Features (Archive)
-Update 1.4 introduces powerful new learning habits, audio controls, an interactive spelling quiz, memory mini-game, visual learning analytics, and full PWA installation:
-
-* 🔥 **Daily Study Habit, Goals & Streak Counter**: Track daily study streaks in `localStorage`, set daily card targets (10, 20, 50, or 100), and enjoy a joyful confetti celebration when reaching your daily goal.
-* 🎚️ **Audio Playback Speed & Auto-Pronounce**: Toggle audio speeds (`1.0x`, `0.8x`, `0.6x`) on pronunciation buttons for clear slow articulation, plus an optional Auto-Pronounce on card navigation preference.
-* ✍️ **Interactive Spelling & Writing Quiz Mode**: Test active recall by listening to audio, reading contextual cloze sentences, and typing the missing word with phonetic IPA hints.
-* 🧩 **Fast-Paced Word Match Challenge**: An engaging memory-match mini-game against a 45s timer with Web Audio sound effects, combo multipliers, and celebration animations.
-* 📊 **Visual Learning Analytics & CEFR Radar**: Track vocabulary mastery balance with an interactive SVG pentagon radar chart, CEFR level breakdown (A1-C1), Leitner SRS distribution, and high scores.
-* 📇 **One-Click Export to Anki (TSV)**: Export Unknown words, Due reviews, or custom sets into Anki-ready TSV files with standard import headers and UTF-8 BOM.
-* 📱 **Progressive Web App (PWA) Offline Support**: Installable on desktop and mobile home screens with `manifest.webmanifest` and cache-first `sw.js` for 100% offline access.
-* 📌 **Sticky Top Bar & Balanced Action Grid**: Unified header stays persistent on scroll with blurred backdrop filter; bottom toolbar organized into a balanced 2-tier grid with deck-side search companion.
-* 🎨 **Luxury Scrollbars & Golden Slider**: Custom slim 5px/6px pill scrollbars across the card, modals, and lists, plus a brand-consistent golden range slider in settings.
-* ⚡ **Core Fixes & Polished UI**: Fixed Unknown words export sort exceptions, instant visual undo rollback, Listening Quiz token sanitization, and 12-language localization updates.
-
----
-
-### Previous Highlights (Update 1.3)
-
-Update 1.3 focuses on deeper interactivity, active auditory training, dynamic speed challenges, and comprehensive vocabulary exploration:
-
-* ⚡ **Speed Race Mode (Time Attack)**:
-  * Fast-paced 30-second countdown quiz mode designed to test rapid vocabulary recall.
-  * Every correct answer awards **+2 bonus seconds** with an animated green float badge (`+2s`).
-  * Mistakes trigger an adorable **cat meow sound** (`playCatSound`) and an instant warning flash, automatically advancing to keep your learning momentum alive.
-  * Dynamic urgent pulse indicator activates when time drops under 6 seconds.
-
-* 🎧 **Audio-Only Listening Quiz Mode**:
-  * Dedicated ear-training mode: listen to authentic native English UK/US pronunciation without seeing the written word.
-  * Automatic audio playback on question entry with an animated listening pulse and instant replay button.
-  * Select the correct meaning from 4 multiple-choice options, followed by a glowing reveal of the hidden English word with its phonetic IPA and part of speech.
-
-* 🔍 **Smart Word Explorer & Advanced Search**:
-  * An interactive exploration modal featuring **8 comprehensive sorting algorithms**:
-    1. Alphabetical (A to Z)
-    2. Alphabetical reverse (Z to A)
-    3. CEFR Level (A1 to C1)
-    4. CEFR Level reverse (C1 to A1)
-    5. Unknown Words First
-    6. Due for Review First (SRS)
-    7. Mastered / Known Words First
-    8. Oxford Frequency / Importance & Random Shuffle
-  * Interactive filter chips for CEFR difficulty levels (A1, A2, B1, B2, C1) and Parts of Speech (Verbs, Nouns, Adjectives, Others).
-  * Rich cards with IPA, category classifications, audio preview, and one-click direct jump to any card in the study deck.
-
-* ✏️ **Custom Word, Sentence, and Forms Editor**:
-  * Directly edit or customize translations, example sentences, example translations, and grammatical forms.
-  * User modifications persist in browser storage and encode cleanly into compact OX6 sync links—your personal customizations never get lost.
-  * Includes a card indicator badge for customized entries and a one-click reset to Oxford defaults.
-
-* ⭐ **Floating "What's New" Star Badge & Complete Written Site Guide**:
-  * Circular floating badge anchored on screen with a layered white star over a glowing golden star.
-  * Opens an all-in-one 3-tab modal: What's New in 1.3, Comprehensive Site Guide (explaining SRS stages, word forms, quizzes, and sync), and a cumulative Changelog Archive.
-
-* ✨ **Visual & Layout Polishing**:
-  * Custom golden text selection highlighting for copying words and examples.
-  * Ambient responsive gradient background and interactive button glow effects.
-  * Pixel-perfect centering for GitHub, X, and LinkedIn footer icons.
-
 <hr>
 
 ## 🎯 Features at a Glance
 
 <p align="center">
-  <img src="docs/assets/srs-pipeline.svg" alt="Leitner Spaced Repetition System 5-Box Flow" width="100%">
+  <a href="https://sofyanol.github.io/oxford-5000-words/" title="Open Oxford 5000 Live Web App">
+    <img src="docs/assets/srs-pipeline.svg" alt="Leitner Spaced Repetition System 5-Box Flow" width="100%">
+  </a>
 </p>
 
 | Feature | Description |
@@ -131,11 +74,17 @@ Update 1.3 focuses on deeper interactivity, active auditory training, dynamic sp
 | 🔊 **Dual Native Audio** | 5,230 authentic UK (British) and US (American) native pronunciation recordings (10,460 files). |
 | 📝 **100% Contextual Sentences** | Every single entry includes an authentic contextual example sentence. |
 | 🧠 **Spaced Repetition (SRS)** | 5 scientifically structured review intervals (1d, 3d, 7d, 14d, 30d) for long-term memory retention. |
-| 🎮 **3 Study Modes** | Standard Multiple Choice, Speed Race (Time Attack), and Audio-Only Listening. |
+| 🎮 **4 Quiz Modes** | Standard Multiple Choice, Speed Race (Time Attack), Audio-Only Listening, and Interactive Spelling. |
 | 📐 **Word Forms & Grammar** | Complete verb inflections (V1-V3, -ing, -s), noun plurals, and comparative/superlative adjectives. |
-| 🔄 **Serverless Link Sync** | Instant bidirectional synchronization using compact `OX6` binary codes without an account or server. |
+| 🔄 **Cloud & Offline Sync** | Instant Google & Email Cloud Sync, plus compact zero-login `OX6` binary sync links. |
 | 🌐 **12 Global Languages** | Fully localized interface and word translations across 12 world languages. |
-| ⚡ **Offline-First Build** | Fully self-contained single HTML release file (~4.14 MB) that runs anywhere without internet. |
+| ⚡ **Offline-First Build** | Fully self-contained single HTML release file that runs anywhere without internet. |
+
+<p align="center">
+  <a href="https://sofyanol.github.io/oxford-5000-words/" title="Open Oxford 5000 Live Web App">
+    <img src="docs/assets/quiz-modes.svg" alt="Oxford 5000 Interactive Quiz Modes" width="100%">
+  </a>
+</p>
 
 <hr>
 
@@ -179,7 +128,31 @@ If Oxford 5000 helps you learn English, prepare for exams (IELTS, TOEFL, Cambrid
 ## 📜 Previous Release Highlights
 
 <details>
-<summary><b>📦 Update 1.2 — Full Dataset & Native Dual Pronunciation</b></summary>
+<summary><b>🔥 Update 1.4 — Spaced Habits, Spelling Quiz &amp; Word Match</b></summary>
+<br>
+
+- **Daily Study Habit, Goals &amp; Streak Counter**: Track daily study streaks in `localStorage`, set daily card targets (10, 20, 50, or 100), and celebrate reaching goals with confetti.
+- **Audio Playback Speed &amp; Auto-Pronounce**: Toggle audio speeds (`1.0x`, `0.8x`, `0.6x`) on pronunciation buttons for clear slow articulation.
+- **Interactive Spelling &amp; Writing Quiz Mode**: Test active recall by listening to audio, reading contextual cloze sentences, and typing the missing word with phonetic IPA hints.
+- **Fast-Paced Word Match Challenge**: Engaging memory-match mini-game against a 45s timer with Web Audio sound effects and combo multipliers.
+- **Visual Learning Analytics &amp; CEFR Radar**: Interactive SVG pentagon radar chart tracking CEFR levels (A1-C1) and Leitner SRS distribution.
+- **One-Click Export to Anki (TSV)**: Export Unknown words, Due reviews, or custom sets into Anki-ready TSV files with standard import headers.
+- **Progressive Web App (PWA) Offline Support**: Installable on desktop and mobile with `manifest.webmanifest` and cache-first `sw.js`.
+</details>
+
+<details>
+<summary><b>⚡ Update 1.3 — Speed Race, Listening Quiz &amp; Word Explorer</b></summary>
+<br>
+
+- **Speed Race Mode (Time Attack)**: 30-second rapid vocabulary recall quiz with +2s time bonus per correct answer and animated float badges.
+- **Audio-Only Listening Quiz Mode**: Ear-training mode without seeing written text, testing pure auditory recognition.
+- **Smart Word Explorer &amp; Advanced Search**: 8 sorting algorithms (A-Z, CEFR, Due, Frequency) and category filter chips.
+- **Custom Word, Sentence, and Forms Editor**: Personalize definitions, examples, and translations locally in browser storage.
+- **Floating "What's New" Star Badge &amp; Complete Written Site Guide**: 3-tab modal with site guide, release notes, and cumulative changelog.
+</details>
+
+<details>
+<summary><b>📦 Update 1.2 — Full Dataset &amp; Native Dual Pronunciation</b></summary>
 <br>
 
 - Expanded vocabulary dataset to **5,325 Oxford entries** with unique `id` primary keys.
