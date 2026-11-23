@@ -11745,6 +11745,7 @@ function saveState(){
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     hideStorageWarning();
+    if(typeof scheduleCloudSync === 'function') scheduleCloudSync();
     return true;
   }catch(e){
     showStorageWarning();
@@ -13673,6 +13674,88 @@ function openSyncModal(){
     const btn = document.getElementById('closeSync');
     if(btn) btn.focus();
   });
+  if(window.navigator.onLine){
+    ensureFirebaseLoaded().catch(() => {});
+  }
+}
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCSvGmf8ADwHDWtzAOAIsYIMtsd_iNXMnY",
+  authDomain: "oxford-5000-12610.firebaseapp.com",
+  projectId: "oxford-5000-12610",
+  storageBucket: "oxford-5000-12610.firebasestorage.app",
+  messagingSenderId: "883765574631",
+  appId: "1:883765574631:web:38cf53b818675309601b42"
+};
+
+let fbApp = null;
+let fbAuth = null;
+let fbDb = null;
+let isFbInitializing = false;
+let autoCloudSyncTimeout = null;
+
+function loadExternalScript(src){
+  return new Promise((resolve, reject) => {
+    if(document.querySelector(`script[src="${src}"]`)) return resolve();
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function ensureFirebaseLoaded(){
+  if(fbAuth && fbDb) return true;
+  if(isFbInitializing){
+    for(let i=0; i<35; i++){
+      await new Promise(r => setTimeout(r, 100));
+      if(fbAuth && fbDb) return true;
+    }
+  }
+  isFbInitializing = true;
+  try {
+    if(!window.firebase || !window.firebase.auth || !window.firebase.firestore){
+      await loadExternalScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+      await loadExternalScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js');
+      await loadExternalScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js');
+    }
+    if(!window.firebase) throw new Error('Firebase SDK could not be loaded.');
+    if(!window.firebase.apps.length){
+      fbApp = window.firebase.initializeApp(FIREBASE_CONFIG);
+    } else {
+      fbApp = window.firebase.app();
+    }
+    fbAuth = window.firebase.auth();
+    fbDb = window.firebase.firestore();
+
+    fbAuth.onAuthStateChanged(async (user) => {
+      if(user){
+        const userData = {
+          uid: user.uid,
+          displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Learner'),
+          email: user.email || '',
+          photoURL: user.photoURL || '',
+          provider: (user.providerData && user.providerData[0]) ? user.providerData[0].providerId : 'custom',
+          lastSync: Date.now()
+        };
+        saveCloudUser(userData);
+        renderCloudUserState();
+        await syncWithCloudDocument(user.uid);
+      } else {
+        saveCloudUser(null);
+        renderCloudUserState();
+      }
+    });
+
+    isFbInitializing = false;
+    return true;
+  } catch(err){
+    console.warn('Firebase init (offline or blocked):', err);
+    isFbInitializing = false;
+    return false;
+  }
 }
 
 function getCloudUser(){
@@ -13689,6 +13772,87 @@ function saveCloudUser(u){
     if(u) localStorage.setItem('oxford_cloud_user', JSON.stringify(u));
     else localStorage.removeItem('oxford_cloud_user');
   } catch(e){}
+}
+
+function scheduleCloudSync(){
+  const user = getCloudUser();
+  if(!user || !user.uid || !fbDb || !window.navigator.onLine) return;
+  if(autoCloudSyncTimeout) clearTimeout(autoCloudSyncTimeout);
+  autoCloudSyncTimeout = setTimeout(() => {
+    syncWithCloudDocument(user.uid);
+  }, 2500);
+}
+
+async function syncWithCloudDocument(uid){
+  if(!fbDb) return;
+  const badge = document.getElementById('cloudSyncBadge');
+  const syncTime = document.getElementById('cloudLastSyncTime');
+  const status = document.getElementById('cloudSyncStatus');
+
+  if(badge){
+    badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'جاري المزامنة... 🔄' : 'Syncing... 🔄') + '</span>';
+  }
+
+  try {
+    const docRef = fbDb.collection('users').doc(uid);
+    const snap = await docRef.get();
+
+    if(snap.exists){
+      const remoteData = snap.data();
+      if(remoteData && remoteData.state){
+        state = mergeStates(state, remoteData.state);
+        saveState();
+        refreshOpenModals();
+        renderStats();
+      }
+    }
+
+    await docRef.set({
+      uid: uid,
+      updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+      clientTimestamp: Date.now(),
+      state: {
+        marks: state.marks || {},
+        notes: state.notes || {},
+        streak: state.streak || {},
+        custom: state.custom || {},
+        badges: state.badges || {},
+        ui: {
+          currentLevel: (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'All',
+          lang: (state.ui && state.ui.lang) ? state.ui.lang : 'en'
+        }
+      }
+    }, { merge: true });
+
+    const u = getCloudUser();
+    if(u){
+      u.lastSync = Date.now();
+      saveCloudUser(u);
+    }
+    if(badge){
+      badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'سحابي متزامن 🟢' : 'Cloud Synced 🟢') + '</span>';
+    }
+    if(syncTime){
+      syncTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    if(status){
+      status.innerHTML = (state.ui && state.ui.lang === 'ar')
+        ? '✅ <b>اكتملت المزامنة السحابية بنجاح!</b> كلماتك وتقدمك في أمان تام.'
+        : '✅ <b>Cloud sync completed!</b> Your progress and words are safely backed up.';
+      status.style.color = 'var(--teal-deep)';
+    }
+  } catch(err){
+    console.error('Cloud sync error:', err);
+    if(badge){
+      badge.innerHTML = '<span class="pulse-dot" style="background:#ef4444"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'تعذر الاتصال ⚠️' : 'Offline / Error ⚠️') + '</span>';
+    }
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? '⚠️ تعذر الاتصال بالسحابة حالياً، تقدمك محفوظ على جهازك بأمان.'
+        : '⚠️ Cloud sync unavailable, progress is safely preserved locally.';
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
 }
 
 function renderCloudUserState(){
@@ -13738,33 +13902,48 @@ function renderCloudUserState(){
   }
 }
 
-function handleGoogleSignIn(){
+async function handleGoogleSignIn(){
   const status = document.getElementById('cloudAuthStatus');
   if(status){
-    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري تسجيل الدخول بحساب Google... ⏳' : 'Signing in with Google... ⏳';
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الاتصال بـ Google... ⏳' : 'Connecting to Google... ⏳';
     status.style.color = '#1f6f6d';
   }
-  setTimeout(() => {
-    const user = {
-      uid: 'goog_' + Date.now(),
-      displayName: 'مستخدم Google',
-      email: 'user@gmail.com',
-      provider: 'google.com',
-      lastSync: Date.now()
-    };
-    saveCloudUser(user);
-    renderCloudUserState();
-    const syncStatus = document.getElementById('cloudSyncStatus');
-    if(syncStatus){
-      syncStatus.innerHTML = (state.ui && state.ui.lang === 'ar')
-        ? '✅ <b>تم تسجيل الدخول بنجاح!</b> تم ربط تقدمك السحابي وحفظ 5,325 كلمة بأمان.'
-        : '✅ <b>Signed in successfully!</b> Cloud sync is active and protecting your progress.';
-      syncStatus.style.color = 'var(--teal-deep)';
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر تحميل خدمات Google، تحقق من اتصال الإنترنت.' : '⚠️ Could not load Google services, check internet.';
+      status.style.color = 'var(--brick-deep)';
     }
-  }, 600);
+    return;
+  }
+
+  try {
+    const provider = new window.firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    await fbAuth.signInWithPopup(provider);
+  } catch(err){
+    console.warn('Google sign in popup failed or blocked:', err);
+    if(err && err.code === 'auth/popup-blocked'){
+      try {
+        const provider = new window.firebase.auth.GoogleAuthProvider();
+        await fbAuth.signInWithRedirect(provider);
+        return;
+      } catch(redirectErr){
+        console.error('Redirect sign in failed:', redirectErr);
+      }
+    }
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? (err.code === 'auth/popup-closed-by-user' ? 'تم إغلاق نافذة الدخول.' : '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع'))
+        : (err.code === 'auth/popup-closed-by-user' ? 'Sign-in window closed.' : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error'));
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
 }
 
-function handleEmailSignIn(){
+async function handleEmailSignIn(){
   const emailInput = document.getElementById('cloudEmail');
   const passInput = document.getElementById('cloudPassword');
   const status = document.getElementById('cloudAuthStatus');
@@ -13793,27 +13972,33 @@ function handleEmailSignIn(){
     status.style.color = '#1f6f6d';
   }
 
-  setTimeout(() => {
-    const user = {
-      uid: 'mail_' + btoa(email).replace(/=/g, '').slice(0, 12),
-      displayName: email.split('@')[0],
-      email: email,
-      provider: 'password',
-      lastSync: Date.now()
-    };
-    saveCloudUser(user);
-    renderCloudUserState();
-    const syncStatus = document.getElementById('cloudSyncStatus');
-    if(syncStatus){
-      syncStatus.innerHTML = (state.ui && state.ui.lang === 'ar')
-        ? '✅ <b>تم تسجيل الدخول بنجاح!</b> حسابك نشط ومتزامن سحابياً.'
-        : '✅ <b>Signed in successfully!</b> Your account is active and cloud synced.';
-      syncStatus.style.color = 'var(--teal-deep)';
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر الاتصال بالخادم، تحقق من اتصالك بالإنترنت.' : '⚠️ Server connection failed, check internet.';
+      status.style.color = 'var(--brick-deep)';
     }
-  }, 500);
+    return;
+  }
+
+  try {
+    await fbAuth.signInWithEmailAndPassword(email, pass);
+  } catch(err){
+    console.error('Email sign-in failed:', err);
+    let msg = err.message || 'فشل تسجيل الدخول';
+    if(err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'البريد أو كلمة المرور غير صحيحة.' : 'Incorrect email or password.';
+    } else if(err.code === 'auth/too-many-requests'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'محاولات كثيرة خاطئة، يرجى الانتظار قليلاً.' : 'Too many attempts, please wait.';
+    }
+    if(status){
+      status.textContent = '⚠️ ' + msg;
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
 }
 
-function handleEmailSignUp(){
+async function handleEmailSignUp(){
   const emailInput = document.getElementById('cloudEmail');
   const passInput = document.getElementById('cloudPassword');
   const status = document.getElementById('cloudAuthStatus');
@@ -13842,27 +14027,33 @@ function handleEmailSignUp(){
     status.style.color = '#1f6f6d';
   }
 
-  setTimeout(() => {
-    const user = {
-      uid: 'mail_' + btoa(email).replace(/=/g, '').slice(0, 12),
-      displayName: email.split('@')[0],
-      email: email,
-      provider: 'password',
-      lastSync: Date.now()
-    };
-    saveCloudUser(user);
-    renderCloudUserState();
-    const syncStatus = document.getElementById('cloudSyncStatus');
-    if(syncStatus){
-      syncStatus.innerHTML = (state.ui && state.ui.lang === 'ar')
-        ? '🎉 <b>مبارك! تم إنشاء حسابك بنجاح</b>، وتمت مزامنة تقدمك الحالي بالكامل.'
-        : '🎉 <b>Success! Account created</b> and your progress is fully synced.';
-      syncStatus.style.color = 'var(--teal-deep)';
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر الاتصال بالخادم، تحقق من اتصالك بالإنترنت.' : '⚠️ Server connection failed, check internet.';
+      status.style.color = 'var(--brick-deep)';
     }
-  }, 600);
+    return;
+  }
+
+  try {
+    await fbAuth.createUserWithEmailAndPassword(email, pass);
+  } catch(err){
+    console.error('Email sign-up failed:', err);
+    let msg = err.message || 'فشل إنشاء الحساب';
+    if(err.code === 'auth/email-already-in-use'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'هذا البريد مسجل مسبقاً، يرجى تسجيل الدخول.' : 'This email is already in use, please sign in.';
+    } else if(err.code === 'auth/weak-password'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'كلمة المرور ضعيفة جداً.' : 'Password is too weak.';
+    }
+    if(status){
+      status.textContent = '⚠️ ' + msg;
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
 }
 
-function handleForgotPassword(){
+async function handleForgotPassword(){
   const emailInput = document.getElementById('cloudEmail');
   const status = document.getElementById('cloudAuthStatus');
   const email = emailInput ? emailInput.value.trim() : '';
@@ -13876,54 +14067,54 @@ function handleForgotPassword(){
     if(emailInput) emailInput.focus();
     return;
   }
-  if(status){
-    status.innerHTML = (state.ui && state.ui.lang === 'ar')
-      ? `📩 تم إرسال تعليمات إعادة تعيين كلمة المرور إلى <b>${email}</b>.`
-      : `📩 Password reset instructions were sent to <b>${email}</b>.`;
-    status.style.color = 'var(--teal-deep)';
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر الاتصال، يرجى التأكد من اتصال الإنترنت.' : '⚠️ Connection failed, check internet.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    await fbAuth.sendPasswordResetEmail(email);
+    if(status){
+      status.innerHTML = (state.ui && state.ui.lang === 'ar')
+        ? `📩 تم إرسال رابط إعادة تعيين كلمة المرور إلى <b>${email}</b>.`
+        : `📩 Password reset link sent to <b>${email}</b>.`;
+      status.style.color = 'var(--teal-deep)';
+    }
+  } catch(err){
+    console.error('Password reset failed:', err);
+    if(status){
+      status.textContent = '⚠️ ' + (err.message || 'تعذر إرسال رابط الاستعادة');
+      status.style.color = 'var(--brick-deep)';
+    }
   }
 }
 
-function handleCloudSignOut(){
+async function handleCloudSignOut(){
   const msg = (state.ui && state.ui.lang === 'ar')
     ? 'هل تريد بالتأكيد تسجيل الخروج من حسابك السحابي؟ (سيبقى تقدمك محفوظاً على جهازك)'
     : 'Are you sure you want to sign out? (Your progress will stay safe on this device)';
   if(confirm(msg)){
+    if(fbAuth){
+      try { await fbAuth.signOut(); } catch(e){}
+    }
     saveCloudUser(null);
     renderCloudUserState();
   }
 }
 
-function handleForceCloudSync(){
-  const badge = document.getElementById('cloudSyncBadge');
-  const status = document.getElementById('cloudSyncStatus');
-  const syncTime = document.getElementById('cloudLastSyncTime');
-  if(badge){
-    badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'جاري المزامنة... 🔄' : 'Syncing... 🔄') + '</span>';
+async function handleForceCloudSync(){
+  const user = getCloudUser();
+  if(!user || !user.uid){
+    renderCloudUserState();
+    return;
   }
-  if(status){
-    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري مزامنة البطاقات مع السحابة... ⏳' : 'Syncing flashcards with cloud... ⏳';
-    status.style.color = '#1f6f6d';
-  }
-  setTimeout(() => {
-    const u = getCloudUser();
-    if(u){
-      u.lastSync = Date.now();
-      saveCloudUser(u);
-    }
-    if(badge){
-      badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'سحابي متزامن 🟢' : 'Cloud Synced 🟢') + '</span>';
-    }
-    if(syncTime){
-      syncTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    }
-    if(status){
-      status.innerHTML = (state.ui && state.ui.lang === 'ar')
-        ? '✅ <b>اكتملت المزامنة بنجاح!</b> كل بياناتك متطابقة ومحمية على السحابة.'
-        : '✅ <b>Sync complete!</b> All vocabulary data is synchronized and secure.';
-      status.style.color = 'var(--teal-deep)';
-    }
-  }, 700);
+  await ensureFirebaseLoaded();
+  await syncWithCloudDocument(user.uid);
 }
 
 function wireCloudAuthEvents(){
@@ -18775,6 +18966,9 @@ initHeaderCollapse();
 initTheme();
 wireV15ToolbarAndModals();
 if(location.hash !== '#selftest') applyHashSync();
+if(location.hash !== '#selftest' && getCloudUser() && window.navigator.onLine){
+  ensureFirebaseLoaded().catch(() => {});
+}
 
 if(location.hash === '#selftest'){
   selfTest();
