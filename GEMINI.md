@@ -7,26 +7,17 @@
 
 ## 1. Golden Rules Established by Project Owner
 
-### Rule 0: Autonomous One-Command Release Trigger (Directive for 'اطلق التحديث' / 'انشر التحديث')
+### Rule 0: Autonomous Release Publishing (Directive for 'اطلق التحديث' / 'انشر التحديث')
 - **The project owner does not know programming or technical details**. When the user says phrases like:
   - `"اطلق التحديث"` / `"انشر التحديث"` / `"ارفع التحديث"` / `"انشر في قيت هوب"`
-  - `"حدث المشروع وجهز التحديث الجديد"` / `"Release the update"` / `"Publish the update"`
-- **The AI agent MUST execute the entire release and next-version transition automatically without asking the user for technical steps or commands**:
-  ```powershell
-  # Run from project folder:
-  python tools/publish_and_bump.py --publish
-  # (or from root workspace: python publish_and_bump.py --publish)
-  ```
-- **What this command does autonomously**:
+  - `"Release the update"` / `"Publish the update"`
+- **The AI agent MUST execute the publishing workflow cleanly and autonomously without technical friction**:
   1. Compiles standalone bundle (`python build/build.py`).
   2. Runs browser verification test (`python tools/verify_selftest.py`) -> ensures `SELFTEST PASS`.
-  3. Commits current release, creates Git tag (e.g. `v1.6.0`), and pushes to GitHub `master` and `main`.
-  4. Archives snapshot to `0- update/oxford5000-app <version> coding`.
-  5. Automatically renames project directory to the next version (e.g. `oxford5000-app 1.6 coding`).
-  6. Automatically updates all internal project files (`sw.js` cache, `data/i18n.json` in 12 languages, `src/index.html`, `src/app.js`, `docs/CHANGELOG.md`, `ALL_UPDATES_CHANGELOG.md`, `README.md`, `GEMINI.md`, `RELEASE_NOTES_v<next>.md`).
-  7. Re-compiles new baseline, syncs `publish/index.html` to root `index.html`.
-  8. Commits new version environment to Git and pushes to `master` and `main`.
-  9. Replies to the user in friendly Arabic explaining that the update was published and the project is fully prepared for the next update.
+  3. Commits current release, creates Git tag (e.g. `v1.5.0`), and pushes to GitHub `master` and `main`.
+  4. Publishes official GitHub Release with release notes via GitHub Releases API.
+  5. Syncs `publish/index.html` to root `index.html`.
+  6. **Note**: Premature automated folder renaming, automatic backups, and arbitrary version bumping have been permanently cancelled per the project owner's instruction. The project files and active folder name remain stable until the user explicitly requests changes.
 
 ### Rule 1: 100% English for Repository & Code (Strict Requirement)
 - **All repository-facing content MUST be 100% in English**:

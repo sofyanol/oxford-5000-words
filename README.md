@@ -40,6 +40,9 @@
 Update 1.5 is a monumental milestone introducing secure multi-device cloud accounts, hands-free audio study, milestone badges, printable study sets, and atmospheric soundscapes:
 
 * ☁️ **Cloud Account Sync & Multi-Device Authentication (Headline Feature)**:
+  <p align="center">
+    <img src="docs/assets/auth-sync-showcase.svg" alt="Oxford 5000 Cloud Account Sync and Multi-Device Authentication" width="100%">
+  </p>
   * **Seamless Google Sign-In & Email Authentication**: Sign in with one tap via Google (`Continue with Google`) or personal email/password to seamlessly back up and synchronize all your study progress, mastered vocabulary, and daily streak counts across mobile and desktop.
   * **Zero-Knowledge Privacy & Permanent Encryption**: Built with Google Firebase & Cloud Firestore security rules guaranteeing that every learner can only access their own private progress document.
   * **Realtime Cloud Indicator**: Live status badge (`🟢 Cloud Synced`) with automatic background synchronization upon answering cards.
