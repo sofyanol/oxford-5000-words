@@ -5162,7 +5162,8 @@ The browser developer console will output SELFTEST PASS upon successful verifica
           <h4 class="cloud-auth-title" data-i18n="sync.cloud.title">المزامنة السحابية الفورية ☁️</h4>
           <p class="cloud-auth-desc" data-i18n="sync.cloud.desc">احفظ تقدمك وكلماتك تلقائياً وسجل دخولك من أي جهاز لمتابعة دراستك بسلاسة وبأمان تام.</p>
 
-          <button type="button" class="google-auth-btn" id="btnGoogleSignIn">
+          <div id="googleGsiContainer" style="display:flex;justify-content:center;margin:10px auto;min-height:44px;"></div>
+          <button type="button" class="google-auth-btn" id="btnGoogleSignIn" style="display:none;">
             <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
@@ -13704,6 +13705,7 @@ function openSyncModal(){
   });
   if(window.navigator.onLine){
     ensureFirebaseLoaded().catch(() => {});
+    initGoogleIdentityServices().catch(() => {});
   }
 }
 
@@ -13715,6 +13717,74 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "883765574631",
   appId: "1:883765574631:web:38cf53b818675309601b42"
 };
+
+const GOOGLE_CLIENT_ID = "883765574631-5cmpe3a36kk65b8hnl072ivt09vdblqu.apps.googleusercontent.com";
+let isGsiLoaded = false;
+
+async function initGoogleIdentityServices(){
+  if(!window.navigator.onLine) return;
+  const container = document.getElementById('googleGsiContainer');
+  const fallbackBtn = document.getElementById('btnGoogleSignIn');
+  try {
+    if(!window.google || !window.google.accounts || !window.google.accounts.id){
+      await loadExternalScript('https://accounts.google.com/gsi/client');
+    }
+    if(window.google && window.google.accounts && window.google.accounts.id){
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        itp_support: true
+      });
+      if(container){
+        container.innerHTML = '';
+        window.google.accounts.id.renderButton(container, {
+          theme: 'outline',
+          size: 'large',
+          type: 'standard',
+          shape: 'pill',
+          text: 'continue_with',
+          logo_alignment: 'left',
+          width: 290
+        });
+        if(fallbackBtn) fallbackBtn.style.display = 'none';
+        isGsiLoaded = true;
+      }
+    }
+  } catch(e){
+    console.warn('GSI init failed, showing fallback button:', e);
+    if(fallbackBtn) fallbackBtn.style.display = 'inline-flex';
+  }
+}
+
+async function handleGoogleCredentialResponse(response){
+  const status = document.getElementById('cloudAuthStatus');
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحقق وتسجيل الدخول السحابي... ⏳' : 'Verifying and signing in... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر تحميل خدمات السحابة، تحقق من اتصالك.' : '⚠️ Cloud services unavailable, check connection.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    const credential = window.firebase.auth.GoogleAuthProvider.credential(response.credential);
+    await fbAuth.signInWithCredential(credential);
+  } catch(err){
+    console.error('Credential sign-in failed:', err);
+    if(status){
+      status.textContent = '⚠️ ' + (err.message || 'تعذر تسجيل الدخول');
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
 
 let fbApp = null;
 let fbAuth = null;
@@ -13951,9 +14021,15 @@ function renderCloudUserState(){
 }
 
 async function handleGoogleSignIn(){
+  if(window.google && window.google.accounts && window.google.accounts.id){
+    try {
+      window.google.accounts.id.prompt();
+      return;
+    } catch(e){}
+  }
   const status = document.getElementById('cloudAuthStatus');
   if(status){
-    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحويل المباشر إلى Google... ⏳' : 'Redirecting to Google... ⏳';
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الاتصال بـ Google... ⏳' : 'Connecting to Google... ⏳';
     status.style.color = '#1f6f6d';
   }
 
@@ -13970,12 +14046,13 @@ async function handleGoogleSignIn(){
     const provider = new window.firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
     provider.addScope('email');
-    provider.setCustomParameters({ prompt: 'select_account' });
-    await fbAuth.signInWithRedirect(provider);
+    await fbAuth.signInWithPopup(provider);
   } catch(err){
-    console.error('Google sign-in redirect failed:', err);
+    console.warn('Google sign in failed:', err);
     if(status){
-      status.textContent = '⚠️ ' + (err.message || 'Google sign-in error');
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? (err.code === 'auth/popup-closed-by-user' ? 'تم إغلاق نافذة الدخول.' : '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع'))
+        : (err.code === 'auth/popup-closed-by-user' ? 'Sign-in window closed.' : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error'));
       status.style.color = 'var(--brick-deep)';
     }
   }

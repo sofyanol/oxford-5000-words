@@ -3720,6 +3720,7 @@ function openSyncModal(){
   });
   if(window.navigator.onLine){
     ensureFirebaseLoaded().catch(() => {});
+    initGoogleIdentityServices().catch(() => {});
   }
 }
 
@@ -3731,6 +3732,74 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "883765574631",
   appId: "1:883765574631:web:38cf53b818675309601b42"
 };
+
+const GOOGLE_CLIENT_ID = "883765574631-5cmpe3a36kk65b8hnl072ivt09vdblqu.apps.googleusercontent.com";
+let isGsiLoaded = false;
+
+async function initGoogleIdentityServices(){
+  if(!window.navigator.onLine) return;
+  const container = document.getElementById('googleGsiContainer');
+  const fallbackBtn = document.getElementById('btnGoogleSignIn');
+  try {
+    if(!window.google || !window.google.accounts || !window.google.accounts.id){
+      await loadExternalScript('https://accounts.google.com/gsi/client');
+    }
+    if(window.google && window.google.accounts && window.google.accounts.id){
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        itp_support: true
+      });
+      if(container){
+        container.innerHTML = '';
+        window.google.accounts.id.renderButton(container, {
+          theme: 'outline',
+          size: 'large',
+          type: 'standard',
+          shape: 'pill',
+          text: 'continue_with',
+          logo_alignment: 'left',
+          width: 290
+        });
+        if(fallbackBtn) fallbackBtn.style.display = 'none';
+        isGsiLoaded = true;
+      }
+    }
+  } catch(e){
+    console.warn('GSI init failed, showing fallback button:', e);
+    if(fallbackBtn) fallbackBtn.style.display = 'inline-flex';
+  }
+}
+
+async function handleGoogleCredentialResponse(response){
+  const status = document.getElementById('cloudAuthStatus');
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحقق وتسجيل الدخول السحابي... ⏳' : 'Verifying and signing in... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر تحميل خدمات السحابة، تحقق من اتصالك.' : '⚠️ Cloud services unavailable, check connection.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    const credential = window.firebase.auth.GoogleAuthProvider.credential(response.credential);
+    await fbAuth.signInWithCredential(credential);
+  } catch(err){
+    console.error('Credential sign-in failed:', err);
+    if(status){
+      status.textContent = '⚠️ ' + (err.message || 'تعذر تسجيل الدخول');
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
 
 let fbApp = null;
 let fbAuth = null;
@@ -3967,9 +4036,15 @@ function renderCloudUserState(){
 }
 
 async function handleGoogleSignIn(){
+  if(window.google && window.google.accounts && window.google.accounts.id){
+    try {
+      window.google.accounts.id.prompt();
+      return;
+    } catch(e){}
+  }
   const status = document.getElementById('cloudAuthStatus');
   if(status){
-    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحويل المباشر إلى Google... ⏳' : 'Redirecting to Google... ⏳';
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الاتصال بـ Google... ⏳' : 'Connecting to Google... ⏳';
     status.style.color = '#1f6f6d';
   }
 
@@ -3986,12 +4061,13 @@ async function handleGoogleSignIn(){
     const provider = new window.firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
     provider.addScope('email');
-    provider.setCustomParameters({ prompt: 'select_account' });
-    await fbAuth.signInWithRedirect(provider);
+    await fbAuth.signInWithPopup(provider);
   } catch(err){
-    console.error('Google sign-in redirect failed:', err);
+    console.warn('Google sign in failed:', err);
     if(status){
-      status.textContent = '⚠️ ' + (err.message || 'Google sign-in error');
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? (err.code === 'auth/popup-closed-by-user' ? 'تم إغلاق نافذة الدخول.' : '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع'))
+        : (err.code === 'auth/popup-closed-by-user' ? 'Sign-in window closed.' : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error'));
       status.style.color = 'var(--brick-deep)';
     }
   }
