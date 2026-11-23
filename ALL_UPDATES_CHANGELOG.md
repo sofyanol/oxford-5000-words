@@ -1,9 +1,76 @@
-# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.4)
+# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.5)
 
 A friendly, offline-first vocabulary companion for learners who want to build a strong English foundation one word at a time.
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/  
-**Latest release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
+**Current active milestone:** Update 1.5 (In Development) • **Previous stable release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
+
+---
+
+## Update 1.5
+
+Update 1.5 is a landmark release introducing an expansive study, cloud sync, and focus ecosystem alongside high-end visual aesthetics and hardened code quality:
+
+- **Cloud Account Sync & Multi-Device Authentication (☁️)**:
+  - Instant account authentication via Google Sign-In (`المتابعة بحساب Google 🌐`) or Email/Password.
+  - Real-time cloud sync status indicator (`🟢 Cloud Synced`) with automated multi-device progress merge.
+  - Visual profile dashboard displaying mastered vocabulary count, study streak 🔥, and active CEFR level.
+  - Preserves offline-first zero-login manual sync as an alternative tab for privacy-conscious users.
+
+- **Private In-App Direct Feedback & Suggestion Center (💬)**:
+  - User feedback modal allowing learners to submit suggestions, bug reports, and vocabulary corrections directly from within the app.
+  - Automatically attaches the currently active vocabulary word as context for instant diagnosis.
+  - Direct, private encrypted delivery to the project owner without public repository exposure.
+
+- **Streamlined 4-Button Primary Toolbar & Tools Hub Drawer (⚡)**:
+  - Ergonomic primary action row with 4 prominent learning buttons (Quiz 📝, Match 🧩, Hands-Free 🎧, Tools Hub ⚡).
+  - Smooth collapsible drawer categorizing focus tools (Badges, Analytics, Leech Deck, Ambient Sounds, Print) and deck management (Sync, Shuffle, Download, Reset).
+
+- **Complete Mobile & Tablet Viewport Overhaul (📱)**:
+  - Resolved mobile floating button collisions: moved utility badges into a balanced inline footer layout.
+  - Ergonomic horizontal action buttons (`أعرفها ✅`, `لا أعرفها ❌`, `تراجع ↩️`) positioned directly beneath the flashcard without vertical stretching.
+  - Proportionate island header scaling and touch-friendly 2×2 button wrapping on narrow screens.
+
+- **High-Contrast Modal Readability Overhaul (👁️)**:
+  - Deep dark ink typography (`#10161f`, `#2b2011`) and pure card surfaces across Ambient, Badges, Hands-Free, Print, and Feedback modals, ending white-on-cream visibility issues.
+
+- **Universal Function Emojis (🎯)**:
+  - Contextual emojis across all interactive buttons, toolbar controls, and dialog chips across all 13 supported languages.
+
+- **Hands-Free Auto-Play Walk & Sleep Mode (🎧)**:
+  - Eyes-free vocabulary listening engine for commuting, walking, or bedtime study.
+  - Dual pronunciation sequence (UK, US, or sequential UK followed by US).
+  - Pacing interval selectors (2.0s Fast, 3.2s Normal, 5.0s Relaxed) with animated progress ring/bar.
+  - Sleep timer (15, 30, 45, 60 minutes) with graceful automatic audio shutdown.
+
+- **Gamification Badges & Milestone Achievements (🏆)**:
+  - 10 distinct unlockable milestones (First Step, Curious Mind, Habit Builder, Week Warrior, Quiz Master, Speed Racer, Orthographer, Memory Champ, CEFR Conqueror, Century Scholar).
+  - Real-time celebratory achievement toast alerts with custom icons and confetti celebrations.
+  - Interactive Badges showcase modal with overall unlock percentage and progress bars.
+
+- **Smart Focus Deck / Leech Hunter (🎯)**:
+  - Automated detection of tricky words based on review lapses and missed quiz questions.
+  - One-click targeted focus deck drill to master problematic vocabulary in isolation.
+  - Dedicated Leech Hunter modal displaying lapse frequency and CEFR level tags.
+
+- **Printable Study Sheets & Cut-Out Flashcards PDF (🖨️)**:
+  - Ink-friendly A4 print engine with dedicated `@media print` typography.
+  - Two export formats: 3×3 cut-out flashcard grids with dashed cutting guides, or structured vocabulary revision tables.
+  - Configurable inclusion of IPA phonetics, translations, and example sentences.
+
+- **Procedural Ambient Focus Soundscapes (🌧️)**:
+  - 100% procedural Web Audio API synthesizer running completely offline with 0 external audio files.
+  - Three soothing soundscapes: Gentle Rain, Cozy Fireplace, and Ocean Waves with individual volume sliders and master mute.
+
+- **Luxury OLED Pure Black & Warm Classic Sepia Themes (🎨)**:
+  - Customizable theme switcher in Settings: Default Midnight Navy & Gold, battery-saving OLED Pure Black (`#000000`), and Warm Classic Sepia.
+  - Tactile spring micro-interactions and high-definition card depth styling.
+
+- **Security & Quality Hardening (🛡️)**:
+  - 100% clean security audit with zero vulnerabilities (`eval`, dynamic `Function`, or `document.write`).
+  - 71 protected `localStorage` calls with try/catch error boundaries.
+  - 100% i18n key parity across all 12 supported languages.
+  - PWA service worker cache upgraded to `oxford5000-v1.5.0`.
 
 ---
 

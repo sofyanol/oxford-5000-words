@@ -34,7 +34,7 @@
 <meta name="theme-color" content="#0c1017">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310161f'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='25' font-weight='700' fill='%23d9a441' text-anchor='middle'%3EO5%3C/text%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev; base-uri 'none'; form-action 'none'; manifest-src 'self' data:;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://accounts.google.com https://apis.google.com https://www.gstatic.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https:; media-src 'self' file: blob: data: http: https:; connect-src https://api.telegram.org https://abacus.jasoncameron.dev https://formsubmit.co https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; base-uri 'none'; form-action 'none'; manifest-src 'self' data:;">
 <title>Oxford 5000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,33 +57,63 @@
 <div class="app">
 
   <div class="top-nav-bar" id="topNavBar">
-  <header>
-    <div class="brand">
-      <span class="eyebrow">Oxford 5000</span>
-      <h1 data-i18n="brand.title"></h1>
+    <div class="header-main-content" id="headerMainContent">
+      <header>
+        <div class="brand">
+          <span class="eyebrow">Oxford 5000</span>
+          <h1 data-i18n="brand.title"></h1>
+        </div>
+        <div class="stats">
+          <div class="lang-switch" data-i18n-title="lang.label">
+            <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.4 4 5.6 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.6-4-9s1.4-6.6 4-9z"></path></svg>
+            <button type="button" id="langSelectButton" class="lang-select-button" data-i18n-aria="lang.label" aria-haspopup="listbox" aria-expanded="false">
+              <span id="langSelectLabel"></span>
+            </button>
+            <div id="langMenu" class="lang-menu" role="listbox" aria-multiselectable="true" hidden></div>
+            <select id="langSelect" class="lang-select-native" data-i18n-aria="lang.label" tabindex="-1" aria-hidden="true"></select>
+            <span class="lang-code" id="langCode">AR</span>
+            <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+          <button type="button" class="stat-pill" id="openKnown" data-i18n-title="stat.known.title"><span class="dot know"></span><b id="knowCount">0</b></button>
+          <button type="button" class="stat-pill" id="openUnknown" data-i18n-title="stat.unknown.title"><span class="dot unknow"></span><b id="unknowCount">0</b></button>
+          <button type="button" class="stat-pill" id="openLeft" data-i18n-title="stat.left.title"><span class="dot left"></span><b id="leftCount">0</b></button>
+          <button type="button" class="stat-pill habit-pill" id="openHabit" data-i18n-title="habit.goal"><span class="habit-flame">🔥</span><b id="habitStreakCount">0</b><span class="habit-sep">·</span><span id="habitGoalProgress">0/20</span></button>
+          <button type="button" class="stat-pill sync-pill" id="openSync" data-i18n-title="sync.button"><span class="sync-icon">🔄</span><span data-i18n="sync.button">مزامنة</span></button>
+          <button type="button" class="header-toggle-btn" id="btnToggleHeaderCollapse" data-i18n-title="header.toggle" aria-label="Toggle Header">
+            <svg class="header-toggle-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M18 15l-6-6-6 6"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="level-bar" id="levelBar"></div>
     </div>
-    <div class="stats">
-      <div class="lang-switch" data-i18n-title="lang.label">
-        <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.6 2.4 4 5.6 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.6-4-9s1.4-6.6 4-9z"></path></svg>
-        <button type="button" id="langSelectButton" class="lang-select-button" data-i18n-aria="lang.label" aria-haspopup="listbox" aria-expanded="false">
-          <span id="langSelectLabel"></span>
-        </button>
-        <div id="langMenu" class="lang-menu" role="listbox" aria-multiselectable="true" hidden></div>
-        <select id="langSelect" class="lang-select-native" data-i18n-aria="lang.label" tabindex="-1" aria-hidden="true"></select>
-        <span class="lang-code" id="langCode">AR</span>
-        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+
+    <!-- Collapsed Slim Bar -->
+    <div class="header-collapsed-strip" id="headerCollapsedStrip" aria-hidden="true">
+      <div class="collapsed-left">
+        <span class="collapsed-badge">O5</span>
+        <span class="collapsed-level" id="collapsedLevelBadge">A1</span>
+        <span class="collapsed-streak"><span class="habit-flame">🔥</span><b id="collapsedStreakVal">0</b></span>
       </div>
-      <button type="button" class="stat-pill" id="openKnown" data-i18n-title="stat.known.title"><span class="dot know"></span><b id="knowCount">0</b></button>
-      <button type="button" class="stat-pill" id="openUnknown" data-i18n-title="stat.unknown.title"><span class="dot unknow"></span><b id="unknowCount">0</b></button>
-      <button type="button" class="stat-pill" id="openLeft" data-i18n-title="stat.left.title"><span class="dot left"></span><b id="leftCount">0</b></button>
-      <button type="button" class="stat-pill habit-pill" id="openHabit" data-i18n-title="habit.goal"><span class="habit-flame">🔥</span><b id="habitStreakCount">0</b><span class="habit-sep">·</span><span id="habitGoalProgress">0/20</span></button>
-      <button type="button" class="link-btn" id="openSync" data-i18n="sync.button"></button>
+      <div class="collapsed-center">
+        <span class="collapsed-counts">
+          <span class="dot know"></span><b id="collapsedKnow">0</b>
+          <span class="dot unknow"></span><b id="collapsedUnknow">0</b>
+          <span class="dot left"></span><b id="collapsedLeft">0</b>
+        </span>
+      </div>
+      <div class="collapsed-right">
+        <button type="button" class="header-expand-btn" id="btnExpandHeader" data-i18n-title="header.toggle" aria-label="Expand Header">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-  </header>
 
-  <div class="level-bar" id="levelBar"></div>
-
-  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   </div>
 
   <div id="mainArea">
@@ -193,16 +223,40 @@
   </div>
 
   <div class="toolbar" id="toolbar">
-    <div class="toolbar-grid primary-grid">
+    <!-- Primary Row: 4 key activities (Clean, prominent, uncrowded) -->
+    <div class="toolbar-grid primary-grid four-col" id="primaryToolbarGrid">
       <button class="tool-btn primary-tool quiz-tool" id="btnQuiz" data-i18n="quiz.button"></button>
       <button class="tool-btn primary-tool match-tool" id="btnMatch" data-i18n="match.button"></button>
-      <button class="tool-btn primary-tool analytics-tool" id="btnAnalytics" data-i18n="analytics.button"></button>
+      <button class="tool-btn primary-tool handsfree-tool" id="btnHandsFree" data-i18n="toolbar.handsfree"></button>
+      <button class="tool-btn primary-tool tools-hub-btn" id="btnToggleToolsHub" type="button" aria-expanded="false" data-i18n="toolbar.toolsHub">أدوات إضافية ⚡</button>
     </div>
-    <div class="toolbar-grid secondary-grid">
-      <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
-      <button class="tool-btn" id="btnShuffle"></button>
-      <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
-      <button class="tool-btn download-tool" id="btnDownload" data-i18n="toolbar.download"></button>
+
+    <!-- Collapsible Tools Drawer: Organizes extra utilities without cluttering the screen -->
+    <div class="tools-hub-drawer" id="toolsHubDrawer" hidden>
+      <div class="tools-hub-section">
+        <div class="tools-hub-heading">
+          <span class="tools-hub-badge">🎯 أدوات التعلم والتركيز</span>
+        </div>
+        <div class="tools-hub-grid">
+          <button class="tool-btn accent-tool" id="btnBadges" data-i18n="toolbar.badges"></button>
+          <button class="tool-btn primary-tool analytics-tool" id="btnAnalytics" data-i18n="analytics.button"></button>
+          <button class="tool-btn accent-tool" id="btnLeeches" data-i18n="toolbar.leeches"></button>
+          <button class="tool-btn accent-tool" id="btnAmbient" data-i18n="toolbar.ambient"></button>
+          <button class="tool-btn accent-tool" id="btnPrint" data-i18n="toolbar.print"></button>
+        </div>
+      </div>
+
+      <div class="tools-hub-section">
+        <div class="tools-hub-heading">
+          <span class="tools-hub-badge">⚙️ إدارة البطاقات والمزامنة</span>
+        </div>
+        <div class="tools-hub-grid">
+          <button class="tool-btn" id="btnSync" data-i18n="sync.button"></button>
+          <button class="tool-btn" id="btnShuffle"></button>
+          <button class="tool-btn download-tool" id="btnDownload" data-i18n="toolbar.download"></button>
+          <button class="tool-btn" id="btnReset" data-i18n="toolbar.reset"></button>
+        </div>
+      </div>
     </div>
   </div>
   </div>
@@ -280,13 +334,51 @@
 <div class="overlay" id="feedbackOverlay">
   <div class="review-panel feedback-panel" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle" tabindex="-1">
     <div class="review-head">
-      <div class="review-head-titles"><h3 id="feedbackTitle" data-i18n="feedback.title"></h3></div>
+      <div class="review-head-titles"><h3 id="feedbackTitle" data-i18n="feedback.title">إرسال ملاحظة أو اقتراح 💬</h3></div>
       <button class="review-close" id="closeFeedback" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
-    <textarea id="feedbackInput" class="feedback-input" rows="6" data-i18n-placeholder="feedback.placeholder"></textarea>
-    <p class="feedback-note" data-i18n="feedback.note"></p>
-    <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
-    <button class="tool-btn primary" id="submitFeedback" type="button" data-i18n="feedback.open"></button>
+    <div class="feedback-body">
+      <p class="feedback-desc" data-i18n="feedback.desc"></p>
+      
+      <div class="feedback-field">
+        <label class="feedback-label" data-i18n="feedback.typeLabel"></label>
+        <div class="feedback-types-grid">
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="💡 اقتراح ميزة جديدة" checked>
+            <span data-i18n="feedback.typeSuggest">💡 اقتراح</span>
+          </label>
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="📝 تصحيح كلمة أو ترجمة">
+            <span data-i18n="feedback.typeCorrection">📝 تصحيح</span>
+          </label>
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="⚠️ مشكلة فنية أو عطل">
+            <span data-i18n="feedback.typeBug">⚠️ عطل فني</span>
+          </label>
+          <label class="feedback-type-chip">
+            <input type="radio" name="feedbackType" value="💬 رسالة عامة وشكر">
+            <span data-i18n="feedback.typeOther">💬 أخرى</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="feedback-field">
+        <label class="feedback-label" for="feedbackContact" data-i18n="feedback.contactLabel"></label>
+        <input type="text" id="feedbackContact" class="feedback-text-input" placeholder="اسمك أو بريدك الإلكتروني">
+      </div>
+
+      <div class="feedback-field">
+        <label class="feedback-label" for="feedbackInput" data-i18n="feedback.messageLabel"></label>
+        <textarea id="feedbackInput" class="feedback-input" rows="4" data-i18n-placeholder="feedback.placeholder"></textarea>
+      </div>
+
+      <div class="feedback-context-tag" id="feedbackContextTag">
+        <span data-i18n="feedback.currentWord">الكلمة الحالية:</span> <b id="feedbackCurrentWord">-</b>
+      </div>
+
+      <p class="feedback-status" id="feedbackStatus" aria-live="polite"></p>
+      <button class="tool-btn primary feedback-submit-btn" id="submitFeedback" type="button" data-i18n="feedback.submit">إرسال الملاحظة 🚀</button>
+    </div>
   </div>
 </div>
 
@@ -350,7 +442,94 @@
       <button class="review-close" id="closeSync" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
     <div class="sync-body">
-      <section class="sync-section sync-quick">
+      <div class="sync-tabs-bar">
+        <button type="button" class="sync-tab-btn active" id="tabBtnCloudSync" data-i18n="sync.tab.cloud">☁️ مزامنة سحابية (حساب)</button>
+        <button type="button" class="sync-tab-btn" id="tabBtnManualSync" data-i18n="sync.tab.manual">🔗 مزامنة يدوية (بدون حساب)</button>
+      </div>
+
+      <!-- TAB 1: CLOUD ACCOUNT SYNC (DEFAULT) -->
+      <div class="sync-tab-content active" id="syncTabCloud">
+        <!-- Logged Out View -->
+        <div class="cloud-auth-box" id="cloudAuthLoggedOut">
+          <div class="cloud-hero-icon">☁️</div>
+          <h4 class="cloud-auth-title" data-i18n="sync.cloud.title">المزامنة السحابية الفورية ☁️</h4>
+          <p class="cloud-auth-desc" data-i18n="sync.cloud.desc">احفظ تقدمك وكلماتك تلقائياً وسجل دخولك من أي جهاز لمتابعة دراستك بسلاسة وبأمان تام.</p>
+
+          <div id="googleGsiContainer" style="display:flex;justify-content:center;margin:10px auto;min-height:44px;"></div>
+          <button type="button" class="google-auth-btn" id="btnGoogleSignIn" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span data-i18n="sync.cloud.google">المتابعة بحساب Google 🌐</span>
+          </button>
+
+          <div class="cloud-divider">
+            <span data-i18n="sync.cloud.or">أو باستخدام البريد الإلكتروني</span>
+          </div>
+
+          <div class="cloud-form-fields">
+            <input type="email" id="cloudEmail" class="cloud-input" data-i18n-placeholder="sync.cloud.emailPlaceholder" placeholder="بريدك الإلكتروني (name@example.com)" autocomplete="email">
+            <input type="password" id="cloudPassword" class="cloud-input" data-i18n-placeholder="sync.cloud.passwordPlaceholder" placeholder="كلمة المرور" autocomplete="current-password">
+          </div>
+
+          <div class="cloud-auth-actions">
+            <button type="button" class="tool-btn primary" id="btnCloudSignIn" data-i18n="sync.cloud.login">تسجيل الدخول 🔑</button>
+            <button type="button" class="tool-btn" id="btnCloudSignUp" data-i18n="sync.cloud.register">إنشاء حساب جديد ✨</button>
+          </div>
+          
+          <button type="button" class="cloud-forgot-btn" id="btnCloudForgot" data-i18n="sync.cloud.forgot">نسيت كلمة المرور؟ ❓</button>
+
+          <div class="cloud-status-msg" id="cloudAuthStatus" role="status"></div>
+        </div>
+
+        <!-- Logged In View -->
+        <div class="cloud-profile-box" id="cloudAuthLoggedIn" hidden>
+          <div class="cloud-profile-header">
+            <div class="cloud-avatar" id="cloudUserAvatar">👤</div>
+            <div class="cloud-profile-info">
+              <h4 class="cloud-user-name" id="cloudUserName">المستخدم</h4>
+              <p class="cloud-user-email" id="cloudUserEmail">user@example.com</p>
+              <span class="cloud-sync-badge" id="cloudSyncBadge">
+                <span class="pulse-dot"></span>
+                <span data-i18n="sync.cloud.synced">سحابي متزامن 🟢</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="cloud-stats-grid">
+            <div class="cloud-stat-card">
+              <span class="cloud-stat-val" id="cloudStatWords">0</span>
+              <span class="cloud-stat-lbl">كلمة متزامنة</span>
+            </div>
+            <div class="cloud-stat-card">
+              <span class="cloud-stat-val" id="cloudStatStreak">0 🔥</span>
+              <span class="cloud-stat-lbl">أيام الحماسة</span>
+            </div>
+            <div class="cloud-stat-card">
+              <span class="cloud-stat-val" id="cloudStatLevel">All</span>
+              <span class="cloud-stat-lbl">المستوى النشط</span>
+            </div>
+          </div>
+
+          <p class="cloud-last-sync" id="cloudLastSyncLine">
+            <span data-i18n="sync.cloud.lastSync">آخر مزامنة سحابية:</span> <b id="cloudLastSyncTime">الآن</b>
+          </p>
+
+          <div class="cloud-actions-row">
+            <button type="button" class="tool-btn primary" id="btnForceCloudSync" data-i18n="sync.cloud.syncNow">مزامنة الآن 🔄</button>
+            <button type="button" class="tool-btn danger-tool" id="btnCloudSignOut" data-i18n="sync.cloud.logout">تسجيل الخروج 🚪</button>
+          </div>
+
+          <div class="cloud-status-msg" id="cloudSyncStatus" role="status"></div>
+        </div>
+      </div>
+
+      <!-- TAB 2: MANUAL ZERO-LOGIN SYNC -->
+      <div class="sync-tab-content" id="syncTabManual" hidden>
+        <section class="sync-section sync-quick">
         <h4 data-i18n="sync.quick.heading"></h4>
         <p class="sync-note" data-i18n="sync.quick.explain"></p>
         <div class="sync-actions">
@@ -419,6 +598,7 @@
         <div class="sync-status" id="tgStatus" role="status"></div>
         <p class="sync-note" id="lastSyncLine"></p>
       </details>
+      </div><!-- /syncTabManual -->
     </div>
   </div>
 </div>
@@ -613,6 +793,14 @@
     </div>
     <div class="settings-body" style="padding:16px 22px 24px; overflow-y:auto; flex:1;">
       <div class="settings-row" style="margin-bottom:14px;">
+        <label for="settingsTheme" data-i18n="settings.theme" style="font-weight:700;display:block;margin-bottom:6px;"></label>
+        <select id="settingsTheme" style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.18);background:rgba(20,25,38,0.85);color:var(--text-on-ink);font-weight:700;font-size:13.5px;cursor:pointer;">
+          <option value="midnight" data-i18n="theme.navy">Midnight Navy & Gold (Default)</option>
+          <option value="oled" data-i18n="theme.oled">OLED Pure Black</option>
+          <option value="sepia" data-i18n="theme.sepia">Warm Classic Sepia</option>
+        </select>
+      </div>
+      <div class="settings-row" style="margin-bottom:14px;">
         <label for="settingsFontScale" data-i18n="settings.fontScale" style="font-weight:700;"></label>
         <span id="settingsFontScaleValue" style="margin-inline-start:8px;font-family:var(--font-mono);font-weight:700;">100%</span>
         <input type="range" id="settingsFontScale" min="90" max="120" step="5" value="100" style="width:100%;margin-top:6px;">
@@ -635,6 +823,235 @@
   </div>
 </div>
 
+<!-- Hands-Free Auto-Play Walk & Sleep Mode Modal -->
+<div class="overlay" id="handsFreeOverlay">
+  <div class="review-panel handsfree-panel" role="dialog" aria-modal="true" aria-labelledby="handsFreeTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="handsFreeTitle" data-i18n="toolbar.handsfree">Hands-Free Mode</h3>
+        <span class="hf-status-badge" id="hfStatusBadge">Paused</span>
+      </div>
+      <button class="review-close" id="closeHandsFree" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="handsfree-body">
+      <div class="hf-display-card">
+        <div class="hf-word-box">
+          <span class="hf-badge" id="hfCefrBadge">A1</span>
+          <h2 class="hf-word" id="hfCurrentWord">---</h2>
+          <div class="hf-ipa" id="hfCurrentIpa">/.../</div>
+          <p class="hf-tr" id="hfCurrentTr">---</p>
+        </div>
+        <div class="hf-progress-bar-wrap">
+          <div class="hf-progress-bar" id="hfProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="hf-controls">
+        <button type="button" class="hf-btn" id="btnHfPrev" title="Previous Word">⏮️</button>
+        <button type="button" class="hf-btn hf-play-btn" id="btnHfPlayPause" title="Play / Pause">▶️ Start</button>
+        <button type="button" class="hf-btn" id="btnHfNext" title="Next Word">⏭️</button>
+      </div>
+
+      <div class="hf-settings-grid">
+        <div class="hf-setting-item">
+          <label for="hfVoiceMode">Accent:</label>
+          <select id="hfVoiceMode">
+            <option value="both" selected>UK then US (Both)</option>
+            <option value="uk">UK Accent only</option>
+            <option value="us">US Accent only</option>
+          </select>
+        </div>
+        <div class="hf-setting-item">
+          <label for="hfDelaySelect">Interval:</label>
+          <select id="hfDelaySelect">
+            <option value="2000">Fast (2.0s)</option>
+            <option value="3200" selected>Normal (3.2s)</option>
+            <option value="5000">Relaxed (5.0s)</option>
+          </select>
+        </div>
+        <div class="hf-setting-item">
+          <label for="hfSleepSelect">Sleep Timer:</label>
+          <select id="hfSleepSelect">
+            <option value="0" selected>Off (Continuous)</option>
+            <option value="15">15 Minutes</option>
+            <option value="30">30 Minutes</option>
+            <option value="45">45 Minutes</option>
+            <option value="60">60 Minutes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Gamification Badges & Milestone Achievements Modal -->
+<div class="overlay" id="badgesOverlay">
+  <div class="review-panel badges-panel" role="dialog" aria-modal="true" aria-labelledby="badgesTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="badgesTitle" data-i18n="toolbar.badges">Achievements & Badges</h3>
+      </div>
+      <button class="review-close" id="closeBadges" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="badges-body">
+      <div class="badges-summary">
+        <div class="badges-progress-label">
+          <span id="badgesProgressText">0 / 10 Unlocked (0%)</span>
+          <span class="badges-trophy-icon">🏆</span>
+        </div>
+        <div class="badges-bar-wrap">
+          <div class="badges-bar" id="badgesProgressBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Smart Focus Deck / Leech Hunter Modal -->
+<div class="overlay" id="leechesOverlay">
+  <div class="review-panel leeches-panel" role="dialog" aria-modal="true" aria-labelledby="leechesTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="leechesTitle" data-i18n="toolbar.leeches">Tricky Words (Focus Deck)</h3>
+      </div>
+      <button class="review-close" id="closeLeeches" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="leeches-body">
+      <div class="leeches-header-card">
+        <div class="leeches-count-box">
+          <span class="leeches-count-num" id="leechesCountNum">0</span>
+          <span class="leeches-count-label">Words Requiring Focus</span>
+        </div>
+        <div class="leeches-actions">
+          <button type="button" class="tool-btn primary-tool" id="btnStartLeechDeck">🎯 Practice Focus Deck</button>
+          <button type="button" class="tool-btn" id="btnClearLeeches">🗑️ Clear List</button>
+        </div>
+      </div>
+      <div class="leeches-list" id="leechesList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Printable Study Sheets & Flashcards Modal -->
+<div class="overlay" id="printOverlay">
+  <div class="review-panel print-panel" role="dialog" aria-modal="true" aria-labelledby="printTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="printTitle" data-i18n="toolbar.print">Printable Study Sheets & Flashcards</h3>
+      </div>
+      <button class="review-close" id="closePrint" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="print-body">
+      <p class="print-desc">Generate crisp, ink-friendly printable flashcards or study cheat-sheets for offline review.</p>
+      <div class="print-config-group">
+        <label class="print-label">Layout Format:</label>
+        <div class="print-options-row">
+          <label class="quiz-check"><input type="radio" name="printLayout" value="grid" checked><span>Cut-out Flashcards (3×3 Grid)</span></label>
+          <label class="quiz-check"><input type="radio" name="printLayout" value="table"><span>Structured Vocabulary Table</span></label>
+        </div>
+      </div>
+      <div class="print-config-group">
+        <label class="print-label">Word Source:</label>
+        <select id="printSourceSelect" class="print-select">
+          <option value="current">Current Deck / Filter (<span id="printCurrentCount">0</span> words)</option>
+          <option value="bookmarked">Bookmarked Words Only</option>
+          <option value="leeches">Tricky Words (Focus Deck)</option>
+          <option value="a1">Level A1 Foundation Words</option>
+          <option value="a2">Level A2 Elementary Words</option>
+          <option value="b1">Level B1 Intermediate Words</option>
+          <option value="b2">Level B2 Upper-Intermediate Words</option>
+          <option value="c1">Level C1 Advanced Words</option>
+        </select>
+      </div>
+      <div class="print-config-group">
+        <label class="print-label">Content Inclusions:</label>
+        <div class="print-options-grid">
+          <label class="quiz-check"><input type="checkbox" id="printIncludeIpa" checked><span>IPA Phonetics</span></label>
+          <label class="quiz-check"><input type="checkbox" id="printIncludeTr" checked><span>Translation</span></label>
+          <label class="quiz-check"><input type="checkbox" id="printIncludeEx" checked><span>Example Sentence</span></label>
+          <label class="quiz-check"><input type="checkbox" id="printIncludeForms" checked><span>Word Forms</span></label>
+        </div>
+      </div>
+      <div class="print-action-bar">
+        <button type="button" class="tool-btn primary-tool" id="btnExecutePrint">🖨️ Open Print Preview / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ambient Focus Soundscapes Modal -->
+<div class="overlay" id="ambientOverlay">
+  <div class="review-panel ambient-panel" role="dialog" aria-modal="true" aria-labelledby="ambientTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="ambientTitle" data-i18n="toolbar.ambient">Focus Soundscapes (Procedural Lo-Fi)</h3>
+        <span class="ambient-sub-badge">100% Web Audio Synthesizer</span>
+      </div>
+      <button class="review-close" id="closeAmbient" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
+    </div>
+    <div class="ambient-body">
+      <div class="ambient-master-card">
+        <div class="ambient-master-header">
+          <span class="ambient-master-title">Master Volume</span>
+          <button type="button" class="tool-btn ambient-mute-btn" id="btnAmbientMasterToggle">🔊 Mute All</button>
+        </div>
+        <input type="range" id="ambientMasterVol" min="0" max="100" value="70" class="ambient-slider">
+      </div>
+
+      <div class="ambient-tracks">
+        <div class="ambient-track-card" id="cardAmbientRain">
+          <div class="ambient-track-header">
+            <div class="ambient-track-info">
+              <span class="ambient-icon">🌧️</span>
+              <div>
+                <strong>Gentle Rain</strong>
+                <small>Soft rhythmic rainfall</small>
+              </div>
+            </div>
+            <button type="button" class="ambient-track-toggle" id="btnToggleRain">Off</button>
+          </div>
+          <input type="range" id="volRain" min="0" max="100" value="50" class="ambient-slider">
+        </div>
+
+        <div class="ambient-track-card" id="cardAmbientFire">
+          <div class="ambient-track-header">
+            <div class="ambient-track-info">
+              <span class="ambient-icon">🔥</span>
+              <div>
+                <strong>Cozy Fireplace</strong>
+                <small>Warm crackles and soothing embers</small>
+              </div>
+            </div>
+            <button type="button" class="ambient-track-toggle" id="btnToggleFire">Off</button>
+          </div>
+          <input type="range" id="volFire" min="0" max="100" value="50" class="ambient-slider">
+        </div>
+
+        <div class="ambient-track-card" id="cardAmbientWaves">
+          <div class="ambient-track-header">
+            <div class="ambient-track-info">
+              <span class="ambient-icon">🌊</span>
+              <div>
+                <strong>Ocean Waves</strong>
+                <small>Deep hypnotic tidal swells</small>
+              </div>
+            </div>
+            <button type="button" class="ambient-track-toggle" id="btnToggleWaves">Off</button>
+          </div>
+          <input type="range" id="volWaves" min="0" max="100" value="50" class="ambient-slider">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Achievement Toast Notification Container -->
+<div id="achievementToastContainer" class="achievement-toast-container" aria-live="polite"></div>
+
+<!-- Hidden Print Area for High-Quality Printable Output -->
+<div id="printArea" class="print-area" aria-hidden="true"></div>
+
 <div class="overlay" id="whatsNewOverlay">
   <div class="review-panel whats-new-panel" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle" tabindex="-1">
     <div class="review-head whats-new-head">
@@ -647,7 +1064,7 @@
       <button class="review-close" id="closeWhatsNew" type="button" data-i18n-aria="modal.close" data-i18n-title="modal.close">✕</button>
     </div>
     <div class="whats-new-tabs" role="tablist">
-      <button type="button" class="whats-new-tab active" data-tab="tab-update14" data-i18n="whatsnew.tabNew">🌟 What's New in 1.4</button>
+      <button type="button" class="whats-new-tab active" data-tab="tab-update15" data-i18n="whatsnew.tabNew">🌟 What's New in 1.5</button>
       <button type="button" class="whats-new-tab" data-tab="tab-guide" data-i18n="whatsnew.tabGuide">📖 Complete Site Guide</button>
       <button type="button" class="whats-new-tab" data-tab="tab-archive" data-i18n="whatsnew.tabArchive">📜 Changelog Archive</button>
     </div>

@@ -1,5 +1,25 @@
 # Changelog
 
+## Update 1.5.0
+- Added Cloud Account Sync & Multi-Device Authentication (Google Sign-In & Email/Password) with real-time sync status (`🟢 Cloud Synced`), automated progress merge, and user profile management dashboard.
+- Added In-App Private Feedback & Suggestion Center with categorization (suggestions, corrections, bugs), context auto-tagging, and direct owner dispatch.
+- Added Streamlined 4-Button Primary Toolbar with Collapsible Smart Tools Hub Drawer.
+- Added Mobile Viewport Responsive Overhaul: eliminated floating badge collisions, implemented ergonomic horizontal touch controls, and optimized header proportions.
+- Added High-Contrast Modal Readability Overhaul across Ambient, Badges, Hands-Free, Print, and Feedback modals with deep dark ink on clean card surfaces.
+- Added Contextual Function Emojis across all interactive buttons in all 13 supported languages.
+- Added Hands-Free Auto-Play Walk & Sleep Mode with dual audio pacing (UK/US) and configurable sleep timer.
+- Added Gamification Badges & Milestone Achievements with 10 unlockable badges, celebratory toasts, and confetti.
+- Added Smart Focus Deck (Leech Hunter) to automatically track, isolate, and drill tricky words.
+- Added Printable Study Sheets & Cut-Out Flashcards PDF (A4 3×3 grid and structured vocabulary table).
+- Added Procedural Ambient Focus Soundscapes (Gentle Rain, Cozy Fireplace, Ocean Waves) via Web Audio API.
+- Added Luxury OLED Pure Black (`#000000`) and Warm Classic Sepia theme customizer in Settings.
+- Added Floating Island Top Header with smooth Collapse/Expand toggle.
+- Added Tactile Spring Micro-Interactions across all buttons and interactive cards.
+- Added Comprehensive Code Quality & Security Audit script (`tools/audit_code_quality.py`) with 100% pass rate.
+- Added Autonomous Release Trigger (`python tools/publish_and_bump.py --publish`).
+- Updated service worker caching to `oxford5000-v1.5.0`.
+- Updated multilingual localization across all 12 supported languages.
+
 ## Update 1.4.0
 - Added Daily Study Habit, Goals & Streak Counter (🔥) with customizable daily targets and celebration confetti.
 - Added Audio Playback Speed Selector (`1.0x`, `0.8x`, `0.6x`) and Auto-Pronounce on card navigation.

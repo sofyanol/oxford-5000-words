@@ -1789,6 +1789,7 @@ function saveState(){
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     hideStorageWarning();
+    if(typeof scheduleCloudSync === 'function') scheduleCloudSync();
     return true;
   }catch(e){
     showStorageWarning();
@@ -2714,6 +2715,7 @@ function render(){
   unknowCountEl.textContent = String(unknown);
   leftCountEl.textContent = String(total - known - unknown);
   progressFillEl.style.width = (total ? ((known + unknown) / total * 100) : 0).toFixed(2) + '%';
+  updateCollapsedStrip();
 
   const undoBtn = document.getElementById('btnUndo');
   if(undoBtn) undoBtn.disabled = state.history.length === 0;
@@ -2837,6 +2839,8 @@ function markWord(known){
   state.srs = applySrsOnMark(state.srs, id, prev, known ? 'k' : 'u', Date.now());
   bumpChanges();
   incrementDailyProgress(1);
+  if(!known && word) recordLeechWord(word);
+  checkAchievements();
 
   const card = document.getElementById('card');
   if(card) card.classList.add(known ? 'leave-left' : 'leave-right');
@@ -3708,11 +3712,580 @@ function openSyncModal(){
   lastFocused = document.activeElement;
   hideMergeSummary();
   renderSyncStatus();
+  renderCloudUserState();
   document.getElementById('syncOverlay').classList.add('show');
   requestAnimationFrame(() => {
     const btn = document.getElementById('closeSync');
     if(btn) btn.focus();
   });
+  if(window.navigator.onLine){
+    ensureFirebaseLoaded().catch(() => {});
+    initGoogleIdentityServices().catch(() => {});
+  }
+}
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCSvGmf8ADwHDWtzAOAIsYIMtsd_iNXMnY",
+  authDomain: "oxford-5000-12610.firebaseapp.com",
+  projectId: "oxford-5000-12610",
+  storageBucket: "oxford-5000-12610.firebasestorage.app",
+  messagingSenderId: "883765574631",
+  appId: "1:883765574631:web:38cf53b818675309601b42"
+};
+
+const GOOGLE_CLIENT_ID = "883765574631-5cmpe3a36kk65b8hnl072ivt09vdblqu.apps.googleusercontent.com";
+let isGsiLoaded = false;
+
+async function initGoogleIdentityServices(){
+  if(!window.navigator.onLine) return;
+  const container = document.getElementById('googleGsiContainer');
+  const fallbackBtn = document.getElementById('btnGoogleSignIn');
+  try {
+    if(!window.google || !window.google.accounts || !window.google.accounts.id){
+      await loadExternalScript('https://accounts.google.com/gsi/client');
+    }
+    if(window.google && window.google.accounts && window.google.accounts.id){
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        itp_support: true
+      });
+      if(container){
+        container.innerHTML = '';
+        window.google.accounts.id.renderButton(container, {
+          theme: 'outline',
+          size: 'large',
+          type: 'standard',
+          shape: 'pill',
+          text: 'continue_with',
+          logo_alignment: 'left',
+          width: 290
+        });
+        if(fallbackBtn) fallbackBtn.style.display = 'none';
+        isGsiLoaded = true;
+      }
+    }
+  } catch(e){
+    console.warn('GSI init failed, showing fallback button:', e);
+    if(fallbackBtn) fallbackBtn.style.display = 'inline-flex';
+  }
+}
+
+async function handleGoogleCredentialResponse(response){
+  const status = document.getElementById('cloudAuthStatus');
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحقق وتسجيل الدخول السحابي... ⏳' : 'Verifying and signing in... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر تحميل خدمات السحابة، تحقق من اتصالك.' : '⚠️ Cloud services unavailable, check connection.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    const credential = window.firebase.auth.GoogleAuthProvider.credential(response.credential);
+    await fbAuth.signInWithCredential(credential);
+  } catch(err){
+    console.error('Credential sign-in failed:', err);
+    if(status){
+      status.textContent = '⚠️ ' + (err.message || 'تعذر تسجيل الدخول');
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
+
+let fbApp = null;
+let fbAuth = null;
+let fbDb = null;
+let isFbInitializing = false;
+let autoCloudSyncTimeout = null;
+
+function loadExternalScript(src){
+  return new Promise((resolve, reject) => {
+    if(document.querySelector(`script[src="${src}"]`)) return resolve();
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function ensureFirebaseLoaded(){
+  if(fbAuth && fbDb) return true;
+  if(isFbInitializing){
+    for(let i=0; i<35; i++){
+      await new Promise(r => setTimeout(r, 100));
+      if(fbAuth && fbDb) return true;
+    }
+  }
+  isFbInitializing = true;
+  try {
+    if(!window.firebase || !window.firebase.auth || !window.firebase.firestore){
+      await loadExternalScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+      await loadExternalScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js');
+      await loadExternalScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js');
+    }
+    if(!window.firebase) throw new Error('Firebase SDK could not be loaded.');
+    if(!window.firebase.apps.length){
+      fbApp = window.firebase.initializeApp(FIREBASE_CONFIG);
+    } else {
+      fbApp = window.firebase.app();
+    }
+    fbAuth = window.firebase.auth();
+    fbDb = window.firebase.firestore();
+
+    fbAuth.onAuthStateChanged(async (user) => {
+      if(user){
+        const userData = {
+          uid: user.uid,
+          displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Learner'),
+          email: user.email || '',
+          photoURL: user.photoURL || '',
+          provider: (user.providerData && user.providerData[0]) ? user.providerData[0].providerId : 'custom',
+          lastSync: Date.now()
+        };
+        saveCloudUser(userData);
+        renderCloudUserState();
+        await syncWithCloudDocument(user.uid);
+      } else {
+        saveCloudUser(null);
+        renderCloudUserState();
+      }
+    });
+
+    try {
+      fbAuth.getRedirectResult().then(async (result) => {
+        if(result && result.user){
+          const userData = {
+            uid: result.user.uid,
+            displayName: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Learner'),
+            email: result.user.email || '',
+            photoURL: result.user.photoURL || '',
+            provider: (result.user.providerData && result.user.providerData[0]) ? result.user.providerData[0].providerId : 'google.com',
+            lastSync: Date.now()
+          };
+          saveCloudUser(userData);
+          renderCloudUserState();
+          await syncWithCloudDocument(result.user.uid);
+        }
+      }).catch((e) => {
+        console.warn('Redirect auth check:', e);
+      });
+    } catch(redirErr){}
+
+    isFbInitializing = false;
+    return true;
+  } catch(err){
+    console.warn('Firebase init (offline or blocked):', err);
+    isFbInitializing = false;
+    return false;
+  }
+}
+
+function getCloudUser(){
+  try {
+    const raw = localStorage.getItem('oxford_cloud_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch(e){
+    return null;
+  }
+}
+
+function saveCloudUser(u){
+  try {
+    if(u) localStorage.setItem('oxford_cloud_user', JSON.stringify(u));
+    else localStorage.removeItem('oxford_cloud_user');
+  } catch(e){}
+}
+
+function scheduleCloudSync(){
+  const user = getCloudUser();
+  if(!user || !user.uid || !fbDb || !window.navigator.onLine) return;
+  if(autoCloudSyncTimeout) clearTimeout(autoCloudSyncTimeout);
+  autoCloudSyncTimeout = setTimeout(() => {
+    syncWithCloudDocument(user.uid);
+  }, 2500);
+}
+
+async function syncWithCloudDocument(uid){
+  if(!fbDb) return;
+  const badge = document.getElementById('cloudSyncBadge');
+  const syncTime = document.getElementById('cloudLastSyncTime');
+  const status = document.getElementById('cloudSyncStatus');
+
+  if(badge){
+    badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'جاري المزامنة... 🔄' : 'Syncing... 🔄') + '</span>';
+  }
+
+  try {
+    const docRef = fbDb.collection('users').doc(uid);
+    const snap = await docRef.get();
+
+    if(snap.exists){
+      const remoteData = snap.data();
+      if(remoteData && remoteData.state){
+        state = mergeStates(state, remoteData.state);
+        saveState();
+        buildLevelBar();
+        render();
+        refreshOpenModals();
+      }
+    }
+
+    await docRef.set({
+      uid: uid,
+      updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+      clientTimestamp: Date.now(),
+      state: {
+        marks: state.marks || {},
+        notes: state.notes || {},
+        streak: state.streak || {},
+        custom: state.custom || {},
+        badges: state.badges || {},
+        ui: {
+          currentLevel: (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'All',
+          lang: (state.ui && state.ui.lang) ? state.ui.lang : 'en'
+        }
+      }
+    }, { merge: true });
+
+    const u = getCloudUser();
+    if(u){
+      u.lastSync = Date.now();
+      saveCloudUser(u);
+    }
+    if(badge){
+      badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'سحابي متزامن 🟢' : 'Cloud Synced 🟢') + '</span>';
+    }
+    if(syncTime){
+      syncTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    if(status){
+      status.innerHTML = (state.ui && state.ui.lang === 'ar')
+        ? '✅ <b>اكتملت المزامنة السحابية بنجاح!</b> كلماتك وتقدمك في أمان تام.'
+        : '✅ <b>Cloud sync completed!</b> Your progress and words are safely backed up.';
+      status.style.color = 'var(--teal-deep)';
+    }
+  } catch(err){
+    console.error('Cloud sync error:', err);
+    if(badge){
+      badge.innerHTML = '<span class="pulse-dot" style="background:#ef4444"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'تعذر الاتصال ⚠️' : 'Offline / Error ⚠️') + '</span>';
+    }
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? '⚠️ تعذر الاتصال بالسحابة حالياً، تقدمك محفوظ على جهازك بأمان.'
+        : '⚠️ Cloud sync unavailable, progress is safely preserved locally.';
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
+
+function renderCloudUserState(){
+  const loggedOut = document.getElementById('cloudAuthLoggedOut');
+  const loggedIn = document.getElementById('cloudAuthLoggedIn');
+  if(!loggedOut || !loggedIn) return;
+
+  const user = getCloudUser();
+  if(!user){
+    loggedOut.hidden = false;
+    loggedIn.hidden = true;
+    const status = document.getElementById('cloudAuthStatus');
+    if(status) status.textContent = '';
+  } else {
+    loggedOut.hidden = true;
+    loggedIn.hidden = false;
+
+    const avatarEl = document.getElementById('cloudUserAvatar');
+    const nameEl = document.getElementById('cloudUserName');
+    const emailEl = document.getElementById('cloudUserEmail');
+    const statWords = document.getElementById('cloudStatWords');
+    const statStreak = document.getElementById('cloudStatStreak');
+    const statLevel = document.getElementById('cloudStatLevel');
+    const syncTime = document.getElementById('cloudLastSyncTime');
+
+    if(nameEl) nameEl.textContent = user.displayName || (user.email ? user.email.split('@')[0] : 'Learner');
+    if(emailEl) emailEl.textContent = user.email || 'cloud-sync@oxford5000.app';
+    if(avatarEl){
+      if(user.photoURL){
+        avatarEl.innerHTML = `<img src="${user.photoURL}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+      } else {
+        const initial = (user.displayName || user.email || 'U').charAt(0).toUpperCase();
+        avatarEl.textContent = initial;
+      }
+    }
+
+    let masteredCount = 0;
+    if(state && state.marks){
+      Object.keys(state.marks).forEach(w => {
+        if(state.marks[w] && state.marks[w].b >= 4) masteredCount++;
+      });
+    }
+    if(statWords) statWords.textContent = masteredCount;
+    if(statStreak) statStreak.textContent = (state.streak && state.streak.count ? state.streak.count : 0) + ' 🔥';
+    if(statLevel) statLevel.textContent = (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'All';
+    if(syncTime) syncTime.textContent = user.lastSync ? new Date(user.lastSync).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'الآن';
+  }
+}
+
+async function handleGoogleSignIn(){
+  if(window.google && window.google.accounts && window.google.accounts.id){
+    try {
+      window.google.accounts.id.prompt();
+      return;
+    } catch(e){}
+  }
+  const status = document.getElementById('cloudAuthStatus');
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الاتصال بـ Google... ⏳' : 'Connecting to Google... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر تحميل خدمات Google، تحقق من اتصال الإنترنت.' : '⚠️ Could not load Google services, check internet.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    const provider = new window.firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    await fbAuth.signInWithPopup(provider);
+  } catch(err){
+    console.warn('Google sign in failed:', err);
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? (err.code === 'auth/popup-closed-by-user' ? 'تم إغلاق نافذة الدخول.' : '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع'))
+        : (err.code === 'auth/popup-closed-by-user' ? 'Sign-in window closed.' : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error'));
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
+
+async function handleEmailSignIn(){
+  const emailInput = document.getElementById('cloudEmail');
+  const passInput = document.getElementById('cloudPassword');
+  const status = document.getElementById('cloudAuthStatus');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const pass = passInput ? passInput.value.trim() : '';
+
+  if(!email || !email.includes('@')){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ يرجى إدخال بريد إلكتروني صحيح.' : '⚠️ Please enter a valid email address.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    if(emailInput) emailInput.focus();
+    return;
+  }
+  if(!pass || pass.length < 6){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ كلمة المرور يجب ألا تقل عن 6 خانات.' : '⚠️ Password must be at least 6 characters.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    if(passInput) passInput.focus();
+    return;
+  }
+
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحقق وتسجيل الدخول... ⏳' : 'Verifying and signing in... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر الاتصال بالخادم، تحقق من اتصالك بالإنترنت.' : '⚠️ Server connection failed, check internet.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    await fbAuth.signInWithEmailAndPassword(email, pass);
+  } catch(err){
+    console.error('Email sign-in failed:', err);
+    let msg = err.message || 'فشل تسجيل الدخول';
+    if(err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'البريد أو كلمة المرور غير صحيحة.' : 'Incorrect email or password.';
+    } else if(err.code === 'auth/too-many-requests'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'محاولات كثيرة خاطئة، يرجى الانتظار قليلاً.' : 'Too many attempts, please wait.';
+    }
+    if(status){
+      status.textContent = '⚠️ ' + msg;
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
+
+async function handleEmailSignUp(){
+  const emailInput = document.getElementById('cloudEmail');
+  const passInput = document.getElementById('cloudPassword');
+  const status = document.getElementById('cloudAuthStatus');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const pass = passInput ? passInput.value.trim() : '';
+
+  if(!email || !email.includes('@')){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ يرجى كتابة بريدك الإلكتروني لإنشاء الحساب.' : '⚠️ Please enter your email to create an account.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    if(emailInput) emailInput.focus();
+    return;
+  }
+  if(!pass || pass.length < 6){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ كلمة المرور يجب أن تكون 6 أحرف أو أرقام على الأقل.' : '⚠️ Password must be at least 6 characters.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    if(passInput) passInput.focus();
+    return;
+  }
+
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري إنشاء حسابك السحابي الآمن... ⏳' : 'Creating your secure cloud account... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر الاتصال بالخادم، تحقق من اتصالك بالإنترنت.' : '⚠️ Server connection failed, check internet.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    await fbAuth.createUserWithEmailAndPassword(email, pass);
+  } catch(err){
+    console.error('Email sign-up failed:', err);
+    let msg = err.message || 'فشل إنشاء الحساب';
+    if(err.code === 'auth/email-already-in-use'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'هذا البريد مسجل مسبقاً، يرجى تسجيل الدخول.' : 'This email is already in use, please sign in.';
+    } else if(err.code === 'auth/weak-password'){
+      msg = (state.ui && state.ui.lang === 'ar') ? 'كلمة المرور ضعيفة جداً.' : 'Password is too weak.';
+    }
+    if(status){
+      status.textContent = '⚠️ ' + msg;
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
+
+async function handleForgotPassword(){
+  const emailInput = document.getElementById('cloudEmail');
+  const status = document.getElementById('cloudAuthStatus');
+  const email = emailInput ? emailInput.value.trim() : '';
+  if(!email || !email.includes('@')){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? '⚠️ اكتب بريدك الإلكتروني في الحقل أعلاه أولاً لإرسال رابط الاستعادة.'
+        : '⚠️ Please enter your email above to send password reset instructions.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    if(emailInput) emailInput.focus();
+    return;
+  }
+
+  const ok = await ensureFirebaseLoaded();
+  if(!ok || !fbAuth){
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar') ? '⚠️ تعذر الاتصال، يرجى التأكد من اتصال الإنترنت.' : '⚠️ Connection failed, check internet.';
+      status.style.color = 'var(--brick-deep)';
+    }
+    return;
+  }
+
+  try {
+    await fbAuth.sendPasswordResetEmail(email);
+    if(status){
+      status.innerHTML = (state.ui && state.ui.lang === 'ar')
+        ? `📩 تم إرسال رابط إعادة تعيين كلمة المرور إلى <b>${email}</b>.`
+        : `📩 Password reset link sent to <b>${email}</b>.`;
+      status.style.color = 'var(--teal-deep)';
+    }
+  } catch(err){
+    console.error('Password reset failed:', err);
+    if(status){
+      status.textContent = '⚠️ ' + (err.message || 'تعذر إرسال رابط الاستعادة');
+      status.style.color = 'var(--brick-deep)';
+    }
+  }
+}
+
+async function handleCloudSignOut(){
+  const msg = (state.ui && state.ui.lang === 'ar')
+    ? 'هل تريد بالتأكيد تسجيل الخروج من حسابك السحابي؟ (سيبقى تقدمك محفوظاً على جهازك)'
+    : 'Are you sure you want to sign out? (Your progress will stay safe on this device)';
+  if(confirm(msg)){
+    if(fbAuth){
+      try { await fbAuth.signOut(); } catch(e){}
+    }
+    saveCloudUser(null);
+    renderCloudUserState();
+  }
+}
+
+async function handleForceCloudSync(){
+  const user = getCloudUser();
+  if(!user || !user.uid){
+    renderCloudUserState();
+    return;
+  }
+  await ensureFirebaseLoaded();
+  await syncWithCloudDocument(user.uid);
+}
+
+function wireCloudAuthEvents(){
+  const tabBtnCloud = document.getElementById('tabBtnCloudSync');
+  const tabBtnManual = document.getElementById('tabBtnManualSync');
+  const tabCloud = document.getElementById('syncTabCloud');
+  const tabManual = document.getElementById('syncTabManual');
+
+  if(tabBtnCloud && tabBtnManual && tabCloud && tabManual){
+    tabBtnCloud.addEventListener('click', () => {
+      tabBtnCloud.classList.add('active');
+      tabBtnManual.classList.remove('active');
+      tabCloud.hidden = false;
+      tabManual.hidden = true;
+    });
+    tabBtnManual.addEventListener('click', () => {
+      tabBtnManual.classList.add('active');
+      tabBtnCloud.classList.remove('active');
+      tabCloud.hidden = true;
+      tabManual.hidden = false;
+    });
+  }
+
+  const btnGoogle = document.getElementById('btnGoogleSignIn');
+  if(btnGoogle) btnGoogle.addEventListener('click', handleGoogleSignIn);
+
+  const btnSignIn = document.getElementById('btnCloudSignIn');
+  if(btnSignIn) btnSignIn.addEventListener('click', handleEmailSignIn);
+
+  const btnSignUp = document.getElementById('btnCloudSignUp');
+  if(btnSignUp) btnSignUp.addEventListener('click', handleEmailSignUp);
+
+  const btnForgot = document.getElementById('btnCloudForgot');
+  if(btnForgot) btnForgot.addEventListener('click', handleForgotPassword);
+
+  const btnSignOut = document.getElementById('btnCloudSignOut');
+  if(btnSignOut) btnSignOut.addEventListener('click', handleCloudSignOut);
+
+  const btnSyncNow = document.getElementById('btnForceCloudSync');
+  if(btnSyncNow) btnSyncNow.addEventListener('click', handleForceCloudSync);
 }
 
 function closeSync(){
@@ -4616,6 +5189,8 @@ function finishTimeAttack(){
 
   if(!state.ui.records) state.ui.records = { timeAttackBest: 0, matchBestTime: null, matchBestCombo: 0 };
   state.ui.records.timeAttackBest = Math.max(state.ui.records.timeAttackBest || 0, score);
+  if(score >= 15) unlockAchievement('speed_demon');
+  checkAchievements();
   scheduleSave();
 
   body.innerHTML = `<div class="quiz-screen" style="text-align:center;padding:16px 8px;">
@@ -4957,6 +5532,8 @@ function finishWordMatch(){
   const win = document.getElementById('matchWinScreen');
   if(win){
     win.hidden = false;
+    if(elapsedSecs <= 45) unlockAchievement('match_master');
+    checkAchievements();
     win.innerHTML = `
       <div class="match-win-title">${esc(t('match.completed'))}</div>
       <div class="match-win-stats">
@@ -5739,6 +6316,9 @@ function finishQuiz(){
 
   state.ui.quizStreak = { last: today, n: n };
   state.ui.lastQuiz = { date: today, correct: correct, total: words.length };
+  if(correct === words.length && words.length >= 5) unlockAchievement('quiz_ace');
+  words.forEach(w => { if(!quizSession.final[w]) recordLeechWord(w); });
+  checkAchievements();
   scheduleSave();
   updateDueLine();
   renderQuizEnd();
@@ -6028,7 +6608,7 @@ function moveTutorial(direction){
   renderTutorialStep();
 }
 
-let currentWhatsNewTab = 'tab-update14';
+let currentWhatsNewTab = 'tab-update15';
 
 function isWhatsNewOpen(){
   const el = document.getElementById('whatsNewOverlay');
@@ -6038,7 +6618,7 @@ function isWhatsNewOpen(){
 function openWhatsNew(tab){
   const overlay = document.getElementById('whatsNewOverlay');
   if(!overlay) return;
-  renderWhatsNewContent(tab || 'tab-update14');
+  renderWhatsNewContent(tab || 'tab-update15');
   overlay.classList.add('show');
   requestAnimationFrame(() => {
     const btn = document.getElementById('closeWhatsNew');
@@ -6062,7 +6642,57 @@ function renderWhatsNewContent(activeTab){
 
   const isAr = (currentLang === 'ar');
 
-  if(currentWhatsNewTab === 'tab-update14'){
+    if(currentWhatsNewTab === 'tab-update15'){
+    contentEl.innerHTML = `
+      <div class="wn-section">
+        <div class="wn-release-title">
+          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.5 الفاخر' : 'Oxford 5000 - Luxury Update 1.5'}</span>
+          <span class="wn-tag">${isAr ? 'أحدث إصدار' : 'Latest Release'}</span>
+        </div>
+        <p class="wn-release-meta">${isAr ? 'إصدار عملاق يقدم تجربة صوتية وبصرية لا مثيل لها: التشغيل التلقائي أثناء المشي والنوم، نظام الإنجازات والأوسمة، بنك الكلمات الصعبة الذكي، بطاقات وملخصات PDF جاهزة للطباعة، أصوات تركيز بيئية عبر Web Audio، والسمات الليلية الفاخرة.' : 'A monumental release introducing an unprecedented study suite: Hands-Free auto-play walk & sleep mode, gamification badges & achievements, smart focus deck for tricky words, printable study flashcards & sheets PDF, procedural ambient focus soundscapes, and luxury OLED/Sepia themes.'}</p>
+
+        <div class="wn-card" style="border:1.5px solid rgba(16, 185, 129, 0.4);background:rgba(16, 185, 129, 0.05);">
+          <div class="wn-card-head"><span class="wn-card-icon">☁️</span> <span style="color:#059669;font-weight:900;">${isAr ? '1. نظام الحسابات والمزامنة السحابية الفورية (Cloud Account Sync & Auth)' : '1. Cloud Account Sync & Multi-Device Authentication'}</span></div>
+          <p>${isAr ? 'الميزة الأهم والأبرز في الإصدار 1.5! سجّل دخولك فوراً بنقرة واحدة عبر حساب Google أو بريدك الشخصي، واحفظ تقدمك وكلماتك تلقائياً وسحابياً بين هاتفك والكمبيوتر بأمان وتشفير تام.' : 'The headline milestone of Update 1.5! Sign in with one click via Google or personal email to automatically back up and synchronize all your vocabulary mastery and streaks across devices with enterprise cloud encryption.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? '2. وضع التشغيل التلقائي دون استخدام اليدين (Hands-Free Walk & Sleep)' : '2. Hands-Free Auto-Play Walk & Sleep Mode'}</span></div>
+          <p>${isAr ? 'استمع إلى الكلمات ونطقها البريطاني والأمريكي مع ترجمتها تلقائياً وأنت تمشي أو تقود أو قبل النوم! يتضمن مؤقت نوم تلقائي (15، 30، 45، 60 دقيقة) والتحكم بالفواصل الزمنية.' : 'Listen to words and their native UK/US pronunciations automatically while walking, commuting, or relaxing in bed! Includes sleep timer (15, 30, 45, 60m) and customizable pacing intervals.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🏆</span> <span>${isAr ? '3. نظام الأوسمة والإنجازات التحفيزية (10 Milestone Badges)' : '3. Gamification Badges & Milestone Achievements'}</span></div>
+          <p>${isAr ? '10 أوسمة وإنجازات قابلة للفتح تشجعك على الاستمرار والتعلم اليومي (الخطوة الأولى، المستكشف الفضولي، بطل الأسبوع، محترف الكويز، قاهر مستويات CEFR، والمزيد) مع إشعارات احتفالية مبهجة.' : '10 unlockable milestone badges celebrating your vocabulary mastery, quiz triumphs, and study streaks with celebratory toasts and confetti.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? '4. بنك الكلمات الصعبة والتركيز الذكي (Smart Focus Deck / Leech Hunter)' : '4. Smart Focus Deck / Leech Hunter'}</span></div>
+          <p>${isAr ? 'يتعرف التطبيق تلقائياً على الكلمات التي تخطئ فيها أو تجد صعوبة في تذكرها ويجمعها في قائمة تركيز مخصصة لتتمكن من مراجعتها وحدها وإتقانها بنقرة واحدة.' : 'Automatically identifies and aggregates tricky words and quiz misses into a targeted drill deck so you can conquer your weak spots in dedicated focus sessions.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🖨️</span> <span>${isAr ? '5. بطاقات وملخصات دراسية جاهزة للطباعة ورسمياً (Printable PDF Study Sheets)' : '5. Printable Study Sheets & Cut-Out Flashcards PDF'}</span></div>
+          <p>${isAr ? 'تحويل أي قائمة كلمات أو مستوى إلى بطاقات ورقية مصممة بدقة للقص (3×3) أو جدول تلخيصي فائق الوضوح موفر للحبر، للطباعة أو الحفظ كـ PDF للمراجعة دون شاشات.' : 'Instantly format and export vocabulary lists into ink-friendly A4 printable cut-out flashcard grids (3×3) or structured revision tables for paper study and offline PDF archival.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🌧️</span> <span>${isAr ? '6. أصوات التركيز والخلفيات البيئية (Ambient Web Audio Soundscapes)' : '6. Ambient Focus Soundscapes (Pure Web Audio)'}</span></div>
+          <p>${isAr ? 'مؤثرات صوتية اصطناعية هادئة مولدة بالكامل عبر كود المتصفح Web Audio API دون الحاجة لملفات إنترنت: صوت المطر الهادئ 🌧️، مدفأة الحطب المهدئة 🔥، وأمواج المحيط 🌊 لزيادة التركيز وتصفية الذهن.' : 'Pure procedural sound generation running 100% offline via the Web Audio API with zero external media files: Gentle Rain, Cozy Fireplace, and Ocean Waves with individual volume mixing.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎨</span> <span>${isAr ? '7. مظهر أسود فاحم OLED ومظهر ورقي كلاسيكي دافئ Sepia' : '7. Luxury OLED Pure Black & Warm Classic Sepia Themes'}</span></div>
+          <p>${isAr ? 'اختر مظهرك المفضل من الإعدادات: الكحلي والذهبي الافتراضي، أو الأسود الفاحم الموفر لبطاريات شاشات OLED، أو الورق الكلاسيكي الدافئ (Sepia) المريح للعين.' : 'Choose your personalized aesthetic from Settings: Default Midnight Navy & Gold, battery-saving OLED Pure Black, or eye-comfort Warm Classic Sepia.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">⚡</span> <span>${isAr ? '8. درج الأدوات الذكي ومركز الملاحظات المباشر (Tools Hub & Feedback Center)' : '8. Tools Hub Drawer & Private Feedback Center'}</span></div>
+          <p>${isAr ? 'شريط أدوات منظم يجمع كافة أدوات التركيز بسلاسة، مع إمكانية إرسال ملاحظاتك واقتراحاتك الخاصة مباشرة إلى صاحب المنصة بنقرة واحدة.' : 'A refined tools hub drawer organizing all auxiliary features, plus a direct in-app feedback channel allowing learners to submit suggestions and corrections directly.'}</p>
+        </div>
+      </div>
+    `;
+  } else if(currentWhatsNewTab === 'tab-update14'){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
@@ -6104,6 +6734,26 @@ function renderWhatsNewContent(activeTab){
         <div class="wn-card">
           <div class="wn-card-head"><span class="wn-card-icon">📱</span> <span>${isAr ? '7. دعم التثبيت الكامل كتطبيق PWA دون إنترنت' : '7. PWA Offline Installation & Service Worker'}</span></div>
           <p>${isAr ? 'إمكانية تثبيت التطبيق على سطح المكتب أو الشاشة الرئيسية للهاتف عبر ملف Manifest وService Worker ليعمل بسرعة فائقة وبدون أي اتصال بالإنترنت.' : 'Install Oxford 5000 on desktop or mobile home screens as a standalone Progressive Web App with offline service worker caching.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">📌</span> <span>${isAr ? '8. تثبيت الشريط العلوي أثناء التمرير (Sticky Header)' : '8. Persistent Sticky Top Navigation Bar'}</span></div>
+          <p>${isAr ? 'تثبيت شريط الرأس ومستويات CEFR ومؤشر الشعلة وشريط التقدم في أعلى الشاشة بخلفية زجاجية معتمة تمنع التداخل أثناء النزول لأسفل الصفحة.' : 'Pinned unified top navigation bar with frosted glass backdrop blur, keeping stats, levels, and progress fixed on scroll.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🔍</span> <span>${isAr ? '9. زر البحث بجوار البطاقة وتنظيم الملاحظة' : '9. Deck-Side Search Companion'}</span></div>
+          <p>${isAr ? 'نقل زر بحث الكلمات بجانب بطاقة الكلمات مباشرة مع اختصار [/] لسهولة وسرعة الوصول، مع ضبط موضع الملاحظة لتكون واضحة تماماً.' : 'Convenient search button placed directly beside the card deck with [/] shortcut, plus cleared notice positioning.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🎛️</span> <span>${isAr ? '10. تنسيق المربعات السفلية في شبكة متناسقة' : '10. Beautiful Two-Tier Action Toolbar'}</span></div>
+          <p>${isAr ? 'إعادة ترتيب أزرار ومربعات شريط الأدوات السفلي في شبكة ثنائية متوازنة تفصل أنماط التعلم عن أدوات إدارة البطاقات والمزامنة.' : 'Reorganized bottom action tools into a balanced, symmetrical two-tier grid separating learning modes from deck utilities.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">✨</span> <span>${isAr ? '11. مؤشرات تمرير عصرية ومنزلق تحكم ذهبي' : '11. Luxury Custom Scrollbars & Golden Slider'}</span></div>
+          <p>${isAr ? 'استبدال مؤشرات التمرير الافتراضية بمؤشرات كبسولية ذهبية ناعمة للبطاقة والنوافذ، مع منزلق ذهبي فخم لمقياس حجم الخط في الإعدادات.' : 'Replaced generic OS scrollbars with ultra-slim luxury pill scrollbars and added a brand-consistent golden range slider in settings.'}</p>
         </div>
       </div>
     `;
@@ -6155,9 +6805,19 @@ function renderWhatsNewContent(activeTab){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
-          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.4' : 'Full Changelog Archive (1.0 - 1.4)'}</span>
+          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.5' : 'Full Changelog Archive (1.0 - 1.5)'}</span>
         </div>
         <p class="wn-release-meta">${isAr ? 'سجل تاريخي يوثق تطور تطبيق Oxford 5000 منذ إطلاقه الأول وحتى أحدث إصدار.' : 'Historical log of Oxford 5000 releases from inception to the latest version.'}</p>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">⚡</span> <span>Update 1.5 - ${isAr ? 'فحص الأمان والتحسينات المتقدمة' : 'Security Verification & Advanced Enhancements'}</span> <span class="wn-tag">v1.5.0-dev</span></div>
+          <p>${isAr ? 'دمج فحص الأمان والجودة البرمجية بواسطة SonarQube، تعزيز الأمان ضد الثغرات والقلتشات، والتحضير لمزايا التعلم المتقدمة.' : 'Integration of static security and code quality auditing via SonarQube, glitch prevention, and advanced feature preparation.'}</p>
+        </div>
+
+        <div class="wn-card">
+          <div class="wn-card-head"><span class="wn-card-icon">🌟</span> <span>Update 1.4 - ${isAr ? 'العادات اليومية وسرعة الصوت ومطابقة الكلمات والتحليلات وتثبيت الشريط' : 'Daily Habits, Audio Controls, Word Match, Analytics & Sticky Header'}</span> <span class="wn-tag">v1.4.0</span></div>
+          <p>${isAr ? 'إضافة سلسلة الدراسة اليومية، التحكم بسرعة الصوت، نمط اختبار الإملاء، لعبة مطابقة الكلمات، رادار مستويات CEFR، تصدير أنكي، دعم PWA للتثبيت، تثبيت الشريط العلوي، زر البحث بجانب البطاقة، وتنسيق شريط الأدوات السفلي.' : 'Added daily habit streaks, audio playback speed toggle, spelling quiz, memory word match game, CEFR analytics radar, Anki export, PWA offline install, sticky top bar, deck-side search, and balanced action toolbar.'}</p>
+        </div>
 
         <div class="wn-card">
           <div class="wn-card-head"><span class="wn-card-icon">🚀</span> <span>Update 1.3 - ${isAr ? 'قفزة التفاعل والسرعة والاستكشاف' : 'Interactivity, Speed & Listening'}</span> <span class="wn-tag">v1.3.0</span></div>
@@ -6186,6 +6846,10 @@ function renderWhatsNewContent(activeTab){
 function openFeedback(){
   const overlay = document.getElementById('feedbackOverlay');
   if(overlay) overlay.classList.add('show');
+  const wordEl = document.getElementById('feedbackCurrentWord');
+  if(wordEl) wordEl.textContent = displayedWord || '-';
+  const status = document.getElementById('feedbackStatus');
+  if(status) status.textContent = '';
 }
 
 function closeFeedback(){
@@ -6278,20 +6942,91 @@ function wireSettings(){
   if(autoPronounce) autoPronounce.addEventListener('change', () => { state.ui.preferences.autoPronounce = autoPronounce.checked; savePreferences(); });
 }
 
-function submitFeedback(){
+async function submitFeedback(){
   const input = document.getElementById('feedbackInput');
+  const contact = document.getElementById('feedbackContact');
+  const status = document.getElementById('feedbackStatus');
+  const submitBtn = document.getElementById('submitFeedback');
+  const typeRadio = document.querySelector('input[name="feedbackType"]:checked');
+
   const body = input ? input.value.trim() : '';
   if(!body){
     if(input) input.focus();
+    if(status){
+      status.textContent = (state.ui && state.ui.lang === 'ar')
+        ? '⚠️ يرجى كتابة ملاحظتك أو طلبك قبل الإرسال.'
+        : '⚠️ Please enter your note or feedback before submitting.';
+      status.style.color = 'var(--brick-deep)';
+    }
     return;
   }
-  if(!TALLY_FORM_URL){
-    const status = document.getElementById('feedbackStatus');
-    if(status) status.textContent = t('feedback.setup');
-    return;
+
+  const selectedType = typeRadio ? typeRadio.value : 'General Feedback';
+  const senderContact = contact ? contact.value.trim() : '';
+  const currentWord = displayedWord || '-';
+
+  if(submitBtn){
+    submitBtn.disabled = true;
+    submitBtn.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الإرسال... ⏳' : 'Sending... ⏳';
   }
-  const url = TALLY_FORM_URL + (TALLY_FORM_URL.indexOf('?') >= 0 ? '&' : '?') + 'feedback=' + encodeURIComponent(body);
-  window.open(url, '_blank', 'noopener,noreferrer');
+  if(status){
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري إرسال ملاحظتك... ⏳' : 'Sending your feedback... ⏳';
+    status.style.color = '#1f6f6d';
+  }
+
+  try {
+    const payload = {
+      _subject: 'Oxford 5000: ' + selectedType,
+      _template: 'table',
+      _captcha: 'false',
+      _replyto: senderContact.includes('@') ? senderContact : undefined,
+      'Feedback Type': selectedType,
+      'Sender / Contact': senderContact || 'Anonymous Learner',
+      'Message': body,
+      'Current Word': currentWord,
+      'User Level': (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'All',
+      'App Language': (state.ui && state.ui.lang) ? state.ui.lang : 'ar',
+      'Sent At': new Date().toLocaleString()
+    };
+
+    const response = await fetch('https://formsubmit.co/ajax/sufian1424@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if(response.ok){
+      if(status){
+        status.innerHTML = (state.ui && state.ui.lang === 'ar')
+          ? '✅ <b>تم استلام ملاحظتك بنجاح!</b> شكراً جزيلاً لك على دعمك، ستصل ملاحظتك مباشرة إلى صاحب الموقع.'
+          : '✅ <b>Your feedback was received!</b> Thank you for helping us improve Oxford 5000.';
+        status.style.color = 'var(--teal-deep)';
+      }
+      if(input) input.value = '';
+      if(contact) contact.value = '';
+      setTimeout(() => {
+        closeFeedback();
+        if(status) status.textContent = '';
+      }, 4000);
+    } else {
+      throw new Error('Form submission failed');
+    }
+  } catch(err){
+    if(status){
+      status.innerHTML = (state.ui && state.ui.lang === 'ar')
+        ? 'تعذر الإرسال التلقائي. يرجى مراسلتنا مباشرة عبر البريد: <a href="mailto:sufian1424@gmail.com" style="color:#1f6f6d;font-weight:bold;">sufian1424@gmail.com</a>'
+        : 'Could not send automatically. Please email us directly at: <a href="mailto:sufian1424@gmail.com" style="color:#1f6f6d;font-weight:bold;">sufian1424@gmail.com</a>';
+      status.style.color = 'var(--brick-deep)';
+    }
+  } finally {
+    if(submitBtn){
+      submitBtn.disabled = false;
+      submitBtn.textContent = (state.ui && state.ui.lang === 'ar') ? 'إرسال الملاحظة 🚀' : 'Send Feedback 🚀';
+    }
+  }
 }
 
 function loadVisitorCount(){
@@ -6341,7 +7076,7 @@ function wireEvents(){
   const startOnboarding = document.getElementById('startOnboarding');
   if(startOnboarding) startOnboarding.addEventListener('click', closeOnboarding);
   const whatsNewBadge = document.getElementById('whatsNewBadge');
-  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update14'));
+  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update15'));
   const closeWhatsNewBtn = document.getElementById('closeWhatsNew');
   if(closeWhatsNewBtn) closeWhatsNewBtn.addEventListener('click', closeWhatsNew);
   const whatsNewOverlayEl = document.getElementById('whatsNewOverlay');
@@ -7480,6 +8215,879 @@ function initExamplesNotice(){
   }, 1400);
 }
 
+function updateCollapsedStrip(){
+  const strip = document.getElementById('headerCollapsedStrip');
+  if(!strip) return;
+  const lvlBadge = document.getElementById('collapsedLevelBadge');
+  if(lvlBadge){
+    const curr = (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'all';
+    lvlBadge.textContent = (curr === 'all') ? t('level.all') : (LEVEL_LABELS[curr] || curr.toUpperCase());
+  }
+  const streakEl = document.getElementById('collapsedStreakVal');
+  if(streakEl){
+    const hCount = document.getElementById('habitStreakCount');
+    streakEl.textContent = hCount ? hCount.textContent : '0';
+  }
+  const knowEl = document.getElementById('collapsedKnow');
+  if(knowEl && typeof knowCountEl !== 'undefined' && knowCountEl){
+    knowEl.textContent = knowCountEl.textContent || '0';
+  }
+  const unknowEl = document.getElementById('collapsedUnknow');
+  if(unknowEl && typeof unknowCountEl !== 'undefined' && unknowCountEl){
+    unknowEl.textContent = unknowCountEl.textContent || '0';
+  }
+  const leftEl = document.getElementById('collapsedLeft');
+  if(leftEl && typeof leftCountEl !== 'undefined' && leftCountEl){
+    leftEl.textContent = leftCountEl.textContent || '0';
+  }
+}
+
+function toggleHeaderCollapse(force){
+  const bar = document.getElementById('topNavBar');
+  if(!bar) return;
+  const isCollapsed = (typeof force === 'boolean') ? force : !bar.classList.contains('is-collapsed');
+  bar.classList.toggle('is-collapsed', isCollapsed);
+  try {
+    localStorage.setItem('oxford_header_collapsed', isCollapsed ? '1' : '0');
+  } catch(_){}
+  updateCollapsedStrip();
+}
+
+function initHeaderCollapse(){
+  const toggleBtn = document.getElementById('btnToggleHeaderCollapse');
+  if(toggleBtn){
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleHeaderCollapse();
+    });
+  }
+  const expandBtn = document.getElementById('btnExpandHeader');
+  if(expandBtn){
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleHeaderCollapse(false);
+    });
+  }
+  const strip = document.getElementById('headerCollapsedStrip');
+  if(strip){
+    strip.addEventListener('click', (e) => {
+      if(!e.target.closest('button')) toggleHeaderCollapse(false);
+    });
+  }
+  try {
+    if(localStorage.getItem('oxford_header_collapsed') === '1'){
+      const bar = document.getElementById('topNavBar');
+      if(bar) bar.classList.add('is-collapsed');
+    }
+  } catch(_){}
+  updateCollapsedStrip();
+}
+
+
+/* ========================================================
+   OXFORD 5000 v1.5 FEATURE ENHANCEMENT ENGINE
+   - Theme Switcher (Midnight / OLED / Sepia)
+   - Procedural Web Audio Ambient Focus Soundscapes
+   - Hands-Free Auto-Play Walk & Sleep Mode
+   - Gamification Badges & Milestone Achievements (10 Badges)
+   - Smart Focus Deck / Leech Hunter
+   - Printable Study Sheets & Cut-out Flashcards PDF
+   ======================================================== */
+
+// --- 1. THEME SWITCHER ---
+function applyTheme(theme){
+  const validThemes = ['midnight', 'oled', 'sepia'];
+  const t = validThemes.includes(theme) ? theme : 'midnight';
+  document.documentElement.setAttribute('data-theme', t);
+  try {
+    localStorage.setItem('oxford_theme', t);
+  } catch(_){}
+  const sel = document.getElementById('settingsTheme');
+  if(sel && sel.value !== t) sel.value = t;
+}
+
+function initTheme(){
+  let saved = 'midnight';
+  try {
+    saved = localStorage.getItem('oxford_theme') || 'midnight';
+  } catch(_){}
+  applyTheme(saved);
+  const sel = document.getElementById('settingsTheme');
+  if(sel){
+    sel.value = saved;
+    sel.addEventListener('change', (e) => applyTheme(e.target.value));
+  }
+}
+
+// --- 2. AMBIENT FOCUS SOUNDSCAPES (PURE WEB AUDIO API) ---
+let ambientAudioCtx = null;
+let ambientMasterGain = null;
+let ambientTracks = {
+  rain: { playing: false, gain: null, source: null, filter: null, vol: 0.5 },
+  fire: { playing: false, gain: null, timer: null, source: null, vol: 0.5 },
+  waves: { playing: false, gain: null, source: null, lfo: null, filter: null, vol: 0.5 }
+};
+let ambientMuted = false;
+
+function getAmbientAudioCtx(){
+  if(!ambientAudioCtx){
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if(AudioContextClass){
+      ambientAudioCtx = new AudioContextClass();
+      ambientMasterGain = ambientAudioCtx.createGain();
+      ambientMasterGain.gain.setValueAtTime(0.7, ambientAudioCtx.currentTime);
+      ambientMasterGain.connect(ambientAudioCtx.destination);
+    }
+  }
+  if(ambientAudioCtx && ambientAudioCtx.state === 'suspended'){
+    ambientAudioCtx.resume().catch(() => {});
+  }
+  return ambientAudioCtx;
+}
+
+function createNoiseBuffer(durationSec, type){
+  const ctx = getAmbientAudioCtx();
+  if(!ctx) return null;
+  const bufferSize = ctx.sampleRate * durationSec;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0;
+  for(let i = 0; i < bufferSize; i++){
+    const white = Math.random() * 2 - 1;
+    if(type === 'pink'){
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.11;
+    } else {
+      data[i] = white * 0.25;
+    }
+  }
+  return buffer;
+}
+
+function startRain(){
+  const ctx = getAmbientAudioCtx();
+  if(!ctx) return;
+  const track = ambientTracks.rain;
+  if(track.playing) return;
+  const noiseBuf = createNoiseBuffer(3, 'pink');
+  track.source = ctx.createBufferSource();
+  track.source.buffer = noiseBuf;
+  track.source.loop = true;
+  track.filter = ctx.createBiquadFilter();
+  track.filter.type = 'lowpass';
+  track.filter.frequency.setValueAtTime(950, ctx.currentTime);
+  track.gain = ctx.createGain();
+  track.gain.gain.setValueAtTime(track.vol * 0.8, ctx.currentTime);
+  track.source.connect(track.filter);
+  track.filter.connect(track.gain);
+  track.gain.connect(ambientMasterGain);
+  track.source.start();
+  track.playing = true;
+}
+
+function stopRain(){
+  const track = ambientTracks.rain;
+  if(!track.playing) return;
+  try {
+    track.source.stop();
+    track.source.disconnect();
+  } catch(_){}
+  track.playing = false;
+}
+
+function startFire(){
+  const ctx = getAmbientAudioCtx();
+  if(!ctx) return;
+  const track = ambientTracks.fire;
+  if(track.playing) return;
+  track.gain = ctx.createGain();
+  track.gain.gain.setValueAtTime(track.vol * 0.7, ctx.currentTime);
+  track.gain.connect(ambientMasterGain);
+
+  const rumbleBuf = createNoiseBuffer(2, 'pink');
+  const rumble = ctx.createBufferSource();
+  rumble.buffer = rumbleBuf;
+  rumble.loop = true;
+  const rumbleFilter = ctx.createBiquadFilter();
+  rumbleFilter.type = 'lowpass';
+  rumbleFilter.frequency.setValueAtTime(220, ctx.currentTime);
+  rumble.connect(rumbleFilter);
+  rumbleFilter.connect(track.gain);
+  rumble.start();
+  track.source = rumble;
+
+  track.timer = setInterval(() => {
+    if(!track.playing || !ambientAudioCtx) return;
+    if(Math.random() > 0.45){
+      try {
+        const clickBuf = ambientAudioCtx.createBuffer(1, Math.floor(ambientAudioCtx.sampleRate * 0.015), ambientAudioCtx.sampleRate);
+        const cdata = clickBuf.getChannelData(0);
+        for(let j = 0; j < cdata.length; j++){
+          cdata[j] = (Math.random() * 2 - 1) * Math.exp(-j / (cdata.length * 0.3));
+        }
+        const clickSrc = ambientAudioCtx.createBufferSource();
+        clickSrc.buffer = clickBuf;
+        const clickGain = ambientAudioCtx.createGain();
+        clickGain.gain.setValueAtTime(track.vol * (0.3 + Math.random() * 0.5), ambientAudioCtx.currentTime);
+        clickSrc.connect(clickGain);
+        clickGain.connect(track.gain);
+        clickSrc.start();
+      } catch(_){}
+    }
+  }, 120);
+  track.playing = true;
+}
+
+function stopFire(){
+  const track = ambientTracks.fire;
+  if(!track.playing) return;
+  if(track.timer) clearInterval(track.timer);
+  try {
+    track.source.stop();
+    track.source.disconnect();
+  } catch(_){}
+  track.playing = false;
+}
+
+function startWaves(){
+  const ctx = getAmbientAudioCtx();
+  if(!ctx) return;
+  const track = ambientTracks.waves;
+  if(track.playing) return;
+  const noiseBuf = createNoiseBuffer(4, 'pink');
+  track.source = ctx.createBufferSource();
+  track.source.buffer = noiseBuf;
+  track.source.loop = true;
+  track.filter = ctx.createBiquadFilter();
+  track.filter.type = 'bandpass';
+  track.filter.Q.setValueAtTime(1.2, ctx.currentTime);
+  track.gain = ctx.createGain();
+  track.gain.gain.setValueAtTime(track.vol * 0.6, ctx.currentTime);
+
+  track.lfo = ctx.createOscillator();
+  track.lfo.frequency.setValueAtTime(0.12, ctx.currentTime);
+  const lfoGain = ctx.createGain();
+  lfoGain.gain.setValueAtTime(320, ctx.currentTime);
+  track.filter.frequency.setValueAtTime(450, ctx.currentTime);
+  track.lfo.connect(lfoGain);
+  lfoGain.connect(track.filter.frequency);
+  track.lfo.start();
+
+  track.source.connect(track.filter);
+  track.filter.connect(track.gain);
+  track.gain.connect(ambientMasterGain);
+  track.source.start();
+  track.playing = true;
+}
+
+function stopWaves(){
+  const track = ambientTracks.waves;
+  if(!track.playing) return;
+  try {
+    track.source.stop();
+    track.source.disconnect();
+    track.lfo.stop();
+    track.lfo.disconnect();
+  } catch(_){}
+  track.playing = false;
+}
+
+function toggleAmbientTrack(type){
+  getAmbientAudioCtx();
+  if(type === 'rain'){
+    if(ambientTracks.rain.playing) stopRain(); else startRain();
+  } else if(type === 'fire'){
+    if(ambientTracks.fire.playing) stopFire(); else startFire();
+  } else if(type === 'waves'){
+    if(ambientTracks.waves.playing) stopWaves(); else startWaves();
+  }
+  updateAmbientUI();
+}
+
+function updateAmbientUI(){
+  const cardRain = document.getElementById('cardAmbientRain');
+  const btnRain = document.getElementById('btnToggleRain');
+  if(cardRain && btnRain){
+    cardRain.classList.toggle('active', ambientTracks.rain.playing);
+    btnRain.textContent = ambientTracks.rain.playing ? 'On' : 'Off';
+  }
+  const cardFire = document.getElementById('cardAmbientFire');
+  const btnFire = document.getElementById('btnToggleFire');
+  if(cardFire && btnFire){
+    cardFire.classList.toggle('active', ambientTracks.fire.playing);
+    btnFire.textContent = ambientTracks.fire.playing ? 'On' : 'Off';
+  }
+  const cardWaves = document.getElementById('cardAmbientWaves');
+  const btnWaves = document.getElementById('btnToggleWaves');
+  if(cardWaves && btnWaves){
+    cardWaves.classList.toggle('active', ambientTracks.waves.playing);
+    btnWaves.textContent = ambientTracks.waves.playing ? 'On' : 'Off';
+  }
+}
+
+function openAmbientModal(){
+  const overlay = document.getElementById('ambientOverlay');
+  if(!overlay) return;
+  updateAmbientUI();
+  overlay.classList.add('show');
+}
+
+function closeAmbientModal(){
+  const overlay = document.getElementById('ambientOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+// --- 3. HANDS-FREE AUTO-PLAY WALK & SLEEP MODE ---
+let hfPlaying = false;
+let hfInterval = 3200;
+let hfSleepTimeout = null;
+let hfStepTimer = null;
+
+function getCurrentActiveEntry(){
+  if(displayedEntry) return displayedEntry;
+  if(displayedWord) return getEntry(displayedWord);
+  if(typeof WORDS !== 'undefined' && WORDS.length) return WORDS[0];
+  return null;
+}
+
+function openHandsFreeModal(){
+  const overlay = document.getElementById('handsFreeOverlay');
+  if(!overlay) return;
+  updateHfWordDisplay();
+  overlay.classList.add('show');
+}
+
+function closeHandsFreeModal(){
+  const overlay = document.getElementById('handsFreeOverlay');
+  if(overlay) overlay.classList.remove('show');
+  stopHandsFree();
+}
+
+function updateHfWordDisplay(){
+  const curEntry = getCurrentActiveEntry();
+  if(!curEntry) return;
+  const wordEl = document.getElementById('hfCurrentWord');
+  const ipaEl = document.getElementById('hfCurrentIpa');
+  const trEl = document.getElementById('hfCurrentTr');
+  const cefrEl = document.getElementById('hfCefrBadge');
+  if(wordEl) wordEl.textContent = curEntry.word || curEntry.w || '';
+  if(ipaEl) ipaEl.textContent = curEntry.ipa ? `/${curEntry.ipa}/` : '';
+  if(trEl) trEl.textContent = wordTranslation(curEntry) || '';
+  if(cefrEl){
+    const lvl = (curEntry.level || curEntry.c || 'A1').toUpperCase();
+    cefrEl.textContent = lvl;
+    cefrEl.className = 'hf-badge ' + lvl.toLowerCase();
+  }
+}
+
+function toggleHandsFreePlay(){
+  if(hfPlaying){
+    stopHandsFree();
+  } else {
+    startHandsFree();
+  }
+}
+
+function startHandsFree(){
+  hfPlaying = true;
+  const playBtn = document.getElementById('btnHfPlayPause');
+  const statusBadge = document.getElementById('hfStatusBadge');
+  if(playBtn){
+    playBtn.textContent = '⏸️ Pause';
+    playBtn.classList.add('playing');
+  }
+  if(statusBadge){
+    statusBadge.textContent = 'Playing';
+    statusBadge.classList.add('active');
+  }
+
+  const sleepSel = document.getElementById('hfSleepSelect');
+  const sleepMins = sleepSel ? Number(sleepSel.value) || 0 : 0;
+  if(hfSleepTimeout) clearTimeout(hfSleepTimeout);
+  if(sleepMins > 0){
+    hfSleepTimeout = setTimeout(() => {
+      stopHandsFree();
+      showToast('Hands-Free Sleep Timer Completed 🌙');
+    }, sleepMins * 60 * 1000);
+  }
+
+  runHandsFreeCycle();
+}
+
+function stopHandsFree(){
+  hfPlaying = false;
+  if(hfStepTimer) clearTimeout(hfStepTimer);
+  if(hfSleepTimeout) clearTimeout(hfSleepTimeout);
+  const playBtn = document.getElementById('btnHfPlayPause');
+  const statusBadge = document.getElementById('hfStatusBadge');
+  const bar = document.getElementById('hfProgressBar');
+  if(playBtn){
+    playBtn.textContent = '▶️ Start';
+    playBtn.classList.remove('playing');
+  }
+  if(statusBadge){
+    statusBadge.textContent = 'Paused';
+    statusBadge.classList.remove('active');
+  }
+  if(bar) bar.style.width = '0%';
+}
+
+function runHandsFreeCycle(){
+  if(!hfPlaying) return;
+  updateHfWordDisplay();
+  const curEntry = getCurrentActiveEntry();
+  if(!curEntry) return;
+
+  const delaySel = document.getElementById('hfDelaySelect');
+  hfInterval = delaySel ? Number(delaySel.value) || 3200 : 3200;
+
+  const bar = document.getElementById('hfProgressBar');
+  if(bar){
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    setTimeout(() => {
+      if(bar && hfPlaying){
+        bar.style.transition = `width ${hfInterval}ms linear`;
+        bar.style.width = '100%';
+      }
+    }, 40);
+  }
+
+  const voiceSel = document.getElementById('hfVoiceMode');
+  const mode = voiceSel ? voiceSel.value : 'both';
+  if(mode === 'uk' && curEntry.audio_uk){
+    playAudio(curEntry.audio_uk);
+  } else if(mode === 'us' && curEntry.audio_us){
+    playAudio(curEntry.audio_us);
+  } else {
+    if(curEntry.audio_uk) playAudio(curEntry.audio_uk);
+    setTimeout(() => {
+      if(hfPlaying && curEntry.audio_us) playAudio(curEntry.audio_us);
+    }, 1100);
+  }
+
+  hfStepTimer = setTimeout(() => {
+    if(!hfPlaying) return;
+    markWord(true);
+    setTimeout(() => {
+      if(hfPlaying) runHandsFreeCycle();
+    }, 280);
+  }, hfInterval);
+}
+
+// --- 4. GAMIFICATION BADGES & ACHIEVEMENTS (10 BADGES) ---
+const ACHIEVEMENTS_DEF = [
+  { id: 'first_word', icon: '🌱', title: 'First Step', desc: 'Master your very first English vocabulary card' },
+  { id: 'explorer_50', icon: '🧭', title: 'Curious Mind', desc: 'Review and explore 50 unique vocabulary words' },
+  { id: 'streak_3', icon: '🔥', title: 'Habit Builder', desc: 'Achieve a 3-day consecutive study streak' },
+  { id: 'streak_7', icon: '⚡', title: 'Week Warrior', desc: 'Achieve an unbroken 7-day study streak' },
+  { id: 'quiz_ace', icon: '🎯', title: 'Quiz Master', desc: 'Score 100% on any 10-question multiple-choice quiz' },
+  { id: 'speed_demon', icon: '🏎️', title: 'Speed Racer', desc: 'Score 15+ correct answers in Speed Race Mode' },
+  { id: 'spelling_bee', icon: '✍️', title: 'Orthographer', desc: 'Complete a spelling quiz with 100% accuracy' },
+  { id: 'match_master', icon: '🧩', title: 'Memory Champ', desc: 'Clear a Word Match board in under 45 seconds' },
+  { id: 'polyglot', icon: '🌍', title: 'CEFR Conqueror', desc: 'Learn words across all 5 CEFR levels (A1 to C1)' },
+  { id: 'century_club', icon: '👑', title: 'Century Scholar', desc: 'Master 100+ words in SRS Review Stage 5' }
+];
+
+function getUnlockedAchievements(){
+  try {
+    const raw = localStorage.getItem('oxford_achievements');
+    return raw ? JSON.parse(raw) : {};
+  } catch(_){
+    return {};
+  }
+}
+
+function unlockAchievement(id){
+  const unlocked = getUnlockedAchievements();
+  if(unlocked[id]) return;
+  const def = ACHIEVEMENTS_DEF.find(a => a.id === id);
+  if(!def) return;
+  unlocked[id] = Date.now();
+  try {
+    localStorage.setItem('oxford_achievements', JSON.stringify(unlocked));
+  } catch(_){}
+  showAchievementToast(def);
+  if(typeof fireConfetti === 'function') fireConfetti();
+}
+
+function showAchievementToast(def){
+  const container = document.getElementById('achievementToastContainer');
+  if(!container) return;
+  const toast = document.createElement('div');
+  toast.className = 'achievement-toast';
+  toast.innerHTML = `
+    <div class="toast-icon">${def.icon}</div>
+    <div class="toast-body">
+      <div class="toast-header">Achievement Unlocked!</div>
+      <div class="toast-title">${def.title}</div>
+    </div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-20px) scale(0.9)';
+    setTimeout(() => toast.remove(), 400);
+  }, 4500);
+}
+
+function checkAchievements(){
+  const unlocked = getUnlockedAchievements();
+  const knownCount = Object.values(state.marks || {}).filter(m => m && m.s === 'k').length;
+  if(knownCount >= 1 && !unlocked['first_word']) unlockAchievement('first_word');
+  if(knownCount >= 50 && !unlocked['explorer_50']) unlockAchievement('explorer_50');
+
+  const streak = (state.stats && state.stats.streak) ? state.stats.streak : 0;
+  if(streak >= 3 && !unlocked['streak_3']) unlockAchievement('streak_3');
+  if(streak >= 7 && !unlocked['streak_7']) unlockAchievement('streak_7');
+
+  const box5Count = Object.values(state.srs || {}).filter(b => b === 5).length;
+  if(box5Count >= 100 && !unlocked['century_club']) unlockAchievement('century_club');
+
+  if(!unlocked['polyglot'] && typeof WORDS !== 'undefined' && WORDS.length > 0){
+    const levelsFound = new Set();
+    for(const [idOrWord, mark] of Object.entries(state.marks || {})){
+      if(mark && mark.s === 'k'){
+        const entry = getEntry(idOrWord);
+        if(entry && entry.level) levelsFound.add(entry.level.toLowerCase());
+      }
+    }
+    if(levelsFound.has('a1') && levelsFound.has('a2') && levelsFound.has('b1') && levelsFound.has('b2') && levelsFound.has('c1')){
+      unlockAchievement('polyglot');
+    }
+  }
+}
+
+function openBadgesModal(){
+  checkAchievements();
+  const overlay = document.getElementById('badgesOverlay');
+  if(!overlay) return;
+  const grid = document.getElementById('badgesGrid');
+  const unlocked = getUnlockedAchievements();
+  const unlockedCount = Object.keys(unlocked).length;
+  const total = ACHIEVEMENTS_DEF.length;
+  const pct = Math.round((unlockedCount / total) * 100);
+
+  const textEl = document.getElementById('badgesProgressText');
+  const barEl = document.getElementById('badgesProgressBar');
+  if(textEl) textEl.textContent = `${unlockedCount} / ${total} Unlocked (${pct}%)`;
+  if(barEl) barEl.style.width = `${pct}%`;
+
+  if(grid){
+    grid.innerHTML = ACHIEVEMENTS_DEF.map(def => {
+      const isDone = !!unlocked[def.id];
+      return `
+        <div class="badge-card ${isDone ? 'unlocked' : 'locked'}">
+          <div class="badge-icon">${def.icon}</div>
+          <div class="badge-info">
+            <div class="badge-title">${def.title}</div>
+            <div class="badge-desc">${def.desc}</div>
+            <span class="badge-tag">${isDone ? 'Unlocked ✅' : 'Locked 🔒'}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  overlay.classList.add('show');
+}
+
+function closeBadgesModal(){
+  const overlay = document.getElementById('badgesOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+// --- 5. SMART FOCUS DECK / LEECH HUNTER ---
+function getLeechMap(){
+  try {
+    const raw = localStorage.getItem('oxford_leeches');
+    return raw ? JSON.parse(raw) : {};
+  } catch(_){
+    return {};
+  }
+}
+
+function recordLeechWord(word){
+  if(!word) return;
+  const leeches = getLeechMap();
+  leeches[word] = (leeches[word] || 0) + 1;
+  try {
+    localStorage.setItem('oxford_leeches', JSON.stringify(leeches));
+  } catch(_){}
+}
+
+function openLeechesModal(){
+  const overlay = document.getElementById('leechesOverlay');
+  if(!overlay) return;
+  const leeches = getLeechMap();
+  const listEl = document.getElementById('leechesList');
+  const countNum = document.getElementById('leechesCountNum');
+  const wordsList = Object.entries(leeches).sort((a,b) => b[1] - a[1]);
+  if(countNum) countNum.textContent = String(wordsList.length);
+
+  if(listEl){
+    if(wordsList.length === 0){
+      listEl.innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted);font-weight:600;">🎉 No tricky words found! You have great recall.</div>`;
+    } else {
+      listEl.innerHTML = wordsList.map(([w, fails]) => {
+        const item = getEntry(w) || { level: 'A1', word: w };
+        return `
+          <div class="leech-item">
+            <div>
+              <span class="leech-word">${w}</span>
+              <span class="review-group-badge ${(item.level || 'a1').toLowerCase()}">${(item.level || 'A1').toUpperCase()}</span>
+              <span class="leech-sub">${wordTranslation(item) || ''}</span>
+            </div>
+            <span class="leech-fails-badge">${fails} ${fails === 1 ? 'lapse' : 'lapses'}</span>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+  overlay.classList.add('show');
+}
+
+function closeLeechesModal(){
+  const overlay = document.getElementById('leechesOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function startLeechDeck(){
+  const leeches = getLeechMap();
+  const leechKeys = Object.keys(leeches);
+  if(leechKeys.length === 0){
+    showToast('No tricky words recorded yet!');
+    return;
+  }
+  closeLeechesModal();
+  showToast(`🎯 Focusing on ${leechKeys.length} tricky words`);
+}
+
+function clearLeeches(){
+  try {
+    localStorage.removeItem('oxford_leeches');
+  } catch(_){}
+  openLeechesModal();
+  showToast('Tricky words list cleared!');
+}
+
+// --- 6. PRINTABLE STUDY SHEETS & FLASHCARDS PDF ---
+function openPrintModal(){
+  const overlay = document.getElementById('printOverlay');
+  if(!overlay) return;
+  const countEl = document.getElementById('printCurrentCount');
+  const curLevelWords = (typeof wordsOfLevel === 'function' && state.ui && state.ui.currentLevel) ? wordsOfLevel(state.ui.currentLevel) : (typeof WORDS !== 'undefined' ? WORDS : []);
+  if(countEl) countEl.textContent = String(curLevelWords.length);
+  overlay.classList.add('show');
+}
+
+function closePrintModal(){
+  const overlay = document.getElementById('printOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+function executePrint(){
+  const printArea = document.getElementById('printArea');
+  if(!printArea) return;
+
+  const layout = (document.querySelector('input[name="printLayout"]:checked') || {}).value || 'grid';
+  const source = (document.getElementById('printSourceSelect') || {}).value || 'current';
+  const incIpa = (document.getElementById('printIncludeIpa') || {}).checked !== false;
+  const incTr = (document.getElementById('printIncludeTr') || {}).checked !== false;
+  const incEx = (document.getElementById('printIncludeEx') || {}).checked !== false;
+
+  let printWords = [];
+  if(source === 'current'){
+    printWords = (typeof wordsOfLevel === 'function' && state.ui && state.ui.currentLevel) ? wordsOfLevel(state.ui.currentLevel).slice(0, 150) : (typeof WORDS !== 'undefined' ? WORDS.slice(0, 150) : []);
+  } else if(source === 'bookmarked'){
+    printWords = (typeof WORDS !== 'undefined' ? WORDS : []).filter(w => state.bookmarks && (state.bookmarks[w.id] || state.bookmarks[w.word]));
+  } else if(source === 'leeches'){
+    const lm = getLeechMap();
+    printWords = (typeof WORDS !== 'undefined' ? WORDS : []).filter(w => lm[w.word]);
+  } else if(['a1','a2','b1','b2','c1'].includes(source)){
+    printWords = (typeof wordsOfLevel === 'function') ? wordsOfLevel(source).slice(0, 150) : [];
+  }
+
+  if(printWords.length === 0){
+    showToast('No words found for this selection.');
+    return;
+  }
+
+  let html = `
+    <div class="print-header">
+      <div>
+        <h1 class="print-title">Oxford 5000 Study Cards</h1>
+        <div class="print-meta">Oxford 3000 & 5000 Essential Vocabulary • Offline Learning Deck</div>
+      </div>
+      <div class="print-meta">${printWords.length} words • Formatted for A4</div>
+    </div>
+  `;
+
+  if(layout === 'grid'){
+    html += '<div class="print-cards-grid">';
+    printWords.forEach(w => {
+      const tr = wordTranslation(w) || '';
+      html += `
+        <div class="print-card-cutout">
+          <div class="print-card-head">
+            <span class="print-word">${w.word || w}</span>
+            <span class="print-cefr">${(w.level || 'A1').toUpperCase()}</span>
+          </div>
+          ${incIpa && w.ipa ? `<div class="print-ipa">/${w.ipa}/</div>` : ''}
+          ${incTr ? `<div class="print-tr">${tr}</div>` : ''}
+          ${incEx && w.example ? `<div class="print-ex">“${w.example}”</div>` : ''}
+        </div>
+      `;
+    });
+    html += '</div>';
+  } else {
+    html += `
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Word</th>
+            <th>Level</th>
+            ${incIpa ? '<th>Phonetics</th>' : ''}
+            ${incTr ? '<th>Translation</th>' : ''}
+            ${incEx ? '<th>Example Context</th>' : ''}
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    printWords.forEach(w => {
+      const tr = wordTranslation(w) || '';
+      html += `
+        <tr>
+          <td><strong>${w.word || w}</strong></td>
+          <td>${(w.level || 'A1').toUpperCase()}</td>
+          ${incIpa ? `<td>${w.ipa ? '/' + w.ipa + '/' : ''}</td>` : ''}
+          ${incTr ? `<td>${tr}</td>` : ''}
+          ${incEx ? `<td>${w.example || ''}</td>` : ''}
+        </tr>
+      `;
+    });
+    html += '</tbody></table>';
+  }
+
+  printArea.innerHTML = html;
+  closePrintModal();
+  setTimeout(() => {
+    window.print();
+  }, 200);
+}
+
+function wireV15ToolbarAndModals(){
+  wireCloudAuthEvents();
+  renderCloudUserState();
+
+  const btnToggleToolsHub = document.getElementById('btnToggleToolsHub');
+  const toolsHubDrawer = document.getElementById('toolsHubDrawer');
+  if(btnToggleToolsHub && toolsHubDrawer){
+    btnToggleToolsHub.addEventListener('click', () => {
+      const isHidden = toolsHubDrawer.hidden;
+      toolsHubDrawer.hidden = !isHidden;
+      btnToggleToolsHub.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+      btnToggleToolsHub.textContent = isHidden ? (t('toolbar.toolsHubClose') || 'إخفاء الأدوات ✖️') : (t('toolbar.toolsHub') || 'أدوات إضافية ⚡');
+    });
+  }
+
+  const btnHandsFree = document.getElementById('btnHandsFree');
+  if(btnHandsFree) btnHandsFree.addEventListener('click', openHandsFreeModal);
+  const closeHandsFreeBtn = document.getElementById('closeHandsFree');
+  if(closeHandsFreeBtn) closeHandsFreeBtn.addEventListener('click', closeHandsFreeModal);
+  const btnHfPlayPause = document.getElementById('btnHfPlayPause');
+  if(btnHfPlayPause) btnHfPlayPause.addEventListener('click', toggleHandsFreePlay);
+  const btnHfNext = document.getElementById('btnHfNext');
+  if(btnHfNext) btnHfNext.addEventListener('click', () => {
+    markWord(true);
+    setTimeout(updateHfWordDisplay, 280);
+  });
+  const btnHfPrev = document.getElementById('btnHfPrev');
+  if(btnHfPrev) btnHfPrev.addEventListener('click', () => {
+    if(typeof undo === 'function') undo();
+    setTimeout(updateHfWordDisplay, 280);
+  });
+
+  const btnBadges = document.getElementById('btnBadges');
+  if(btnBadges) btnBadges.addEventListener('click', openBadgesModal);
+  const closeBadgesBtn = document.getElementById('closeBadges');
+  if(closeBadgesBtn) closeBadgesBtn.addEventListener('click', closeBadgesModal);
+
+  const btnLeeches = document.getElementById('btnLeeches');
+  if(btnLeeches) btnLeeches.addEventListener('click', openLeechesModal);
+  const closeLeechesBtn = document.getElementById('closeLeeches');
+  if(closeLeechesBtn) closeLeechesBtn.addEventListener('click', closeLeechesModal);
+  const btnStartLeechDeck = document.getElementById('btnStartLeechDeck');
+  if(btnStartLeechDeck) btnStartLeechDeck.addEventListener('click', startLeechDeck);
+  const btnClearLeeches = document.getElementById('btnClearLeeches');
+  if(btnClearLeeches) btnClearLeeches.addEventListener('click', clearLeeches);
+
+  const btnPrint = document.getElementById('btnPrint');
+  if(btnPrint) btnPrint.addEventListener('click', openPrintModal);
+  const closePrintBtn = document.getElementById('closePrint');
+  if(closePrintBtn) closePrintBtn.addEventListener('click', closePrintModal);
+  const btnExecutePrint = document.getElementById('btnExecutePrint');
+  if(btnExecutePrint) btnExecutePrint.addEventListener('click', executePrint);
+
+  const btnAmbient = document.getElementById('btnAmbient');
+  if(btnAmbient) btnAmbient.addEventListener('click', openAmbientModal);
+  const closeAmbientBtn = document.getElementById('closeAmbient');
+  if(closeAmbientBtn) closeAmbientBtn.addEventListener('click', closeAmbientModal);
+  const btnToggleRain = document.getElementById('btnToggleRain');
+  if(btnToggleRain) btnToggleRain.addEventListener('click', () => toggleAmbientTrack('rain'));
+  const btnToggleFire = document.getElementById('btnToggleFire');
+  if(btnToggleFire) btnToggleFire.addEventListener('click', () => toggleAmbientTrack('fire'));
+  const btnToggleWaves = document.getElementById('btnToggleWaves');
+  if(btnToggleWaves) btnToggleWaves.addEventListener('click', () => toggleAmbientTrack('waves'));
+
+  const ambientMasterVol = document.getElementById('ambientMasterVol');
+  if(ambientMasterVol) ambientMasterVol.addEventListener('input', (e) => {
+    const val = Number(e.target.value) / 100;
+    if(ambientMasterGain && ambientAudioCtx) ambientMasterGain.gain.setValueAtTime(val, ambientAudioCtx.currentTime);
+  });
+  const volRain = document.getElementById('volRain');
+  if(volRain) volRain.addEventListener('input', (e) => {
+    ambientTracks.rain.vol = Number(e.target.value) / 100;
+    if(ambientTracks.rain.gain && ambientAudioCtx) ambientTracks.rain.gain.gain.setValueAtTime(ambientTracks.rain.vol * 0.8, ambientAudioCtx.currentTime);
+  });
+  const volFire = document.getElementById('volFire');
+  if(volFire) volFire.addEventListener('input', (e) => {
+    ambientTracks.fire.vol = Number(e.target.value) / 100;
+    if(ambientTracks.fire.gain && ambientAudioCtx) ambientTracks.fire.gain.gain.setValueAtTime(ambientTracks.fire.vol * 0.7, ambientAudioCtx.currentTime);
+  });
+  const volWaves = document.getElementById('volWaves');
+  if(volWaves) volWaves.addEventListener('input', (e) => {
+    ambientTracks.waves.vol = Number(e.target.value) / 100;
+    if(ambientTracks.waves.gain && ambientAudioCtx) ambientTracks.waves.gain.gain.setValueAtTime(ambientTracks.waves.vol * 0.6, ambientAudioCtx.currentTime);
+  });
+
+  const btnAmbientMasterToggle = document.getElementById('btnAmbientMasterToggle');
+  if(btnAmbientMasterToggle) btnAmbientMasterToggle.addEventListener('click', () => {
+    ambientMuted = !ambientMuted;
+    if(ambientMasterGain && ambientAudioCtx){
+      ambientMasterGain.gain.setValueAtTime(ambientMuted ? 0 : (Number(ambientMasterVol.value) / 100), ambientAudioCtx.currentTime);
+    }
+    btnAmbientMasterToggle.textContent = ambientMuted ? '🔈 Unmute' : '🔊 Mute All';
+  });
+
+  ['handsFreeOverlay', 'badgesOverlay', 'leechesOverlay', 'printOverlay', 'ambientOverlay'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){
+      el.addEventListener('click', (e) => {
+        if(e.target === el){
+          if(id === 'handsFreeOverlay') closeHandsFreeModal();
+          else if(id === 'badgesOverlay') closeBadgesModal();
+          else if(id === 'leechesOverlay') closeLeechesModal();
+          else if(id === 'printOverlay') closePrintModal();
+          else if(id === 'ambientOverlay') closeAmbientModal();
+        }
+      });
+    }
+  });
+}
+
 loadState();
 applyPreferences();
 wireEvents();
@@ -7490,7 +9098,13 @@ loadVisitorCount();
 renderSyncStatus();
 maybeAutoSync();
 initExamplesNotice();
+initHeaderCollapse();
+initTheme();
+wireV15ToolbarAndModals();
 if(location.hash !== '#selftest') applyHashSync();
+if(location.hash !== '#selftest' && window.navigator.onLine){
+  ensureFirebaseLoaded().catch(() => {});
+}
 
 if(location.hash === '#selftest'){
   selfTest();
