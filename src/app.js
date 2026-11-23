@@ -3969,7 +3969,7 @@ function renderCloudUserState(){
 async function handleGoogleSignIn(){
   const status = document.getElementById('cloudAuthStatus');
   if(status){
-    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري الاتصال بـ Google... ⏳' : 'Connecting to Google... ⏳';
+    status.textContent = (state.ui && state.ui.lang === 'ar') ? 'جاري التحويل المباشر إلى Google... ⏳' : 'Redirecting to Google... ⏳';
     status.style.color = '#1f6f6d';
   }
 
@@ -3986,37 +3986,12 @@ async function handleGoogleSignIn(){
     const provider = new window.firebase.auth.GoogleAuthProvider();
     provider.addScope('profile');
     provider.addScope('email');
-    await fbAuth.signInWithPopup(provider);
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await fbAuth.signInWithRedirect(provider);
   } catch(err){
-    console.warn('Google sign in popup failed or blocked:', err);
-    if(err && err.code === 'auth/popup-blocked'){
-      try {
-        const provider = new window.firebase.auth.GoogleAuthProvider();
-        await fbAuth.signInWithRedirect(provider);
-        return;
-      } catch(redirectErr){
-        console.error('Redirect sign in failed:', redirectErr);
-      }
-    }
+    console.error('Google sign-in redirect failed:', err);
     if(status){
-      if(err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/popup-blocked')){
-        status.innerHTML = (state.ui && state.ui.lang === 'ar')
-          ? `تم إغلاق نافذة الدخول أو حظرها.<br><button type="button" id="btnGoogleRedirectFallback" style="background:none;border:none;color:#d97706;font-weight:bold;text-decoration:underline;cursor:pointer;padding:4px 0;margin-top:6px;font-size:13px;display:inline-block;">المتابعة بالتحويل المباشر دون نوافذ 🌐</button>`
-          : `Sign-in popup was closed or blocked.<br><button type="button" id="btnGoogleRedirectFallback" style="background:none;border:none;color:#d97706;font-weight:bold;text-decoration:underline;cursor:pointer;padding:4px 0;margin-top:6px;font-size:13px;display:inline-block;">Continue via direct redirect 🌐</button>`;
-        const fallbackBtn = document.getElementById('btnGoogleRedirectFallback');
-        if(fallbackBtn){
-          fallbackBtn.addEventListener('click', async () => {
-            const provider = new window.firebase.auth.GoogleAuthProvider();
-            provider.addScope('profile');
-            provider.addScope('email');
-            await fbAuth.signInWithRedirect(provider);
-          });
-        }
-      } else {
-        status.textContent = (state.ui && state.ui.lang === 'ar')
-          ? '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع')
-          : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error');
-      }
+      status.textContent = '⚠️ ' + (err.message || 'Google sign-in error');
       status.style.color = 'var(--brick-deep)';
     }
   }
@@ -9045,7 +9020,7 @@ initHeaderCollapse();
 initTheme();
 wireV15ToolbarAndModals();
 if(location.hash !== '#selftest') applyHashSync();
-if(location.hash !== '#selftest' && getCloudUser() && window.navigator.onLine){
+if(location.hash !== '#selftest' && window.navigator.onLine){
   ensureFirebaseLoaded().catch(() => {});
 }
 
