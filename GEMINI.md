@@ -20,7 +20,7 @@
 - **What this command does autonomously**:
   1. Compiles standalone bundle (`python build/build.py`).
   2. Runs browser verification test (`python tools/verify_selftest.py`) -> ensures `SELFTEST PASS`.
-  3. Commits current release, creates Git tag (e.g. `v1.5.0`), and pushes to GitHub `master` and `main`.
+  3. Commits current release, creates Git tag (e.g. `v1.6.0`), and pushes to GitHub `master` and `main`.
   4. Archives snapshot to `0- update/oxford5000-app <version> coding`.
   5. Automatically renames project directory to the next version (e.g. `oxford5000-app 1.6 coding`).
   6. Automatically updates all internal project files (`sw.js` cache, `data/i18n.json` in 12 languages, `src/index.html`, `src/app.js`, `docs/CHANGELOG.md`, `ALL_UPDATES_CHANGELOG.md`, `README.md`, `GEMINI.md`, `RELEASE_NOTES_v<next>.md`).
@@ -47,7 +47,7 @@
   ```
 - **Self-Test**: Always verify changes by opening `dist/oxford5000-flashcards-final.html#selftest` and confirming `SELFTEST PASS` in the browser console.
 
-### Rule 3: Audio & Dataset Specifications (v1.5.0+)
+### Rule 3: Audio & Dataset Specifications (v1.6.0+)
 - **Dataset Size**: Exactly **5,325 verified English words** covering the full Oxford 3000 & 5000 lists across CEFR levels A1, A2, B1, B2, and C1.
 - **Audio Library**: Exactly **10,460 local native MP3 recordings** (5,230 British English UK + 5,230 American English US) stored inside `audio/`.
 - **Supported Languages (12 Languages)**:
@@ -81,7 +81,7 @@
 5. **Daily Habit & Streak Tracker (🔥)**: Streak counter, customizable goals, and celebration confetti.
 6. **Visual Learning Analytics & CEFR Radar**: 5-point radar polygon chart tracking CEFR levels and SRS box distribution.
 7. **One-Click Export to Anki**: TSV file export for offline Anki flashcard decks.
-8. **Progressive Web App (PWA)**: Offline-first with `manifest.webmanifest` and service worker caching (`oxford5000-v1.5.0`).
+8. **Progressive Web App (PWA)**: Offline-first with `manifest.webmanifest` and service worker caching (`oxford5000-v1.6.0`).
 9. **Smart Word Explorer**: Filter by CEFR, search by headword/translation/note, and sort across 8 different criteria.
 10. **Word & Sentence Custom Editor**: Allows learners to personalize definitions, examples, and translations locally.
 11. **Zero-Login Cloudless Sync**: Transfer progress between devices via URL hash parameters (Full Sync Link, Delta Sync Link, or compact OX6 export codes).

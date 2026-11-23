@@ -1,12 +1,22 @@
-# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.5)
+# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.6)
 
 A friendly, offline-first vocabulary companion for learners who want to build a strong English foundation one word at a time.
 
 **Live demo:** https://sofyanol.github.io/oxford-5000-words/  
-**Current active milestone:** Update 1.5 (In Development) • **Previous stable release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
+**Current active milestone:** Update 1.5 (Released) • **Previous stable release:** [Update 1.4](https://github.com/sofyanol/oxford-5000-words/releases/tag/v1.4.0)
 
 ---
 
+
+## Update 1.6 (In Development)
+
+Update 1.6 continues advancing Oxford 5000 with refined user experience, performance enhancements, and extended learning tools:
+
+- **Active Milestone Transition**:
+  - Initiated development cycle for Update 1.6.
+  - Preserved full v1.5 feature set.
+
+---
 ## Update 1.5
 
 Update 1.5 is a landmark release introducing an expansive study, cloud sync, and focus ecosystem alongside high-end visual aesthetics and hardened code quality:

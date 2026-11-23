@@ -31,13 +31,13 @@
 <hr>
 </div>
 
-## 🌟 What's New in Update 1.5
+## 🌟 What's New in Update 1.6
 
 <p align="center">
   <img src="docs/assets/hero-showcase.svg" alt="Oxford 5000 Interactive Vocabulary Flashcard Showcase" width="100%">
 </p>
 
-Update 1.5 is a monumental milestone introducing secure multi-device cloud accounts, hands-free audio study, milestone badges, printable study sets, and atmospheric soundscapes:
+Update 1.6 is a monumental milestone introducing secure multi-device cloud accounts, hands-free audio study, milestone badges, printable study sets, and atmospheric soundscapes:
 
 * ☁️ **Cloud Account Sync & Multi-Device Authentication (Headline Feature)**:
   * **Seamless Google Sign-In & Email Authentication**: Sign in with one tap via Google (`Continue with Google`) or personal email/password to seamlessly back up and synchronize all your study progress, mastered vocabulary, and daily streak counts across mobile and desktop.
@@ -243,7 +243,7 @@ oxford5000-app/
 ├─ publish/                  Publishing deployment files
 ├─ docs/                     Architecture, data guidelines, and changelogs
 ├─ ALL_UPDATES_CHANGELOG.md  Master historical changelog from 1.0 to 1.5
-├─ RELEASE_NOTES_v1.5.md     Dedicated 1.5 release notes (In Development)
+├─ RELEASE_NOTES_v1.6.md     Dedicated 1.5 release notes (In Development)
 └─ RELEASE_NOTES_v1.4.md     Dedicated 1.4 release notes
 ```
 
