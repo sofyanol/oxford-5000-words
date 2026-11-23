@@ -16636,39 +16636,44 @@ function renderWhatsNewContent(activeTab){
         </div>
         <p class="wn-release-meta">${isAr ? 'إصدار عملاق يقدم تجربة صوتية وبصرية لا مثيل لها: التشغيل التلقائي أثناء المشي والنوم، نظام الإنجازات والأوسمة، بنك الكلمات الصعبة الذكي، بطاقات وملخصات PDF جاهزة للطباعة، أصوات تركيز بيئية عبر Web Audio، والسمات الليلية الفاخرة.' : 'A monumental release introducing an unprecedented study suite: Hands-Free auto-play walk & sleep mode, gamification badges & achievements, smart focus deck for tricky words, printable study flashcards & sheets PDF, procedural ambient focus soundscapes, and luxury OLED/Sepia themes.'}</p>
 
+        <div class="wn-card" style="border:1.5px solid rgba(16, 185, 129, 0.4);background:rgba(16, 185, 129, 0.05);">
+          <div class="wn-card-head"><span class="wn-card-icon">☁️</span> <span style="color:#059669;font-weight:900;">${isAr ? '1. نظام الحسابات والمزامنة السحابية الفورية (Cloud Account Sync & Auth)' : '1. Cloud Account Sync & Multi-Device Authentication'}</span></div>
+          <p>${isAr ? 'الميزة الأهم والأبرز في الإصدار 1.5! سجّل دخولك فوراً بنقرة واحدة عبر حساب Google أو بريدك الشخصي، واحفظ تقدمك وكلماتك تلقائياً وسحابياً بين هاتفك والكمبيوتر بأمان وتشفير تام.' : 'The headline milestone of Update 1.5! Sign in with one click via Google or personal email to automatically back up and synchronize all your vocabulary mastery and streaks across devices with enterprise cloud encryption.'}</p>
+        </div>
+
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? '1. وضع التشغيل التلقائي دون استخدام اليدين (Hands-Free Walk & Sleep)' : '1. Hands-Free Auto-Play Walk & Sleep Mode'}</span></div>
+          <div class="wn-card-head"><span class="wn-card-icon">🎧</span> <span>${isAr ? '2. وضع التشغيل التلقائي دون استخدام اليدين (Hands-Free Walk & Sleep)' : '2. Hands-Free Auto-Play Walk & Sleep Mode'}</span></div>
           <p>${isAr ? 'استمع إلى الكلمات ونطقها البريطاني والأمريكي مع ترجمتها تلقائياً وأنت تمشي أو تقود أو قبل النوم! يتضمن مؤقت نوم تلقائي (15، 30، 45، 60 دقيقة) والتحكم بالفواصل الزمنية.' : 'Listen to words and their native UK/US pronunciations automatically while walking, commuting, or relaxing in bed! Includes sleep timer (15, 30, 45, 60m) and customizable pacing intervals.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🏆</span> <span>${isAr ? '2. نظام الأوسمة والإنجازات التحفيزية (10 Milestone Badges)' : '2. Gamification Badges & Milestone Achievements'}</span></div>
+          <div class="wn-card-head"><span class="wn-card-icon">🏆</span> <span>${isAr ? '3. نظام الأوسمة والإنجازات التحفيزية (10 Milestone Badges)' : '3. Gamification Badges & Milestone Achievements'}</span></div>
           <p>${isAr ? '10 أوسمة وإنجازات قابلة للفتح تشجعك على الاستمرار والتعلم اليومي (الخطوة الأولى، المستكشف الفضولي، بطل الأسبوع، محترف الكويز، قاهر مستويات CEFR، والمزيد) مع إشعارات احتفالية مبهجة.' : '10 unlockable milestone badges celebrating your vocabulary mastery, quiz triumphs, and study streaks with celebratory toasts and confetti.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? '3. بنك الكلمات الصعبة والتركيز الذكي (Smart Focus Deck / Leech Hunter)' : '3. Smart Focus Deck / Leech Hunter'}</span></div>
+          <div class="wn-card-head"><span class="wn-card-icon">🎯</span> <span>${isAr ? '4. بنك الكلمات الصعبة والتركيز الذكي (Smart Focus Deck / Leech Hunter)' : '4. Smart Focus Deck / Leech Hunter'}</span></div>
           <p>${isAr ? 'يتعرف التطبيق تلقائياً على الكلمات التي تخطئ فيها أو تجد صعوبة في تذكرها ويجمعها في قائمة تركيز مخصصة لتتمكن من مراجعتها وحدها وإتقانها بنقرة واحدة.' : 'Automatically identifies and aggregates tricky words and quiz misses into a targeted drill deck so you can conquer your weak spots in dedicated focus sessions.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🖨️</span> <span>${isAr ? '4. بطاقات وملخصات دراسية جاهزة للطباعة ورسمياً (Printable PDF Study Sheets)' : '4. Printable Study Sheets & Cut-Out Flashcards PDF'}</span></div>
+          <div class="wn-card-head"><span class="wn-card-icon">🖨️</span> <span>${isAr ? '5. بطاقات وملخصات دراسية جاهزة للطباعة ورسمياً (Printable PDF Study Sheets)' : '5. Printable Study Sheets & Cut-Out Flashcards PDF'}</span></div>
           <p>${isAr ? 'تحويل أي قائمة كلمات أو مستوى إلى بطاقات ورقية مصممة بدقة للقص (3×3) أو جدول تلخيصي فائق الوضوح موفر للحبر، للطباعة أو الحفظ كـ PDF للمراجعة دون شاشات.' : 'Instantly format and export vocabulary lists into ink-friendly A4 printable cut-out flashcard grids (3×3) or structured revision tables for paper study and offline PDF archival.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🌧️</span> <span>${isAr ? '5. أصوات التركيز والخلفيات البيئية (Ambient Web Audio Soundscapes)' : '5. Ambient Focus Soundscapes (Pure Web Audio)'}</span></div>
+          <div class="wn-card-head"><span class="wn-card-icon">🌧️</span> <span>${isAr ? '6. أصوات التركيز والخلفيات البيئية (Ambient Web Audio Soundscapes)' : '6. Ambient Focus Soundscapes (Pure Web Audio)'}</span></div>
           <p>${isAr ? 'مؤثرات صوتية اصطناعية هادئة مولدة بالكامل عبر كود المتصفح Web Audio API دون الحاجة لملفات إنترنت: صوت المطر الهادئ 🌧️، مدفأة الحطب المهدئة 🔥، وأمواج المحيط 🌊 لزيادة التركيز وتصفية الذهن.' : 'Pure procedural sound generation running 100% offline via the Web Audio API with zero external media files: Gentle Rain, Cozy Fireplace, and Ocean Waves with individual volume mixing.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🎨</span> <span>${isAr ? '6. مظهر أسود فاحم OLED ومظهر ورقي كلاسيكي دافئ Sepia' : '6. Luxury OLED Pure Black & Warm Classic Sepia Themes'}</span></div>
+          <div class="wn-card-head"><span class="wn-card-icon">🎨</span> <span>${isAr ? '7. مظهر أسود فاحم OLED ومظهر ورقي كلاسيكي دافئ Sepia' : '7. Luxury OLED Pure Black & Warm Classic Sepia Themes'}</span></div>
           <p>${isAr ? 'اختر مظهرك المفضل من الإعدادات: الكحلي والذهبي الافتراضي، أو الأسود الفاحم الموفر لبطاريات شاشات OLED، أو الورق الكلاسيكي الدافئ (Sepia) المريح للعين.' : 'Choose your personalized aesthetic from Settings: Default Midnight Navy & Gold, battery-saving OLED Pure Black, or eye-comfort Warm Classic Sepia.'}</p>
         </div>
 
         <div class="wn-card">
-          <div class="wn-card-head"><span class="wn-card-icon">🛡️</span> <span>${isAr ? '7. فحص الجودة المتقدم وخلو الكود من الأخطاء والقلتشات' : '7. Hardened Code Quality & Glitch-Free Architecture'}</span></div>
-          <p>${isAr ? 'اجتياز فحص الأمان بنسبة 100%، بدون أي مكتبات خارجية وبدون أي خوادم، مع احتفاظ كامل ببياناتك محلياً في جهازك بسرعة فائقة.' : '100% passed code security and quality audit, zero npm/Node dependencies, and zero trackers with ultra-fast local storage operations.'}</p>
+          <div class="wn-card-head"><span class="wn-card-icon">⚡</span> <span>${isAr ? '8. درج الأدوات الذكي ومركز الملاحظات المباشر (Tools Hub & Feedback Center)' : '8. Tools Hub Drawer & Private Feedback Center'}</span></div>
+          <p>${isAr ? 'شريط أدوات منظم يجمع كافة أدوات التركيز بسلاسة، مع إمكانية إرسال ملاحظاتك واقتراحاتك الخاصة مباشرة إلى صاحب المنصة بنقرة واحدة.' : 'A refined tools hub drawer organizing all auxiliary features, plus a direct in-app feedback channel allowing learners to submit suggestions and corrections directly.'}</p>
         </div>
       </div>
     `;
