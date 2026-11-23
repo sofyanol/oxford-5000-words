@@ -3860,7 +3860,7 @@ async function ensureFirebaseLoaded(){
         };
         saveCloudUser(userData);
         renderCloudUserState();
-        await syncWithCloudDocument(user.uid);
+        await syncWithCloudDocument(user.uid, { isAuthTrigger: true });
       } else {
         saveCloudUser(null);
         renderCloudUserState();
@@ -3880,7 +3880,7 @@ async function ensureFirebaseLoaded(){
           };
           saveCloudUser(userData);
           renderCloudUserState();
-          await syncWithCloudDocument(result.user.uid);
+          await syncWithCloudDocument(result.user.uid, { isAuthTrigger: true });
         }
       }).catch((e) => {
         console.warn('Redirect auth check:', e);
@@ -3917,11 +3917,301 @@ function scheduleCloudSync(){
   if(!user || !user.uid || !fbDb || !window.navigator.onLine) return;
   if(autoCloudSyncTimeout) clearTimeout(autoCloudSyncTimeout);
   autoCloudSyncTimeout = setTimeout(() => {
-    syncWithCloudDocument(user.uid);
+    syncWithCloudDocument(user.uid, { isBackgroundSave: true });
   }, 2500);
 }
 
-async function syncWithCloudDocument(uid){
+// --- Helper to summarize progress metrics of any state ---
+function getProgressStateSummary(s){
+  if(!s || typeof s !== 'object') return { markedCount: 0, knownCount: 0, learningCount: 0, streak: 0, lastTime: 0 };
+  const marks = s.marks || {};
+  let markedCount = 0;
+  let knownCount = 0;
+  let learningCount = 0;
+  let maxTime = 0;
+  for(const k in marks){
+    if(Object.prototype.hasOwnProperty.call(marks, k) && marks[k]){
+      markedCount++;
+      if(marks[k].s === 'k') knownCount++;
+      else if(marks[k].s === 'u') learningCount++;
+      const t = Number(marks[k].t) || 0;
+      if(t > maxTime) maxTime = t;
+    }
+  }
+  const streak = (s.streak && Number(s.streak.count)) || 0;
+  return { markedCount, knownCount, learningCount, streak, lastTime: maxTime };
+}
+
+function areStatesEssentiallyEqual(s1, s2){
+  if(!s1 || !s2) return false;
+  const m1 = s1.marks || {};
+  const m2 = s2.marks || {};
+  const k1 = Object.keys(m1);
+  const k2 = Object.keys(m2);
+  if(k1.length !== k2.length) return false;
+  for(let i = 0; i < k1.length; i++){
+    const k = k1[i];
+    if(!m2[k] || m2[k].s !== m1[k].s) return false;
+  }
+  return true;
+}
+
+// Smart Merge: Combines states without losing ANY learned words or progress
+function smartMergeStates(local, remote){
+  const merged = mergeStates(local, remote);
+  const localMarks = (local && local.marks) || {};
+  const remoteMarks = (remote && remote.marks) || {};
+  const allWordKeys = Object.keys(localMarks).concat(Object.keys(remoteMarks));
+  
+  // Guarantee: if a word is marked as known ('k') in either local or remote, IT STAYS KNOWN!
+  for(let i = 0; i < allWordKeys.length; i++){
+    const w = allWordKeys[i];
+    const lm = localMarks[w];
+    const rm = remoteMarks[w];
+    if((lm && lm.s === 'k') || (rm && rm.s === 'k')){
+      const maxT = Math.max((lm && Number(lm.t)) || 0, (rm && Number(rm.t)) || 0);
+      merged.marks[w] = { s: 'k', t: maxT };
+    }
+  }
+
+  // Guarantee: preserve highest SRS box level
+  const localSrs = (local && local.srs) || {};
+  const remoteSrs = (remote && remote.srs) || {};
+  const allSrsKeys = Object.keys(localSrs).concat(Object.keys(remoteSrs));
+  for(let i = 0; i < allSrsKeys.length; i++){
+    const w = allSrsKeys[i];
+    const ls = localSrs[w];
+    const rs = remoteSrs[w];
+    if(ls && rs){
+      const maxBox = Math.max(Number(ls.box) || 1, Number(rs.box) || 1);
+      const maxDue = Math.max(Number(ls.due) || 0, Number(rs.due) || 0);
+      const maxT = Math.max(Number(ls.t) || 0, Number(rs.t) || 0);
+      merged.srs[w] = { box: maxBox, due: maxDue, t: maxT };
+    }
+  }
+
+  // Guarantee: keep highest active streak
+  const localStreak = (local && local.streak && Number(local.streak.count)) || 0;
+  const remoteStreak = (remote && remote.streak && Number(remote.streak.count)) || 0;
+  if(remoteStreak > localStreak){
+    merged.streak = Object.assign({}, local.streak || {}, remote.streak);
+  }
+
+  // Guarantee: preserve union of unlocked badges
+  const localBadges = (local && local.badges) || {};
+  const remoteBadges = (remote && remote.badges) || {};
+  merged.badges = Object.assign({}, localBadges, remoteBadges);
+
+  return merged;
+}
+
+function applyRemoteState(remote){
+  if(!remote || typeof remote !== 'object') return;
+  state = {
+    v: 3,
+    deviceId: state.deviceId || null,
+    marks: remote.marks || {},
+    notes: remote.notes || {},
+    customEdits: remote.customEdits || remote.custom || {},
+    srs: remote.srs || {},
+    streak: remote.streak || { count: 0, lastDate: null, dailyGoal: 20 },
+    badges: remote.badges || {},
+    ui: cloneUi(remote.ui || state.ui),
+    history: Array.isArray(remote.history) ? remote.history.slice() : []
+  };
+  saveState();
+  buildLevelBar();
+  render();
+  refreshOpenModals();
+}
+
+async function writeStateToCloud(uid, s){
+  if(!fbDb) return;
+  const docRef = fbDb.collection('users').doc(uid);
+  await docRef.set({
+    uid: uid,
+    updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+    clientTimestamp: Date.now(),
+    state: {
+      marks: s.marks || {},
+      notes: s.notes || {},
+      streak: s.streak || {},
+      custom: s.customEdits || s.custom || {},
+      badges: s.badges || {},
+      srs: s.srs || {},
+      ui: {
+        currentLevel: (s.ui && s.ui.currentLevel) ? s.ui.currentLevel : 'All',
+        lang: (s.ui && s.ui.lang) ? s.ui.lang : 'en'
+      }
+    }
+  }, { merge: true });
+}
+
+function updateSyncSuccessUI(){
+  const badge = document.getElementById('cloudSyncBadge');
+  const syncTime = document.getElementById('cloudLastSyncTime');
+  const status = document.getElementById('cloudSyncStatus');
+  const u = getCloudUser();
+  if(u){
+    u.lastSync = Date.now();
+    saveCloudUser(u);
+  }
+  if(badge){
+    badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'سحابي متزامن 🟢' : 'Cloud Synced 🟢') + '</span>';
+  }
+  if(syncTime){
+    syncTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  }
+  if(status){
+    status.innerHTML = (state.ui && state.ui.lang === 'ar')
+      ? '✅ <b>اكتملت المزامنة السحابية بنجاح!</b> كلماتك وتقدمك في أمان تام.'
+      : '✅ <b>Cloud sync completed!</b> Your progress and words are safely backed up.';
+    status.style.color = 'var(--teal-deep)';
+  }
+}
+
+let pendingCloudConflict = null;
+
+function openCloudConflictModal(uid, remoteData){
+  pendingCloudConflict = {
+    uid: uid,
+    remoteData: remoteData
+  };
+  const overlay = document.getElementById('cloudConflictOverlay');
+  if(!overlay) return;
+
+  const localSummary = getProgressStateSummary(state);
+  const remoteSummary = getProgressStateSummary(remoteData.state);
+
+  const formatTime = (ts) => {
+    if(!ts) return (state.ui && state.ui.lang === 'ar') ? 'غير متوفر' : 'N/A';
+    const d = new Date(ts);
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  };
+
+  const cloudWordsEl = document.getElementById('conflictCloudWords');
+  const cloudStreakEl = document.getElementById('conflictCloudStreak');
+  const cloudTimeEl = document.getElementById('conflictCloudTime');
+  const localWordsEl = document.getElementById('conflictLocalWords');
+  const localStreakEl = document.getElementById('conflictLocalStreak');
+  const localTimeEl = document.getElementById('conflictLocalTime');
+
+  const isAr = state.ui && state.ui.lang === 'ar';
+  if(cloudWordsEl) cloudWordsEl.textContent = isAr 
+    ? `${remoteSummary.knownCount} متقنة (${remoteSummary.markedCount} إجمالي)`
+    : `${remoteSummary.knownCount} known (${remoteSummary.markedCount} total)`;
+  if(cloudStreakEl) cloudStreakEl.textContent = isAr ? `${remoteSummary.streak} أيام 🔥` : `${remoteSummary.streak} days 🔥`;
+  if(cloudTimeEl) cloudTimeEl.textContent = formatTime(remoteSummary.lastTime || remoteData.clientTimestamp || (remoteData.updatedAt && remoteData.updatedAt.toMillis && remoteData.updatedAt.toMillis()));
+
+  if(localWordsEl) localWordsEl.textContent = isAr
+    ? `${localSummary.knownCount} متقنة (${localSummary.markedCount} إجمالي)`
+    : `${localSummary.knownCount} known (${localSummary.markedCount} total)`;
+  if(localStreakEl) localStreakEl.textContent = isAr ? `${localSummary.streak} أيام 🔥` : `${localSummary.streak} days 🔥`;
+  if(localTimeEl) localTimeEl.textContent = formatTime(localSummary.lastTime || Date.now());
+
+  overlay.classList.add('show');
+}
+
+function closeCloudConflictModal(){
+  const overlay = document.getElementById('cloudConflictOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+
+async function resolveConflictWithCloud(){
+  if(!pendingCloudConflict) return;
+  const remote = pendingCloudConflict.remoteData.state;
+  applyRemoteState(remote);
+  closeCloudConflictModal();
+  updateSyncSuccessUI();
+  const isAr = state.ui && state.ui.lang === 'ar';
+  showToast(isAr ? '☁️ تم اعتماد بيانات السحابة بنجاح!' : '☁️ Cloud progress applied successfully!');
+  pendingCloudConflict = null;
+}
+
+async function resolveConflictWithLocal(){
+  if(!pendingCloudConflict) return;
+  const uid = pendingCloudConflict.uid;
+  closeCloudConflictModal();
+  await writeStateToCloud(uid, state);
+  updateSyncSuccessUI();
+  const isAr = state.ui && state.ui.lang === 'ar';
+  showToast(isAr ? '📱 تم اعتماد بيانات هذا الجهاز ورفعها للسحابة!' : '📱 Device progress uploaded to cloud!');
+  pendingCloudConflict = null;
+}
+
+async function resolveConflictWithMerge(){
+  if(!pendingCloudConflict) return;
+  const uid = pendingCloudConflict.uid;
+  const remote = pendingCloudConflict.remoteData.state;
+  state = smartMergeStates(state, remote);
+  saveState();
+  buildLevelBar();
+  render();
+  refreshOpenModals();
+  closeCloudConflictModal();
+  await writeStateToCloud(uid, state);
+  updateSyncSuccessUI();
+  const isAr = state.ui && state.ui.lang === 'ar';
+  showToast(isAr ? '🔀 تم الدمج الذكي بدون أي فقدان للبيانات!' : '🔀 Smart merge completed with zero data loss!');
+  pendingCloudConflict = null;
+}
+
+async function handleManualPullCloud(){
+  const user = getCloudUser();
+  if(!user || !user.uid){
+    showToast((state.ui && state.ui.lang === 'ar') ? 'يرجى تسجيل الدخول أولاً ⚠️' : 'Please sign in first ⚠️');
+    return;
+  }
+  const isAr = state.ui && state.ui.lang === 'ar';
+  const confirmMsg = isAr
+    ? 'هل أنت متأكد من استبدال تقدم هذا الجهاز ببيانات السحابة؟ سيتم استبدال الكلمات المحفوظة محلياً.'
+    : 'Are you sure you want to pull cloud data and replace this device’s progress?';
+  if(!window.confirm(confirmMsg)) return;
+
+  await ensureFirebaseLoaded();
+  if(!fbDb) return;
+  try {
+    const docRef = fbDb.collection('users').doc(user.uid);
+    const snap = await docRef.get();
+    if(snap.exists && snap.data() && snap.data().state){
+      applyRemoteState(snap.data().state);
+      updateSyncSuccessUI();
+      showToast(isAr ? '📥 تم سحب واعتماد بيانات السحابة بنجاح!' : '📥 Cloud data pulled successfully!');
+    } else {
+      showToast(isAr ? 'لا توجد بيانات سحابية محفوظة بعد' : 'No cloud data found yet');
+    }
+  } catch(e){
+    console.error('Manual pull error:', e);
+    showToast(isAr ? 'تعذر سحب البيانات ⚠️' : 'Failed to pull cloud data ⚠️');
+  }
+}
+
+async function handleManualPushCloud(){
+  const user = getCloudUser();
+  if(!user || !user.uid){
+    showToast((state.ui && state.ui.lang === 'ar') ? 'يرجى تسجيل الدخول أولاً ⚠️' : 'Please sign in first ⚠️');
+    return;
+  }
+  const isAr = state.ui && state.ui.lang === 'ar';
+  const confirmMsg = isAr
+    ? 'هل أنت متأكد من رفع بيانات هذا الجهاز إلى السحابة؟ سيتم استبدال النسخة السحابية المحفوظة.'
+    : 'Are you sure you want to push this device’s progress and overwrite your cloud backup?';
+  if(!window.confirm(confirmMsg)) return;
+
+  await ensureFirebaseLoaded();
+  if(!fbDb) return;
+  try {
+    await writeStateToCloud(user.uid, state);
+    updateSyncSuccessUI();
+    showToast(isAr ? '☁️ تم رفع وتحديث بيانات السحابة بنجاح!' : '☁️ Cloud backup updated with device data!');
+  } catch(e){
+    console.error('Manual push error:', e);
+    showToast(isAr ? 'تعذر رفع البيانات ⚠️' : 'Failed to push cloud data ⚠️');
+  }
+}
+
+async function syncWithCloudDocument(uid, options){
+  options = options || {};
   if(!fbDb) return;
   const badge = document.getElementById('cloudSyncBadge');
   const syncTime = document.getElementById('cloudLastSyncTime');
@@ -3935,51 +4225,64 @@ async function syncWithCloudDocument(uid){
     const docRef = fbDb.collection('users').doc(uid);
     const snap = await docRef.get();
 
-    if(snap.exists){
-      const remoteData = snap.data();
-      if(remoteData && remoteData.state){
-        state = mergeStates(state, remoteData.state);
-        saveState();
-        buildLevelBar();
-        render();
-        refreshOpenModals();
-      }
+    if(!snap.exists || !snap.data() || !snap.data().state){
+      // First-time backup: push local state to cloud
+      await writeStateToCloud(uid, state);
+      updateSyncSuccessUI();
+      return;
     }
 
-    await docRef.set({
-      uid: uid,
-      updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
-      clientTimestamp: Date.now(),
-      state: {
-        marks: state.marks || {},
-        notes: state.notes || {},
-        streak: state.streak || {},
-        custom: state.custom || {},
-        badges: state.badges || {},
-        ui: {
-          currentLevel: (state.ui && state.ui.currentLevel) ? state.ui.currentLevel : 'All',
-          lang: (state.ui && state.ui.lang) ? state.ui.lang : 'en'
-        }
-      }
-    }, { merge: true });
+    const remoteData = snap.data();
+    const remoteState = remoteData.state;
+    const localSummary = getProgressStateSummary(state);
+    const remoteSummary = getProgressStateSummary(remoteState);
 
-    const u = getCloudUser();
-    if(u){
-      u.lastSync = Date.now();
-      saveCloudUser(u);
+    // Scenario 1: Fresh local device login (e.g. <=3 marks on device, but cloud has progress)
+    if(localSummary.markedCount <= 3 && remoteSummary.markedCount > 3){
+      console.log('Auto-pulling cloud progress to fresh device');
+      applyRemoteState(remoteState);
+      updateSyncSuccessUI();
+      const isAr = state.ui && state.ui.lang === 'ar';
+      showToast(isAr
+        ? `📥 تم سحب تقدمك السحابي تلقائياً (${remoteSummary.knownCount} كلمة متقنة)` 
+        : `📥 Automatically pulled cloud progress (${remoteSummary.knownCount} words)`);
+      return;
     }
-    if(badge){
-      badge.innerHTML = '<span class="pulse-dot"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'سحابي متزامن 🟢' : 'Cloud Synced 🟢') + '</span>';
+
+    // Scenario 2: Clean first-time push (cloud empty, device has progress)
+    if(remoteSummary.markedCount === 0 && localSummary.markedCount > 0){
+      console.log('Auto-pushing device progress to empty cloud account');
+      await writeStateToCloud(uid, state);
+      updateSyncSuccessUI();
+      return;
     }
-    if(syncTime){
-      syncTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    // Scenario 3: Both states are essentially identical
+    if(areStatesEssentiallyEqual(state, remoteState)){
+      updateSyncSuccessUI();
+      return;
     }
-    if(status){
-      status.innerHTML = (state.ui && state.ui.lang === 'ar')
-        ? '✅ <b>اكتملت المزامنة السحابية بنجاح!</b> كلماتك وتقدمك في أمان تام.'
-        : '✅ <b>Cloud sync completed!</b> Your progress and words are safely backed up.';
-      status.style.color = 'var(--teal-deep)';
+
+    // Scenario 4: Conflict detected! Both device and cloud have substantial diverging progress
+    if(options.isAuthTrigger || options.checkConflict){
+      console.warn('Sync conflict detected between local and cloud state');
+      openCloudConflictModal(uid, remoteData);
+      if(badge){
+        badge.innerHTML = '<span class="pulse-dot" style="background:#eab308"></span><span>' + ((state.ui && state.ui.lang === 'ar') ? 'تضارب المزامنة ⚠️' : 'Sync Conflict ⚠️') + '</span>';
+      }
+      return;
     }
+
+    // Default continuous auto-save during study session:
+    // Non-destructive smart merge
+    state = smartMergeStates(state, remoteState);
+    saveState();
+    buildLevelBar();
+    render();
+    refreshOpenModals();
+    await writeStateToCloud(uid, state);
+    updateSyncSuccessUI();
+
   } catch(err){
     console.error('Cloud sync error:', err);
     if(badge){
@@ -4250,7 +4553,7 @@ async function handleForceCloudSync(){
     return;
   }
   await ensureFirebaseLoaded();
-  await syncWithCloudDocument(user.uid);
+  await syncWithCloudDocument(user.uid, { checkConflict: true });
 }
 
 function wireCloudAuthEvents(){
@@ -4291,6 +4594,31 @@ function wireCloudAuthEvents(){
 
   const btnSyncNow = document.getElementById('btnForceCloudSync');
   if(btnSyncNow) btnSyncNow.addEventListener('click', handleForceCloudSync);
+
+  const btnPullCloud = document.getElementById('btnPullCloudData');
+  if(btnPullCloud) btnPullCloud.addEventListener('click', handleManualPullCloud);
+
+  const btnPushLocal = document.getElementById('btnPushLocalData');
+  if(btnPushLocal) btnPushLocal.addEventListener('click', handleManualPushCloud);
+
+  const btnChooseCloud = document.getElementById('btnChooseCloud');
+  if(btnChooseCloud) btnChooseCloud.addEventListener('click', resolveConflictWithCloud);
+
+  const btnChooseLocal = document.getElementById('btnChooseLocal');
+  if(btnChooseLocal) btnChooseLocal.addEventListener('click', resolveConflictWithLocal);
+
+  const btnChooseMerge = document.getElementById('btnChooseMerge');
+  if(btnChooseMerge) btnChooseMerge.addEventListener('click', resolveConflictWithMerge);
+
+  const closeConflictBtn = document.getElementById('closeConflict');
+  if(closeConflictBtn) closeConflictBtn.addEventListener('click', closeCloudConflictModal);
+
+  const conflictOverlay = document.getElementById('cloudConflictOverlay');
+  if(conflictOverlay){
+    conflictOverlay.addEventListener('click', (e) => {
+      if(e.target === conflictOverlay) closeCloudConflictModal();
+    });
+  }
 }
 
 function closeSync(){

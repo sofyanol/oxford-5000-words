@@ -531,6 +531,10 @@
             <button type="button" class="tool-btn primary" id="btnForceCloudSync" data-i18n="sync.cloud.syncNow">مزامنة الآن 🔄</button>
             <button type="button" class="tool-btn danger-tool" id="btnCloudSignOut" data-i18n="sync.cloud.logout">تسجيل الخروج 🚪</button>
           </div>
+          <div class="cloud-actions-row" style="margin-top: 6px;">
+            <button type="button" class="tool-btn" id="btnPullCloudData" data-i18n="sync.cloud.pull" title="Pull cloud progress to this device">⬇️ سحب من السحابة</button>
+            <button type="button" class="tool-btn" id="btnPushLocalData" data-i18n="sync.cloud.push" title="Upload this device's progress to cloud">⬆️ رفع بيانات الجهاز</button>
+          </div>
 
           <div class="cloud-status-msg" id="cloudSyncStatus" role="status"></div>
         </div>
@@ -608,6 +612,81 @@
         <p class="sync-note" id="lastSyncLine"></p>
       </details>
       </div><!-- /syncTabManual -->
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="cloudConflictOverlay">
+  <div class="review-panel sync-panel conflict-panel" role="dialog" aria-modal="true" aria-labelledby="conflictTitle" tabindex="-1">
+    <div class="review-head">
+      <div class="review-head-titles">
+        <h3 id="conflictTitle" data-i18n="conflict.title">⚠️ تضارب المزامنة السحابية</h3>
+        <p class="review-sub" data-i18n="conflict.subtitle">تم العثور على تقدم مختلف بين السحابة وهذا الجهاز. اختر كيف تود المتابعة:</p>
+      </div>
+      <button class="review-close" id="closeConflict" type="button" aria-label="Close">✕</button>
+    </div>
+    <div class="conflict-body">
+      <div class="conflict-comparison-grid">
+        <!-- Cloud Box -->
+        <div class="conflict-side-box cloud-side">
+          <div class="conflict-side-badge">☁️ <span data-i18n="conflict.cloudTitle">السحابة (حسابك)</span></div>
+          <div class="conflict-metrics">
+            <div class="conflict-metric-row">
+              <span class="c-lbl" data-i18n="conflict.wordsKnown">الكلمات:</span>
+              <span class="c-val" id="conflictCloudWords">0</span>
+            </div>
+            <div class="conflict-metric-row">
+              <span class="c-lbl" data-i18n="conflict.streakDays">أيام الحماسة:</span>
+              <span class="c-val" id="conflictCloudStreak">0 🔥</span>
+            </div>
+            <div class="conflict-metric-row">
+              <span class="c-lbl" data-i18n="conflict.lastTime">آخر نشاط:</span>
+              <span class="c-val" id="conflictCloudTime">-</span>
+            </div>
+          </div>
+          <button type="button" class="tool-btn conflict-action-btn cloud-pick-btn" id="btnChooseCloud" data-i18n="conflict.chooseCloud">
+            ☁️ اعتماد بيانات السحابة
+          </button>
+          <small class="conflict-hint" data-i18n="conflict.cloudHint">يستبدل بيانات هذا الجهاز ببيانات السحابة (آمن لمنع فقدان تقدم الحساب)</small>
+        </div>
+
+        <!-- Local Device Box -->
+        <div class="conflict-side-box local-side">
+          <div class="conflict-side-badge">📱 <span data-i18n="conflict.localTitle">هذا الجهاز (محلي)</span></div>
+          <div class="conflict-metrics">
+            <div class="conflict-metric-row">
+              <span class="c-lbl" data-i18n="conflict.wordsKnown">الكلمات:</span>
+              <span class="c-val" id="conflictLocalWords">0</span>
+            </div>
+            <div class="conflict-metric-row">
+              <span class="c-lbl" data-i18n="conflict.streakDays">أيام الحماسة:</span>
+              <span class="c-val" id="conflictLocalStreak">0 🔥</span>
+            </div>
+            <div class="conflict-metric-row">
+              <span class="c-lbl" data-i18n="conflict.lastTime">آخر نشاط:</span>
+              <span class="c-val" id="conflictLocalTime">-</span>
+            </div>
+          </div>
+          <button type="button" class="tool-btn conflict-action-btn local-pick-btn" id="btnChooseLocal" data-i18n="conflict.chooseLocal">
+            📱 اعتماد هذا الجهاز
+          </button>
+          <small class="conflict-hint" data-i18n="conflict.localHint">يرفع بيانات هذا الجهاز إلى السحابة ويستبدل ما في الحساب</small>
+        </div>
+      </div>
+
+      <!-- Smart Merge Option -->
+      <div class="conflict-merge-card">
+        <div class="conflict-merge-header">
+          <span class="sparkle-icon">✨</span>
+          <div>
+            <h4 data-i18n="conflict.smartMergeTitle">الدمج الذكي الموصى به (بدون أي فقدان للبيانات)</h4>
+            <p data-i18n="conflict.smartMergeDesc">يجمع كلماتك المتقنة من الطرفين معاً ويحتفظ بأعلى مرحلة مراجعة وأعلى أيام حماسة بدون حذف أي تقدم.</p>
+          </div>
+        </div>
+        <button type="button" class="tool-btn primary conflict-action-btn merge-pick-btn" id="btnChooseMerge" data-i18n="conflict.chooseMerge">
+          🔀 دمج الطرفين ذكياً (Smart Merge)
+        </button>
+      </div>
     </div>
   </div>
 </div>
