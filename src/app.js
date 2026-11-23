@@ -6608,7 +6608,7 @@ function moveTutorial(direction){
   renderTutorialStep();
 }
 
-let currentWhatsNewTab = 'tab-update16';
+let currentWhatsNewTab = 'tab-update15';
 
 function isWhatsNewOpen(){
   const el = document.getElementById('whatsNewOverlay');
@@ -6618,7 +6618,7 @@ function isWhatsNewOpen(){
 function openWhatsNew(tab){
   const overlay = document.getElementById('whatsNewOverlay');
   if(!overlay) return;
-  renderWhatsNewContent(tab || 'tab-update16');
+  renderWhatsNewContent(tab || 'tab-update15');
   overlay.classList.add('show');
   requestAnimationFrame(() => {
     const btn = document.getElementById('closeWhatsNew');
@@ -6642,11 +6642,11 @@ function renderWhatsNewContent(activeTab){
 
   const isAr = (currentLang === 'ar');
 
-    if(currentWhatsNewTab === 'tab-update16'){
+    if(currentWhatsNewTab === 'tab-update15'){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
-          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.6 الفاخر' : 'Oxford 5000 - Luxury Update 1.5'}</span>
+          <span>🌟 ${isAr ? 'تحديث Oxford 5000 - الإصدار 1.5 الفاخر' : 'Oxford 5000 - Luxury Update 1.5'}</span>
           <span class="wn-tag">${isAr ? 'أحدث إصدار' : 'Latest Release'}</span>
         </div>
         <p class="wn-release-meta">${isAr ? 'إصدار عملاق يقدم تجربة صوتية وبصرية لا مثيل لها: التشغيل التلقائي أثناء المشي والنوم، نظام الإنجازات والأوسمة، بنك الكلمات الصعبة الذكي، بطاقات وملخصات PDF جاهزة للطباعة، أصوات تركيز بيئية عبر Web Audio، والسمات الليلية الفاخرة.' : 'A monumental release introducing an unprecedented study suite: Hands-Free auto-play walk & sleep mode, gamification badges & achievements, smart focus deck for tricky words, printable study flashcards & sheets PDF, procedural ambient focus soundscapes, and luxury OLED/Sepia themes.'}</p>
@@ -6805,7 +6805,7 @@ function renderWhatsNewContent(activeTab){
     contentEl.innerHTML = `
       <div class="wn-section">
         <div class="wn-release-title">
-          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.6' : 'Full Changelog Archive (1.0 - 1.6)'}</span>
+          <span>📜 ${isAr ? 'سجل كافة التحديثات من 1.0 إلى 1.5' : 'Full Changelog Archive (1.0 - 1.5)'}</span>
         </div>
         <p class="wn-release-meta">${isAr ? 'سجل تاريخي يوثق تطور تطبيق Oxford 5000 منذ إطلاقه الأول وحتى أحدث إصدار.' : 'Historical log of Oxford 5000 releases from inception to the latest version.'}</p>
 
@@ -7076,7 +7076,7 @@ function wireEvents(){
   const startOnboarding = document.getElementById('startOnboarding');
   if(startOnboarding) startOnboarding.addEventListener('click', closeOnboarding);
   const whatsNewBadge = document.getElementById('whatsNewBadge');
-  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update16'));
+  if(whatsNewBadge) whatsNewBadge.addEventListener('click', () => openWhatsNew('tab-update15'));
   const closeWhatsNewBtn = document.getElementById('closeWhatsNew');
   if(closeWhatsNewBtn) closeWhatsNewBtn.addEventListener('click', closeWhatsNew);
   const whatsNewOverlayEl = document.getElementById('whatsNewOverlay');

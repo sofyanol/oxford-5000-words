@@ -1,11 +1,6 @@
 # Changelog
 
-## Update 1.6.0 (In Development)
-- Started Update 1.6 development cycle.
-- Preserved complete feature foundation of Update 1.5.
-- Service worker cache updated to `oxford5000-v1.6.0`.
-
-## Update 1.5.0
+## Update 1.5.0 (Released)
 - Added Cloud Account Sync & Multi-Device Authentication (Google Sign-In & Email/Password) with real-time sync status (`🟢 Cloud Synced`), automated progress merge, and user profile management dashboard.
 - Added In-App Private Feedback & Suggestion Center with categorization (suggestions, corrections, bugs), context auto-tagging, and direct owner dispatch.
 - Added Streamlined 4-Button Primary Toolbar with Collapsible Smart Tools Hub Drawer.

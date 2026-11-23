@@ -1,13 +1,20 @@
 # Oxford 5000 Words - Release Notes v1.5.0
 
 ## Overview
-Update 1.5.0 is a milestone release delivering an unprecedented offline-first study and focus suite: **Hands-Free Auto-Play Walk & Sleep Mode**, **Gamification Badges & Milestone Achievements**, **Smart Focus Deck / Leech Hunter**, **Printable Study Sheets & Cut-out Flashcards PDF**, **Procedural Ambient Focus Soundscapes via Web Audio API**, **Luxury OLED Pure Black & Warm Classic Sepia Themes**, and a **Hardened Code Quality & Security Audit** ensuring 100% glitch-free performance.
+Update 1.5.0 is a milestone release delivering **Cloud Account Sync & Multi-Device Authentication** alongside an unprecedented offline-first study and focus suite: **Hands-Free Auto-Play Walk & Sleep Mode**, **Gamification Badges & Milestone Achievements**, **Smart Focus Deck / Leech Hunter**, **Printable Study Sheets & Cut-out Flashcards PDF**, **Procedural Ambient Focus Soundscapes via Web Audio API**, **Luxury OLED Pure Black & Warm Classic Sepia Themes**, and a **Hardened Code Quality & Security Audit** ensuring 100% glitch-free performance.
 
 ---
 
 ## What's New in Version 1.5.0
 
-### 1. 🎧 Hands-Free Auto-Play Walk & Sleep Mode
+### 1. ☁️ Cloud Account Sync & Multi-Device Authentication (Headline Feature)
+- **Seamless Google Sign-In & Email Authentication**: Sign in with one tap via Google (`Continue with Google`) or personal email/password to seamlessly back up and synchronize all your study progress, mastered vocabulary, and daily streak counts across mobile and desktop.
+- **Zero-Knowledge Privacy & Permanent Encryption**: Built with Google Firebase & Cloud Firestore security rules guaranteeing that every learner can only access their own private progress document.
+- **Realtime Cloud Indicator**: Live status badge (`🟢 Cloud Synced`) with automatic background synchronization upon answering cards.
+- **Alternative Zero-Login Manual Mode**: Preserves offline-first manual link sync and compact OX6 export codes for privacy-focused learners.
+- **Tactile Pill Synchronization Button**: Streamlined top bar sync pill (`stat-pill sync-pill`) perfectly matched with the habit streak counter.
+
+### 2. 🎧 Hands-Free Auto-Play Walk & Sleep Mode
 - **Eyes-Free Vocabulary Acquisition**: Study on the go while walking, exercising, commuting, or relaxing in bed without touching the screen.
 - **Dual Pronunciation Pacing**: Configurable audio sequence (British English UK, American English US, or sequential UK followed by US).
 - **Customizable Interval Timer**: Pacing speed selectors (2.0s Fast, 3.2s Normal, 5.0s Relaxed) with smooth progress bar animation.

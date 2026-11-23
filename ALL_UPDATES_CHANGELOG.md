@@ -1,4 +1,4 @@
-# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.6)
+# Oxford 5000 Words - Master Changelog (Updates 1.0 - 1.5)
 
 A friendly, offline-first vocabulary companion for learners who want to build a strong English foundation one word at a time.
 
@@ -7,17 +7,7 @@ A friendly, offline-first vocabulary companion for learners who want to build a 
 
 ---
 
-
-## Update 1.6 (In Development)
-
-Update 1.6 continues advancing Oxford 5000 with refined user experience, performance enhancements, and extended learning tools:
-
-- **Active Milestone Transition**:
-  - Initiated development cycle for Update 1.6.
-  - Preserved full v1.5 feature set.
-
----
-## Update 1.5
+## Update 1.5 (Released)
 
 Update 1.5 is a landmark release introducing an expansive study, cloud sync, and focus ecosystem alongside high-end visual aesthetics and hardened code quality:
 
