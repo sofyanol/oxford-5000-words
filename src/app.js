@@ -3793,6 +3793,26 @@ async function ensureFirebaseLoaded(){
       }
     });
 
+    try {
+      fbAuth.getRedirectResult().then(async (result) => {
+        if(result && result.user){
+          const userData = {
+            uid: result.user.uid,
+            displayName: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Learner'),
+            email: result.user.email || '',
+            photoURL: result.user.photoURL || '',
+            provider: (result.user.providerData && result.user.providerData[0]) ? result.user.providerData[0].providerId : 'google.com',
+            lastSync: Date.now()
+          };
+          saveCloudUser(userData);
+          renderCloudUserState();
+          await syncWithCloudDocument(result.user.uid);
+        }
+      }).catch((e) => {
+        console.warn('Redirect auth check:', e);
+      });
+    } catch(redirErr){}
+
     isFbInitializing = false;
     return true;
   } catch(err){
@@ -3979,9 +3999,24 @@ async function handleGoogleSignIn(){
       }
     }
     if(status){
-      status.textContent = (state.ui && state.ui.lang === 'ar')
-        ? (err.code === 'auth/popup-closed-by-user' ? 'تم إغلاق نافذة الدخول.' : '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع'))
-        : (err.code === 'auth/popup-closed-by-user' ? 'Sign-in window closed.' : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error'));
+      if(err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/popup-blocked')){
+        status.innerHTML = (state.ui && state.ui.lang === 'ar')
+          ? `تم إغلاق نافذة الدخول أو حظرها.<br><button type="button" id="btnGoogleRedirectFallback" style="background:none;border:none;color:#d97706;font-weight:bold;text-decoration:underline;cursor:pointer;padding:4px 0;margin-top:6px;font-size:13px;display:inline-block;">المتابعة بالتحويل المباشر دون نوافذ 🌐</button>`
+          : `Sign-in popup was closed or blocked.<br><button type="button" id="btnGoogleRedirectFallback" style="background:none;border:none;color:#d97706;font-weight:bold;text-decoration:underline;cursor:pointer;padding:4px 0;margin-top:6px;font-size:13px;display:inline-block;">Continue via direct redirect 🌐</button>`;
+        const fallbackBtn = document.getElementById('btnGoogleRedirectFallback');
+        if(fallbackBtn){
+          fallbackBtn.addEventListener('click', async () => {
+            const provider = new window.firebase.auth.GoogleAuthProvider();
+            provider.addScope('profile');
+            provider.addScope('email');
+            await fbAuth.signInWithRedirect(provider);
+          });
+        }
+      } else {
+        status.textContent = (state.ui && state.ui.lang === 'ar')
+          ? '⚠️ تعذر تسجيل الدخول بـ Google: ' + (err.message || 'خطأ غير متوقع')
+          : '⚠️ Google sign-in failed: ' + (err.message || 'Unexpected error');
+      }
       status.style.color = 'var(--brick-deep)';
     }
   }
