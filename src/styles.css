@@ -1659,18 +1659,70 @@
   .rw-lvl.c1{ color: var(--brick-deep); background: rgba(184,84,63,.13); }
 
   .row-quickmark .rw-top{ justify-content: flex-start; }
-  .rw-quick-actions{ display:flex; gap:7px; flex-shrink:0; }
+  .rw-quick-actions{ display:flex; gap:6px; align-items:center; flex-shrink:0; }
   .rw-mini{
-    width:30px; height:30px; border-radius:9px;
+    width:28px; height:28px; border-radius:8px;
     display:flex; align-items:center; justify-content:center;
-    font-size:13px; cursor:pointer;
+    font-size:13px; font-weight:800; cursor:pointer; border:none;
     transition: background .15s ease, transform .1s ease;
   }
-  .rw-mini.know{ background: rgba(31,111,109,.12); color: var(--teal-deep); }
-  .rw-mini.know:hover{ background: rgba(31,111,109,.24); }
-  .rw-mini.unknow{ background: rgba(184,84,63,.1); color: var(--brick-deep); }
-  .rw-mini.unknow:hover{ background: rgba(184,84,63,.22); }
-  .rw-mini:active{ transform: scale(.9); }
+  .rw-mini.know{ background: rgba(31,111,109,.15); color: var(--teal-deep); }
+  .rw-mini.know:hover{ background: rgba(31,111,109,.3); transform: scale(1.05); }
+  .rw-mini.unknow{ background: rgba(217,164,65,.18); color: #b45309; }
+  .rw-mini.unknow:hover{ background: rgba(217,164,65,.35); transform: scale(1.05); }
+  .rw-mini:active{ transform: scale(.92); }
+
+  .exp-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .exp-quick-btns {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+  }
+  .exp-action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(0, 0, 0, 0.04);
+    color: #4b5563;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .exp-action-btn:hover {
+    transform: translateY(-1px);
+  }
+  .exp-action-btn.active-k {
+    background: rgba(31, 111, 109, 0.2);
+    color: var(--teal-deep);
+    border-color: var(--teal-deep);
+  }
+  .exp-action-btn.active-u {
+    background: rgba(184, 84, 63, 0.2);
+    color: var(--brick-deep);
+    border-color: var(--brick-deep);
+  }
+  .exp-action-btn.exp-del {
+    font-size: 11px;
+  }
+  .exp-action-btn.exp-del:hover {
+    background: rgba(184, 84, 63, 0.18);
+    color: var(--brick-deep);
+  }
+  body.dark-mode .exp-action-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #9ca3af;
+  }
 
   .review-empty{ text-align:center; color:#a89b7c; padding: 44px 20px; font-size:13px; line-height:1.9; }
 

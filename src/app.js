@@ -960,6 +960,71 @@ function applyUndo(marks, entry, now){
   return next;
 }
 
+function removeWordFromMarks(target){
+  const now = Date.now();
+  let id = null, word = null;
+  if(typeof target === 'object' && target !== null){
+    id = target.id;
+    word = target.word;
+  } else {
+    id = target;
+    const entry = (typeof getEntry === 'function') ? getEntry(target) : null;
+    if(entry){
+      id = entry.id;
+      word = entry.word;
+    } else {
+      word = String(target);
+    }
+  }
+  const next = Object.assign({}, state.marks);
+  if(id != null){
+    next[id] = { s: 'r', t: now };
+    next[String(id)] = { s: 'r', t: now };
+  }
+  if(word){
+    next[word] = { s: 'r', t: now };
+  }
+  state.marks = next;
+  if(state.srs){
+    const nextSrs = Object.assign({}, state.srs);
+    if(id != null){ delete nextSrs[id]; delete nextSrs[String(id)]; }
+    if(word){ delete nextSrs[word]; }
+    state.srs = nextSrs;
+  }
+}
+
+function setWordStatusInMarks(target, status){
+  const now = Date.now();
+  let id = null, word = null;
+  if(typeof target === 'object' && target !== null){
+    id = target.id;
+    word = target.word;
+  } else {
+    id = target;
+    const entry = (typeof getEntry === 'function') ? getEntry(target) : null;
+    if(entry){
+      id = entry.id;
+      word = entry.word;
+    } else {
+      word = String(target);
+    }
+  }
+  const prev = (id != null ? state.marks[id] : null) || (word ? state.marks[word] : null);
+  const next = Object.assign({}, state.marks);
+  const markObj = { s: status, t: now };
+  if(id != null){
+    next[id] = markObj;
+    next[String(id)] = markObj;
+  }
+  if(word){
+    next[word] = markObj;
+  }
+  state.marks = next;
+  if(typeof applySrsOnMark === 'function'){
+    state.srs = applySrsOnMark(state.srs, id != null ? id : word, prev, status, now);
+  }
+}
+
 // ---------- Step 2: shared, DOM-free progress functions ----------
 
 function buildProgress(s){
@@ -2870,17 +2935,52 @@ function undo(){
   render();
 }
 
-function resetAll(){
+async function resetAll(){
   if(!confirm(t('confirm.reset'))) return;
+  const isAr = state.ui && state.ui.lang === 'ar';
+  const user = getCloudUser();
+  let clearCloud = false;
+
+  if(user && user.uid){
+    const cloudConfirmMsg = isAr
+      ? 'هل تريد أيضاً مسح التقدم المحفوظ في حسابك السحابي لتبدأ من جديد على كل أجهزتك؟\n\n• اضغط "موافق" لمسح السحابة أيضاً والبدء من الصفر.\n• اضغط "إلغاء" لمسح هذا الجهاز فقط مع إبقاء نسختك في السحابة.'
+      : 'Do you also want to clear your saved progress in your Cloud account?\n\n• Click "OK" to clear cloud too and start fresh on all devices.\n• Click "Cancel" to clear this device only and keep your cloud backup.';
+    clearCloud = confirm(cloudConfirmMsg);
+  }
+
   const deviceId = state.deviceId;
   state = freshState();
   state.deviceId = deviceId;
-  try{
+  const now = Date.now();
+  state.lastResetTime = now;
+
+  try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }catch(e){
+    localStorage.setItem('oxford_cloud_last_reset_time', String(now));
+    localStorage.setItem('oxford_just_reset', '1');
+  } catch(e){
     showStorageWarning();
   }
-  location.reload();
+
+  if(clearCloud && user && user.uid && fbDb){
+    try {
+      await writeStateToCloud(user.uid, state, true);
+    } catch(err){
+      console.error('Failed to wipe cloud document:', err);
+    }
+  } else if(!clearCloud && user && user.uid){
+    localStorage.setItem('oxford_skip_auto_pull', '1');
+  }
+
+  saveState();
+  buildLevelBar();
+  render();
+  refreshOpenModals();
+  updateSyncSuccessUI();
+
+  showToast(isAr 
+    ? (clearCloud ? '🧹 تم مسح كل التقدم محلياً وفي السحابة بنجاح!' : '🧹 تم مسح تقدم هذا الجهاز بنجاح!')
+    : (clearCloud ? '🧹 All progress cleared locally and in cloud!' : '🧹 Device progress cleared!'));
 }
 
 function toggleShuffle(){
@@ -3272,6 +3372,11 @@ function explorerCardHtml(item){
       </div>
       <div class="exp-card-actions">
         <span class="exp-status-pill ${stClass}">${esc(stLabel)}</span>
+        <div class="exp-quick-btns">
+          <button type="button" class="exp-action-btn ${st === 'k' ? 'active-k' : ''}" data-exp-action="set-known" data-word-id="${esc(id)}" title="${esc(t('card.know'))}">✓</button>
+          <button type="button" class="exp-action-btn ${st === 'u' ? 'active-u' : ''}" data-exp-action="set-unknown" data-word-id="${esc(id)}" title="${esc(t('card.unknow'))}">✕</button>
+          ${st !== 'r' && (st === 'k' || st === 'u') ? `<button type="button" class="exp-action-btn exp-del" data-exp-action="set-unmarked" data-word-id="${esc(id)}" title="${esc(t('modal.row.remove'))}">🗑️</button>` : ''}
+        </div>
         <button type="button" class="exp-jump-btn" data-jump-id="${esc(id)}" title="${esc(t('search.studyWord'))}">${esc(t('search.studyWord'))}</button>
       </div>
     </div>
@@ -3445,10 +3550,22 @@ function reviewRowHtml(wordOrEntry, rowType){
 
   if(rowType === 'removable'){
     const tr = wordTranslation(word).trim();
+    const isUnknown = (currentMode === 'unknown');
+    const isKnown = (currentMode === 'known');
+    let moveBtn = '';
+    if(isUnknown){
+      moveBtn = `<button type="button" class="rw-mini know" data-row-action="to-known" data-word="${esc(word)}" data-id="${esc(id)}" title="${esc(t('card.know'))} (Move to Known)" aria-label="${esc(t('card.know'))}">✓</button>`;
+    } else if(isKnown){
+      moveBtn = `<button type="button" class="rw-mini unknow" data-row-action="to-unknown" data-word="${esc(word)}" data-id="${esc(id)}" title="${esc(t('card.unknow'))} (Move to Still Learning)" aria-label="${esc(t('card.unknow'))}">↻</button>`;
+    }
+
     return `<div class="review-row">
       <div class="rw-top">
         <div class="rw-word-col">${head}</div>
-        <button type="button" class="rw-del" data-del="${esc(word)}" title="${esc(t('modal.row.remove'))}" aria-label="${esc(t('a11y.delete'))}">✕</button>
+        <div class="rw-quick-actions">
+          ${moveBtn}
+          <button type="button" class="rw-del" data-row-action="remove-mark" data-word="${esc(word)}" data-id="${esc(id)}" title="${esc(t('modal.row.remove'))}" aria-label="${esc(t('a11y.delete'))}">✕</button>
+        </div>
       </div>
       ${tr ? `<div class="rw-auto">${esc(tr)}</div>` : ''}
       ${details}
@@ -3461,8 +3578,8 @@ function reviewRowHtml(wordOrEntry, rowType){
     <div class="rw-top">
       <div class="rw-word-col">${head}</div>
       <div class="rw-quick-actions">
-        <button type="button" class="rw-mini unknow" data-mark="unknow" data-word="${esc(word)}" title="${esc(t('card.unknow'))}" aria-label="${esc(t('card.unknow'))}">✕</button>
-        <button type="button" class="rw-mini know" data-mark="know" data-word="${esc(word)}" title="${esc(t('card.know'))}" aria-label="${esc(t('card.know'))}">✓</button>
+        <button type="button" class="rw-mini unknow" data-row-action="to-unknown" data-word="${esc(word)}" data-id="${esc(id)}" title="${esc(t('card.unknow'))}" aria-label="${esc(t('card.unknow'))}">✕</button>
+        <button type="button" class="rw-mini know" data-row-action="to-known" data-word="${esc(word)}" data-id="${esc(id)}" title="${esc(t('card.know'))}" aria-label="${esc(t('card.know'))}">✓</button>
       </div>
     </div>
     ${trq ? `<div class="rw-auto">${esc(trq)}</div>` : ''}
@@ -4025,26 +4142,32 @@ function applyRemoteState(remote){
   refreshOpenModals();
 }
 
-async function writeStateToCloud(uid, s){
+async function writeStateToCloud(uid, s, overwrite){
   if(!fbDb) return;
   const docRef = fbDb.collection('users').doc(uid);
-  await docRef.set({
+  const data = {
     uid: uid,
+    lastResetTime: (s && s.lastResetTime) ? s.lastResetTime : (Number(localStorage.getItem('oxford_cloud_last_reset_time')) || 0),
     updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
     clientTimestamp: Date.now(),
     state: {
-      marks: s.marks || {},
-      notes: s.notes || {},
-      streak: s.streak || {},
-      custom: s.customEdits || s.custom || {},
-      badges: s.badges || {},
-      srs: s.srs || {},
+      marks: (s && s.marks) || {},
+      notes: (s && s.notes) || {},
+      streak: (s && s.streak) || {},
+      custom: (s && (s.customEdits || s.custom)) || {},
+      badges: (s && s.badges) || {},
+      srs: (s && s.srs) || {},
       ui: {
-        currentLevel: (s.ui && s.ui.currentLevel) ? s.ui.currentLevel : 'All',
-        lang: (s.ui && s.ui.lang) ? s.ui.lang : 'en'
+        currentLevel: (s && s.ui && s.ui.currentLevel) ? s.ui.currentLevel : 'All',
+        lang: (s && s.ui && s.ui.lang) ? s.ui.lang : 'en'
       }
     }
-  }, { merge: true });
+  };
+  if(overwrite){
+    await docRef.set(data);
+  } else {
+    await docRef.set(data, { merge: true });
+  }
 }
 
 function updateSyncSuccessUI(){
@@ -4132,7 +4255,7 @@ async function resolveConflictWithLocal(){
   if(!pendingCloudConflict) return;
   const uid = pendingCloudConflict.uid;
   closeCloudConflictModal();
-  await writeStateToCloud(uid, state);
+  await writeStateToCloud(uid, state, true);
   updateSyncSuccessUI();
   const isAr = state.ui && state.ui.lang === 'ar';
   showToast(isAr ? '📱 تم اعتماد بيانات هذا الجهاز ورفعها للسحابة!' : '📱 Device progress uploaded to cloud!');
@@ -4149,7 +4272,7 @@ async function resolveConflictWithMerge(){
   render();
   refreshOpenModals();
   closeCloudConflictModal();
-  await writeStateToCloud(uid, state);
+  await writeStateToCloud(uid, state, true);
   updateSyncSuccessUI();
   const isAr = state.ui && state.ui.lang === 'ar';
   showToast(isAr ? '🔀 تم الدمج الذكي بدون أي فقدان للبيانات!' : '🔀 Smart merge completed with zero data loss!');
@@ -4201,7 +4324,7 @@ async function handleManualPushCloud(){
   await ensureFirebaseLoaded();
   if(!fbDb) return;
   try {
-    await writeStateToCloud(user.uid, state);
+    await writeStateToCloud(user.uid, state, true);
     updateSyncSuccessUI();
     showToast(isAr ? '☁️ تم رفع وتحديث بيانات السحابة بنجاح!' : '☁️ Cloud backup updated with device data!');
   } catch(e){
@@ -4227,7 +4350,7 @@ async function syncWithCloudDocument(uid, options){
 
     if(!snap.exists || !snap.data() || !snap.data().state){
       // First-time backup: push local state to cloud
-      await writeStateToCloud(uid, state);
+      await writeStateToCloud(uid, state, true);
       updateSyncSuccessUI();
       return;
     }
@@ -4236,6 +4359,36 @@ async function syncWithCloudDocument(uid, options){
     const remoteState = remoteData.state;
     const localSummary = getProgressStateSummary(state);
     const remoteSummary = getProgressStateSummary(remoteState);
+
+    // Check if user recently triggered a master reset or if local reset is newer than cloud data
+    const localResetTime = (state && state.lastResetTime) || Number(localStorage.getItem('oxford_cloud_last_reset_time')) || 0;
+    const justReset = localStorage.getItem('oxford_just_reset') === '1';
+    const skipAutoPull = localStorage.getItem('oxford_skip_auto_pull') === '1';
+
+    if(justReset || (localResetTime && localResetTime > (remoteData.clientTimestamp || 0))){
+      localStorage.removeItem('oxford_just_reset');
+      console.log('Local master reset detected. Overwriting cloud with reset state.');
+      await writeStateToCloud(uid, state, true);
+      updateSyncSuccessUI();
+      return;
+    }
+
+    if(skipAutoPull){
+      localStorage.removeItem('oxford_skip_auto_pull');
+      console.log('Skipping auto-pull per user choice after device reset.');
+      updateSyncSuccessUI();
+      return;
+    }
+
+    // Check if remote cloud itself was reset
+    if(remoteData.lastResetTime && remoteData.lastResetTime > localResetTime && remoteSummary.markedCount === 0){
+      console.log('Remote cloud reset detected. Applying reset locally.');
+      applyRemoteState(remoteState);
+      state.lastResetTime = remoteData.lastResetTime;
+      saveState();
+      updateSyncSuccessUI();
+      return;
+    }
 
     // Scenario 1: Fresh local device login (e.g. <=3 marks on device, but cloud has progress)
     if(localSummary.markedCount <= 3 && remoteSummary.markedCount > 3){
@@ -4252,7 +4405,7 @@ async function syncWithCloudDocument(uid, options){
     // Scenario 2: Clean first-time push (cloud empty, device has progress)
     if(remoteSummary.markedCount === 0 && localSummary.markedCount > 0){
       console.log('Auto-pushing device progress to empty cloud account');
-      await writeStateToCloud(uid, state);
+      await writeStateToCloud(uid, state, true);
       updateSyncSuccessUI();
       return;
     }
@@ -8018,13 +8171,41 @@ document.getElementById('reviewList').addEventListener('click', (e) => {
     return;
   }
 
+  const rowActionBtn = e.target.closest('[data-row-action]');
+  if(rowActionBtn){
+    const action = rowActionBtn.getAttribute('data-row-action');
+    const word = rowActionBtn.getAttribute('data-word');
+    const id = rowActionBtn.getAttribute('data-id') || word;
+    const target = id || word;
+    const isAr = state.ui && state.ui.lang === 'ar';
+
+    if(action === 'to-known'){
+      setWordStatusInMarks(target, 'k');
+      showToast(isAr ? '✓ تم نقل الكلمة إلى قائمة الكلمات المعروفة' : '✓ Moved to Known words');
+    } else if(action === 'to-unknown'){
+      setWordStatusInMarks(target, 'u');
+      showToast(isAr ? '↻ تم نقل الكلمة إلى قائمة غير المعروفة (تحتاج مراجعة)' : '↻ Moved to Still Learning');
+    } else if(action === 'remove-mark'){
+      removeWordFromMarks(target);
+      showToast(isAr ? '🗑️ تمت إزالة الكلمة من القائمة' : '🗑️ Removed from list');
+    }
+
+    bumpChanges();
+    scheduleSave();
+    scheduleCloudSync();
+    renderReviewList(currentSearch());
+    render();
+    return;
+  }
+
   const delBtn = e.target.closest('[data-del]');
   if(delBtn){
     const word = delBtn.getAttribute('data-del');
     if(word){
-      state.marks = applyMark(state.marks, word, 'r', Date.now());
+      removeWordFromMarks(word);
       bumpChanges();
       scheduleSave();
+      scheduleCloudSync();
       renderReviewList(currentSearch());
       render();
     }
@@ -8034,17 +8215,14 @@ document.getElementById('reviewList').addEventListener('click', (e) => {
   const markBtn = e.target.closest('[data-mark]');
   if(markBtn){
     const word = markBtn.getAttribute('data-word');
-    if(word){
-      const prev = state.marks[word];
-      state.history = pushHistoryEntry(state.history, {
-        word: word,
-        prev: prev ? { s: prev.s, t: prev.t } : null
-      });
+    const id = markBtn.getAttribute('data-id') || word;
+    const target = id || word;
+    if(target){
       const s = (markBtn.getAttribute('data-mark') === 'know') ? 'k' : 'u';
-      state.marks = applyMark(state.marks, word, s, Date.now());
-      state.srs = applySrsOnMark(state.srs, word, prev, s, Date.now());
+      setWordStatusInMarks(target, s);
       bumpChanges();
       scheduleSave();
+      scheduleCloudSync();
       requestPersistOnce();
       renderReviewList(currentSearch());
       render();
@@ -8058,6 +8236,35 @@ document.getElementById('reviewList').addEventListener('click', (e) => {
     if(word) copyText(word);
   }
 });
+
+// Explorer quick-action listeners
+const searchListEl = document.getElementById('searchList');
+if(searchListEl){
+  searchListEl.addEventListener('click', (e) => {
+    const actBtn = e.target.closest('[data-exp-action]');
+    if(actBtn){
+      e.stopPropagation();
+      const action = actBtn.getAttribute('data-exp-action');
+      const wordId = actBtn.getAttribute('data-word-id');
+      const isAr = state.ui && state.ui.lang === 'ar';
+      if(action === 'set-known'){
+        setWordStatusInMarks(wordId, 'k');
+        showToast(isAr ? '✓ تم التمييز ككلمة معروفة' : '✓ Marked as Known');
+      } else if(action === 'set-unknown'){
+        setWordStatusInMarks(wordId, 'u');
+        showToast(isAr ? '✕ تم التمييز كغير معروفة (تحتاج مراجعة)' : '✕ Marked as Still Learning');
+      } else if(action === 'set-unmarked'){
+        removeWordFromMarks(wordId);
+        showToast(isAr ? '🗑️ تم إلغاء التمييز (كلمة جديدة)' : '🗑️ Unmarked');
+      }
+      bumpChanges();
+      scheduleSave();
+      scheduleCloudSync();
+      renderExplorer();
+      render();
+    }
+  });
+}
 
 document.getElementById('reviewList').addEventListener('input', (e) => {
   const word = e.target.getAttribute('data-tr');
@@ -8092,16 +8299,18 @@ document.getElementById('btnClearAll').addEventListener('click', () => {
   if(words.length === 0) return;
   if(!confirm(t('confirm.clear'))) return;
 
-  const now = Date.now();
   words.forEach(w => {
-    state.marks = applyMark(state.marks, w, 'r', now);
+    removeWordFromMarks(w);
   });
   bumpChanges();
 
   scheduleSave();
+  scheduleCloudSync();
   listLimit = 100;
   renderReviewList('');
   render();
+  const isAr = state.ui && state.ui.lang === 'ar';
+  showToast(isAr ? '🗑️ تم مسح القائمة بنجاح!' : '🗑️ List cleared successfully!');
 });
 
 function sameMarkMap(a, b){
